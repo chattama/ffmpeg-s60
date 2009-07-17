@@ -151,5 +151,15 @@ AVCodec libfaac_encoder = {
     Faac_encode_init,
     Faac_encode_frame,
     Faac_encode_close,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libfaac AAC (Advanced Audio Codec)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("libfaac AAC (Advanced Audio Codec)"),
+#endif
 };

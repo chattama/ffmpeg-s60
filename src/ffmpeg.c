@@ -19,6 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/*
+#ifdef __GCCE__
+extern int __GccGlueInit();
+void _GcceInit() {
+	__GccGlueInit();
+}
+#endif
+*/
+
 #include "config.h"
 #include <ctype.h>
 #include <string.h>
@@ -62,6 +71,11 @@
 
 #undef exit
 
+#ifdef __SYMBIAN32__
+#include <unistd.h>
+typedef int sig_atomic_t;
+#endif
+
 const char program_name[] = "FFmpeg";
 const int program_birth_year = 2000;
 
@@ -79,7 +93,11 @@ typedef struct AVMetaDataMap {
     int in_file;
 } AVMetaDataMap;
 
+#ifdef __CW32__
+const OptionDef options[];
+#else
 static const OptionDef options[];
+#endif
 
 #define MAX_FILES 20
 
@@ -326,8 +344,10 @@ static void term_init(void)
     signal(SIGQUIT, sigterm_handler); /* Quit (POSIX).  */
 #endif
 
+#ifndef __SYMBIAN32__
     signal(SIGINT , sigterm_handler); /* Interrupt (ANSI).  */
     signal(SIGTERM, sigterm_handler); /* Termination (ANSI).  */
+#endif
     /*
     register a function to be called at normal program termination
     */
@@ -3642,10 +3662,17 @@ static int opt_preset(const char *opt, const char *arg)
     FILE *f=NULL;
     char tmp[1000], tmp2[1000];
     int i;
+#ifndef __CW32__
     const char *base[3]= { getenv("HOME"),
                            "/usr/local/share",
                            "/usr/share",
                          };
+#else
+    const char *base[3];
+    base[0] = getenv("HOME");
+    base[1] = "/usr/local/share";
+    base[2] = "/usr/share";
+#endif
 
     for(i=!base[0]; i<3 && !f; i++){
         snprintf(tmp, sizeof(tmp), "%s/%sffmpeg/%s.ffpreset", base[i], i ? "" : ".", arg);

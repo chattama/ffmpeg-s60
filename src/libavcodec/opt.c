@@ -161,7 +161,11 @@ const AVOption *av_set_string2(void *obj, const char *name, const char *val, int
                 buf[i]= val[i];
             buf[i]=0;
 
+#ifndef __CW32__
+            d = ff_eval2(buf, const_values, const_names, NULL, NULL, NULL, NULL, NULL, &error);
+#else
             d = ff_eval2(buf, (double*)const_values, (const char**)const_names, NULL, NULL, NULL, NULL, NULL, &error);
+#endif
             if(isnan(d)) {
                 const AVOption *o_named= av_find_opt(obj, buf, o->unit, 0, 0);
                 if(o_named && o_named->type == FF_OPT_TYPE_CONST)

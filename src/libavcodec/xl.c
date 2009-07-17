@@ -135,5 +135,13 @@ AVCodec xl_decoder = {
     NULL,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Miro VideoXL"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Miro VideoXL"),
+#endif
 };

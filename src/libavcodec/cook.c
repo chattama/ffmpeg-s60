@@ -1187,6 +1187,22 @@ static int cook_decode_init(AVCodecContext *avctx)
 
 AVCodec cook_decoder =
 {
+#ifdef __CW32__
+    "cook",
+    CODEC_TYPE_AUDIO,
+    CODEC_ID_COOK,
+    sizeof(COOKContext),
+    cook_decode_init,
+    0,
+    cook_decode_close,
+    cook_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("COOK"),
+#else
     .name = "cook",
     .type = CODEC_TYPE_AUDIO,
     .id = CODEC_ID_COOK,
@@ -1195,4 +1211,5 @@ AVCodec cook_decoder =
     .close = cook_decode_close,
     .decode = cook_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("COOK"),
+#endif
 };

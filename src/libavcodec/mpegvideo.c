@@ -705,12 +705,20 @@ void init_rl(RLTable *rl, uint8_t static_store[2][2*MAX_RUN + MAX_LEVEL + 3])
                 max_run[level] = run;
         }
         if(static_store)
+#ifndef __CW32__
+            rl->max_level[last] = static_store[last];
+#else
             rl->max_level[last] = (int8_t*)static_store[last];
+#endif
         else
             rl->max_level[last] = av_malloc(MAX_RUN + 1);
         memcpy(rl->max_level[last], max_level, MAX_RUN + 1);
         if(static_store)
+#ifndef __CW32__
+            rl->max_run[last] = static_store[last] + MAX_RUN + 1;
+#else
             rl->max_run[last] = (int8_t*)(static_store[last] + MAX_RUN + 1);
+#endif
         else
             rl->max_run[last] = av_malloc(MAX_LEVEL + 1);
         memcpy(rl->max_run[last], max_run, MAX_LEVEL + 1);

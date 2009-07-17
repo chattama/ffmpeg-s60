@@ -508,5 +508,14 @@ AVCodec dvdsub_decoder = {
     NULL,
     NULL,
     dvdsub_decode,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("DVD subtitles"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("DVD subtitles"),
+#endif
 };

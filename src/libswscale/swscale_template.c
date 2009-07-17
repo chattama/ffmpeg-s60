@@ -2550,7 +2550,11 @@ static inline void RENAME(hyscale)(uint16_t *dst, long dstWidth, uint8_t *src, i
     if (!(flags&SWS_FAST_BILINEAR))
 #endif
     {
+#ifndef __CW32__
+        RENAME(hScale)(dst, dstWidth, src, srcW, xInc, hLumFilter, hLumFilterPos, hLumFilterSize);
+#else
         RENAME(hScale)((int16_t*)dst, dstWidth, src, srcW, xInc, hLumFilter, hLumFilterPos, hLumFilterSize);
+#endif
     }
     else // fast bilinear upscale / crap downscale
     {
@@ -2767,8 +2771,13 @@ inline static void RENAME(hcscale)(uint16_t *dst, long dstWidth, uint8_t *src1, 
     if (!(flags&SWS_FAST_BILINEAR))
 #endif
     {
+#ifndef __CW32__
+        RENAME(hScale)(dst     , dstWidth, src1, srcW, xInc, hChrFilter, hChrFilterPos, hChrFilterSize);
+        RENAME(hScale)(dst+VOFW, dstWidth, src2, srcW, xInc, hChrFilter, hChrFilterPos, hChrFilterSize);
+#else
         RENAME(hScale)((int16_t*) dst      , dstWidth, src1, srcW, xInc, hChrFilter, hChrFilterPos, hChrFilterSize);
         RENAME(hScale)((int16_t*)(dst+VOFW), dstWidth, src2, srcW, xInc, hChrFilter, hChrFilterPos, hChrFilterSize);
+#endif
     }
     else // fast bilinear upscale / crap downscale
     {
@@ -3055,7 +3064,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                 assert(lastInLumBuf + 1 - srcSliceY < srcSliceH);
                 assert(lastInLumBuf + 1 - srcSliceY >= 0);
                 //printf("%d %d\n", lumBufIndex, vLumBufSize);
+#ifndef __CW32__
+                RENAME(hyscale)(lumPixBuf[ lumBufIndex ], dstW, s, srcW, lumXInc,
+#else
                 RENAME(hyscale)((uint16_t*)lumPixBuf[ lumBufIndex ], dstW, s, srcW, lumXInc,
+#endif
                                 flags, canMMX2BeUsed, hLumFilter, hLumFilterPos, hLumFilterSize,
                                 funnyYCode, c->srcFormat, formatConvBuffer,
                                 c->lumMmx2Filter, c->lumMmx2FilterPos, pal);
@@ -3072,7 +3085,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                 //FIXME replace parameters through context struct (some at least)
 
                 if (!(isGray(srcFormat) || isGray(dstFormat)))
+#ifndef __CW32__
+                    RENAME(hcscale)(chrPixBuf[ chrBufIndex ], chrDstW, src1, src2, chrSrcW, chrXInc,
+#else
                     RENAME(hcscale)((uint16_t*)chrPixBuf[ chrBufIndex ], chrDstW, src1, src2, chrSrcW, chrXInc,
+#endif
                                     flags, canMMX2BeUsed, hChrFilter, hChrFilterPos, hChrFilterSize,
                                     funnyUVCode, c->srcFormat, formatConvBuffer,
                                     c->chrMmx2Filter, c->chrMmx2FilterPos, pal);
@@ -3097,7 +3114,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                 assert(lumBufIndex < 2*vLumBufSize);
                 assert(lastInLumBuf + 1 - srcSliceY < srcSliceH);
                 assert(lastInLumBuf + 1 - srcSliceY >= 0);
+#ifndef __CW32__
+                RENAME(hyscale)(lumPixBuf[ lumBufIndex ], dstW, s, srcW, lumXInc,
+#else
                 RENAME(hyscale)((uint16_t*)lumPixBuf[ lumBufIndex ], dstW, s, srcW, lumXInc,
+#endif
                                 flags, canMMX2BeUsed, hLumFilter, hLumFilterPos, hLumFilterSize,
                                 funnyYCode, c->srcFormat, formatConvBuffer,
                                 c->lumMmx2Filter, c->lumMmx2FilterPos, pal);
@@ -3113,7 +3134,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                 assert(lastInChrBuf + 1 - chrSrcSliceY >= 0);
 
                 if (!(isGray(srcFormat) || isGray(dstFormat)))
+#ifndef __CW32__
+                    RENAME(hcscale)(chrPixBuf[ chrBufIndex ], chrDstW, src1, src2, chrSrcW, chrXInc,
+#else
                     RENAME(hcscale)((uint16_t*)chrPixBuf[ chrBufIndex ], chrDstW, src1, src2, chrSrcW, chrXInc,
+#endif
                             flags, canMMX2BeUsed, hChrFilter, hChrFilterPos, hChrFilterSize,
                             funnyUVCode, c->srcFormat, formatConvBuffer,
                             c->chrMmx2Filter, c->chrMmx2FilterPos, pal);
@@ -3204,7 +3229,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                 if (vLumFilterSize == 1 && vChrFilterSize == 2) //unscaled RGB
                 {
                     int chrAlpha= vChrFilter[2*dstY+1];
+#ifndef __CW32__
+                    RENAME(yuv2packed1)(c, *lumSrcPtr, *chrSrcPtr, *(chrSrcPtr+1),
+#else
                     RENAME(yuv2packed1)(c, (uint16_t*)*lumSrcPtr, (uint16_t*)*chrSrcPtr, (uint16_t*)*(chrSrcPtr+1),
+#endif
                         dest, dstW, chrAlpha, dstFormat, flags, dstY);
                 }
                 else if (vLumFilterSize == 2 && vChrFilterSize == 2) //bilinear upscale RGB
@@ -3215,7 +3244,11 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
                     lumMmxFilter[3]= vLumFilter[2*dstY   ]*0x10001;
                     chrMmxFilter[2]=
                     chrMmxFilter[3]= vChrFilter[2*chrDstY]*0x10001;
+#ifndef __CW32__
+                    RENAME(yuv2packed2)(c, *lumSrcPtr, *(lumSrcPtr+1), *chrSrcPtr, *(chrSrcPtr+1),
+#else
                     RENAME(yuv2packed2)(c, (uint16_t*)*lumSrcPtr, (uint16_t*)*(lumSrcPtr+1), (uint16_t*)*chrSrcPtr, (uint16_t*)*(chrSrcPtr+1),
+#endif
                         dest, dstW, lumAlpha, chrAlpha, dstY);
                 }
                 else //general RGB

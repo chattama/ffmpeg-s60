@@ -292,5 +292,13 @@ AVCodec vp5_decoder = {
     vp56_free,
     vp56_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("On2 VP5"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("On2 VP5"),
+#endif
 };

@@ -203,6 +203,15 @@ AVCodec nellymoser_decoder = {
     NULL,
     decode_end,
     decode_tag,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Nellymoser Asao"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Nellymoser Asao"),
+#endif
 };
 

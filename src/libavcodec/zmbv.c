@@ -490,7 +490,11 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, const
         c->decomp_size = 1;
     } else { // ZLIB-compressed data
         c->zstream.total_in = c->zstream.total_out = 0;
+#ifdef __CW32__
+        c->zstream.next_in = (unsigned char*)buf;
+#else
         c->zstream.next_in = buf;
+#endif
         c->zstream.avail_in = len;
         c->zstream.next_out = c->decomp_buf;
         c->zstream.avail_out = c->decomp_size;
@@ -662,6 +666,15 @@ AVCodec zmbv_decoder = {
     NULL,
     decode_end,
     decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Zip Motion Blocks Video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Zip Motion Blocks Video"),
+#endif
 };
 

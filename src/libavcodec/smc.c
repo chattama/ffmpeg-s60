@@ -484,5 +484,13 @@ AVCodec smc_decoder = {
     smc_decode_end,
     smc_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("QuickTime Graphics (SMC)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("QuickTime Graphics (SMC)"),
+#endif
 };

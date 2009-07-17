@@ -339,5 +339,13 @@ AVCodec msvideo1_decoder = {
     msvideo1_decode_end,
     msvideo1_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Microsoft Video 1"),
+#else
     .long_name= NULL_IF_CONFIG_SMALL("Microsoft Video 1"),
+#endif
 };

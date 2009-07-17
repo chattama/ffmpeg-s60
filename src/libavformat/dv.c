@@ -447,6 +447,12 @@ AVInputFormat dv_demuxer = {
     dv_read_packet,
     dv_read_close,
     dv_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "dv,dif",
+#else
     .extensions = "dv,dif",
+#endif
 };
 #endif

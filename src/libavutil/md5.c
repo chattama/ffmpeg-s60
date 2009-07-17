@@ -143,9 +143,17 @@ void av_md5_final(AVMD5 *ctx, uint8_t *dst){
     int i;
     uint64_t finalcount= le2me_64(ctx->len<<3);
 
+#ifndef __CW32__
+    av_md5_update(ctx, "\200", 1);
+#else
     av_md5_update(ctx, (const uint8_t*)"\200", 1);
+#endif
     while((ctx->len & 63)<56)
+#ifndef __CW32__
+        av_md5_update(ctx, "", 1);
+#else
         av_md5_update(ctx, (const uint8_t*)"", 1);
+#endif
 
     av_md5_update(ctx, (uint8_t*)&finalcount, 8);
 

@@ -106,7 +106,11 @@ int ff_rate_control_init(MpegEncContext *s)
     };
     emms_c();
 
+#ifndef __CW32__
+    rcc->rc_eq_eval = ff_parse(s->avctx->rc_eq, const_names, func1, func1_names, NULL, NULL, &error);
+#else
     rcc->rc_eq_eval = ff_parse(s->avctx->rc_eq, (const char**)const_names, func1, (const char**)func1_names, NULL, NULL, &error);
+#endif
     if (!rcc->rc_eq_eval) {
         av_log(s->avctx, AV_LOG_ERROR, "Error parsing rc_eq \"%s\": %s\n", s->avctx->rc_eq, error? error : "");
         return -1;
@@ -580,8 +584,8 @@ static void adaptive_quantization(MpegEncContext *s, double q){
     const int mb_width = s->mb_width;
     const int mb_height = s->mb_height;
 #ifdef __CW32__
-    cplx_tab = (float*)av_malloc(sizeof(float)*s->mb_num);
-    bits_tab = (float*)av_malloc(sizeof(float)*s->mb_num);
+    cplx_tab = av_malloc(sizeof(float)*s->mb_num);
+    bits_tab = av_malloc(sizeof(float)*s->mb_num);
 #endif
 
     for(i=0; i<s->mb_num; i++){
@@ -678,6 +682,10 @@ static void adaptive_quantization(MpegEncContext *s, double q){
 //printf("%2d%3d ", intq, ff_sqrt(s->mc_mb_var[i]));
         s->lambda_table[mb_xy]= intq;
     }
+#ifdef __CW32__
+    av_free(cplx_tab);
+    av_free(bits_tab);
+#endif
 }
 
 void ff_get_2pass_fcode(MpegEncContext *s){

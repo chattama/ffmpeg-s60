@@ -380,5 +380,14 @@ AVCodec truespeech_decoder = {
     NULL,
     NULL,
     truespeech_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("DSP Group TrueSpeech"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("DSP Group TrueSpeech"),
+#endif
 };

@@ -620,6 +620,14 @@ AVCodec qtrle_decoder = {
     qtrle_decode_end,
     qtrle_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("QuickTime Animation (RLE) video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("QuickTime Animation (RLE) video"),
+#endif
 };
 

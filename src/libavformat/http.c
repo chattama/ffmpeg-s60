@@ -219,8 +219,13 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
     /* send http header */
     post = h->flags & URL_WRONLY;
     auth_b64 = av_malloc(auth_b64_len);
+#ifndef __CW32__
     av_base64_encode(auth_b64, auth_b64_len, auth, strlen(auth));
     snprintf(s->buffer, sizeof(s->buffer),
+#else
+    av_base64_encode(auth_b64, auth_b64_len, (const uint8_t*)auth, strlen(auth));
+    snprintf((char*)s->buffer, sizeof(s->buffer),
+#endif
              "%s %s HTTP/1.1\r\n"
              "User-Agent: %s\r\n"
              "Accept: */*\r\n"
@@ -237,7 +242,11 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
              auth_b64);
 
     av_freep(&auth_b64);
+#ifndef __CW32__
     if (http_write(h, s->buffer, strlen(s->buffer)) < 0)
+#else
+    if (http_write(h, s->buffer, strlen((char*)s->buffer)) < 0)
+#endif
         return AVERROR(EIO);
 
     /* init input buffer */

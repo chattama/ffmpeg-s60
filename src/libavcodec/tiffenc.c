@@ -156,7 +156,11 @@ static int encode_strip(TiffEncoderContext * s, const int8_t * src,
     case TIFF_ADOBE_DEFLATE:
         {
             unsigned long zlen = s->buf_size - (*s->buf - s->buf_start);
+#ifdef __CW32__
+            if (compress(dst, &zlen, (const unsigned char*)src, n) != Z_OK) {
+#else
             if (compress(dst, &zlen, src, n) != Z_OK) {
+#endif
                 av_log(s->avctx, AV_LOG_ERROR, "Compressing failed\n");
                 return -1;
             }
@@ -169,9 +173,17 @@ static int encode_strip(TiffEncoderContext * s, const int8_t * src,
         memcpy(dst, src, n);
         return n;
     case TIFF_PACKBITS:
+#ifdef __CW32__
+        return ff_rle_encode(dst, s->buf_size - (*s->buf - s->buf_start), (const unsigned char*)src, 1, n, 2, 0xff, -1, 0);
+#else
         return ff_rle_encode(dst, s->buf_size - (*s->buf - s->buf_start), src, 1, n, 2, 0xff, -1, 0);
+#endif
     case TIFF_LZW:
+#ifdef __CW32__
+        return ff_lzw_encode(s->lzws, (const unsigned char*)src, n);
+#else
         return ff_lzw_encode(s->lzws, src, n);
+#endif
     default:
         return -1;
     }
@@ -336,7 +348,11 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
                        p->data[0] + j * p->linesize[0], bytes_per_row);
             zn += bytes_per_row;
         }
+#ifdef __CW32__
+        n = encode_strip(s, (const signed char*)zbuf, ptr, zn, s->compr);
+#else
         n = encode_strip(s, zbuf, ptr, zn, s->compr);
+#endif
         av_free(zbuf);
         if (n<0) {
             av_log(s->avctx, AV_LOG_ERROR, "Encode strip failed\n");
@@ -358,12 +374,21 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
             }
             if (is_yuv){
                  pack_yuv(s, yuv_line, i);
+#ifdef __CW32__
+                 n = encode_strip(s, (const signed char*)yuv_line, ptr, bytes_per_row, s->compr);
+#else
                  n = encode_strip(s, yuv_line, ptr, bytes_per_row, s->compr);
+#endif
                  i += s->subsampling[1] - 1;
             }
             else
+#ifdef __CW32__
+                n = encode_strip(s, (const signed char*)p->data[0] + i * p->linesize[0],
+                        ptr, bytes_per_row, s->compr);
+#else
                 n = encode_strip(s, p->data[0] + i * p->linesize[0],
                         ptr, bytes_per_row, s->compr);
+#endif
             if (n < 0) {
                 av_log(s->avctx, AV_LOG_ERROR, "Encode strip failed\n");
                 goto fail;
@@ -451,6 +476,17 @@ AVCodec tiff_encoder = {
     NULL,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+        (enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_PAL8, PIX_FMT_GRAY8,
+                              PIX_FMT_MONOBLACK, PIX_FMT_MONOWHITE,
+                              PIX_FMT_YUV420P, PIX_FMT_YUV422P,
+                              PIX_FMT_YUV444P, PIX_FMT_YUV410P,
+                              PIX_FMT_YUV411P,
+                              PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("TIFF image"),
+#else
     .pix_fmts =
         (enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_PAL8, PIX_FMT_GRAY8,
                               PIX_FMT_MONOBLACK, PIX_FMT_MONOWHITE,
@@ -459,4 +495,5 @@ AVCodec tiff_encoder = {
                               PIX_FMT_YUV411P,
                               PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("TIFF image"),
+#endif
 };

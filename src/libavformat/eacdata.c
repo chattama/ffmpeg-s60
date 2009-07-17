@@ -96,5 +96,13 @@ AVInputFormat ea_cdata_demuxer = {
     cdata_probe,
     cdata_read_header,
     cdata_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    "cdata",
+#else
     .extensions = "cdata",
+#endif
 };

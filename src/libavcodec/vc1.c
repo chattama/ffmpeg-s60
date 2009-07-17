@@ -777,8 +777,13 @@ static int decode_sequence_header(AVCodecContext *avctx, GetBitContext *gb)
 
     if (v->profile == PROFILE_ADVANCED)
     {
+#ifdef __CW32__
+        v->zz_8x4 = (const unsigned char*)ff_vc1_adv_progressive_8x4_zz;
+        v->zz_4x8 = (const unsigned char*)ff_vc1_adv_progressive_4x8_zz;
+#else
         v->zz_8x4 = ff_vc1_adv_progressive_8x4_zz;
         v->zz_4x8 = ff_vc1_adv_progressive_4x8_zz;
+#endif
         return decode_sequence_header_adv(v, gb);
     }
     else
@@ -2398,11 +2403,23 @@ static int vc1_decode_i_block(VC1Context *v, DCTELEM block[64], int n, int coded
 
         if(v->s.ac_pred) {
             if(!dc_pred_dir)
-                zz_table = wmv1_scantable[2];
+#ifdef __CW32__
+                zz_table = (const signed char*)wmv1_scantable[2];
+#else
+            zz_table = wmv1_scantable[2];
+#endif
             else
+#ifdef __CW32__
+                zz_table = (const signed char*)wmv1_scantable[3];
+#else
                 zz_table = wmv1_scantable[3];
+#endif
         } else
+#ifdef __CW32__
+            zz_table = (const signed char*)wmv1_scantable[1];
+#else
             zz_table = wmv1_scantable[1];
+#endif
 
         ac_val = s->ac_val[0][0] + s->block_index[n] * 16;
         ac_val2 = ac_val;
@@ -2581,11 +2598,24 @@ static int vc1_decode_i_block_adv(VC1Context *v, DCTELEM block[64], int n, int c
 
         if(v->s.ac_pred) {
             if(!dc_pred_dir)
+#ifdef __CW32__
+                zz_table = (const signed char*)wmv1_scantable[2];
+#else
                 zz_table = wmv1_scantable[2];
+#endif
             else
+#ifdef __CW32__
+                zz_table = (const signed char*)wmv1_scantable[3];
+        } else
+#else
                 zz_table = wmv1_scantable[3];
         } else
+#endif
+#ifdef __CW32__
+            zz_table = (const signed char*)wmv1_scantable[1];
+#else
             zz_table = wmv1_scantable[1];
+#endif
 
         while (!last) {
             vc1_decode_ac_coeff(v, &last, &skip, &value, codingset);
@@ -2786,7 +2816,11 @@ static int vc1_decode_intra_block(VC1Context *v, DCTELEM block[64], int n, int c
         const int8_t *zz_table;
         int k;
 
+#ifdef __CW32__
+        zz_table = (const signed char*)wmv1_scantable[0];
+#else
         zz_table = wmv1_scantable[0];
+#endif
 
         while (!last) {
             vc1_decode_ac_coeff(v, &last, &skip, &value, codingset);
@@ -4137,7 +4171,14 @@ AVCodec vc1_decoder = {
     vc1_decode_frame,
     CODEC_CAP_DELAY,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("SMPTE VC-1"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1"),
+#endif
 };
 
 AVCodec wmv3_decoder = {
@@ -4151,5 +4192,12 @@ AVCodec wmv3_decoder = {
     vc1_decode_frame,
     CODEC_CAP_DELAY,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Windows Media Video 9"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9"),
+#endif
 };

@@ -2264,7 +2264,11 @@ matroska_parse_chapters(AVFormatContext *s)
                             break;
 
                         case MATROSKA_ID_CHAPTERUID:
+#ifdef __CW32__
+                            res = ebml_read_uint(matroska, &id, (unsigned long long*)&uid);
+#else
                             res = ebml_read_uint(matroska, &id, &uid);
+#endif
                             break;
                         default:
                             av_log(s, AV_LOG_INFO, "Ignoring unknown Chapter atom ID 0x%x\n", id);
@@ -2579,7 +2583,11 @@ matroska_read_header (AVFormatContext    *s,
                     return AVERROR(ENOMEM);
                 init_put_byte(&b, extradata, extradata_size, 1,
                               NULL, NULL, NULL, NULL);
+#ifdef __CW32__
+                put_buffer(&b, (const unsigned char*)"TTA1", 4);
+#else
                 put_buffer(&b, "TTA1", 4);
+#endif
                 put_le16(&b, 1);
                 put_le16(&b, audiotrack->channels);
                 put_le16(&b, audiotrack->bitdepth);

@@ -272,6 +272,15 @@ AVCodec mpc7_decoder = {
     NULL,
     NULL,
     mpc7_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    mpc7_decode_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Musepack SV7"),
+#else
     .flush = mpc7_decode_flush,
     .long_name = NULL_IF_CONFIG_SMALL("Musepack SV7"),
+#endif
 };

@@ -295,7 +295,11 @@ static int mp_decode_frame(AVCodecContext *avctx,
     }
 
     /* le32 bitstream msb first */
+#ifdef __CW32__
+    mp->bswapbuf = av_fast_realloc(mp->bswapbuf, (unsigned int*)&mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+#else
     mp->bswapbuf = av_fast_realloc(mp->bswapbuf, &mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+#endif
     mp->dsp.bswap_buf((uint32_t *)mp->bswapbuf, (const uint32_t *)buf, buf_size / 4);
     if (buf_size & 3)
         memcpy(mp->bswapbuf + (buf_size & ~3), buf + (buf_size & ~3), buf_size & 3);
@@ -359,5 +363,13 @@ AVCodec motionpixels_decoder = {
     mp_decode_end,
     mp_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Motion Pixels Video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Motion Pixels Video"),
+#endif
 };

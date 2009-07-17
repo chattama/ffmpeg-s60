@@ -36,12 +36,22 @@ typedef struct X264Context {
 static void
 X264_log(void *p, int level, const char *fmt, va_list args)
 {
+#ifdef __CW32__
+    static const int level_map[] = {
+    	0,
+        AV_LOG_ERROR,
+        AV_LOG_WARNING,
+        AV_LOG_INFO,
+        AV_LOG_DEBUG
+    };
+#else
     static const int level_map[] = {
         [X264_LOG_ERROR]   = AV_LOG_ERROR,
         [X264_LOG_WARNING] = AV_LOG_WARNING,
         [X264_LOG_INFO]    = AV_LOG_INFO,
         [X264_LOG_DEBUG]   = AV_LOG_DEBUG
     };
+#endif
 
     if(level < 0 || level > X264_LOG_DEBUG)
         return;
@@ -253,7 +263,11 @@ X264_init(AVCodecContext *avctx)
     x4->params.rc.f_ip_factor = 1/fabs(avctx->i_quant_factor);
     x4->params.rc.f_pb_factor = avctx->b_quant_factor;
     x4->params.analyse.i_chroma_qp_offset = avctx->chromaoffset;
+#ifdef __CW32__
+    x4->params.rc.psz_rc_eq = (char *)avctx->rc_eq;
+#else
     x4->params.rc.psz_rc_eq = avctx->rc_eq;
+#endif
 
     x4->params.analyse.b_psnr = avctx->flags & CODEC_FLAG_PSNR;
     x4->params.i_log_level = X264_LOG_DEBUG;
@@ -292,6 +306,22 @@ X264_init(AVCodecContext *avctx)
 }
 
 AVCodec libx264_encoder = {
+#ifdef __CW32__
+    "libx264",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_H264,
+    sizeof(X264Context),
+    X264_init,
+    X264_frame,
+    X264_close,
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NONE },
+    NULL_IF_CONFIG_SMALL("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
+#else
     .name = "libx264",
     .type = CODEC_TYPE_VIDEO,
     .id = CODEC_ID_H264,
@@ -302,4 +332,5 @@ AVCodec libx264_encoder = {
     .capabilities = CODEC_CAP_DELAY,
     .pix_fmts = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NONE },
     .long_name = NULL_IF_CONFIG_SMALL("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
+#endif
 };

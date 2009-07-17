@@ -622,7 +622,11 @@ static int mov_write_video_tag(ByteIOContext *pb, MOVTrack *track)
     if (track->mode == MODE_MOV && track->enc->codec && track->enc->codec->name)
         strncpy(compressor_name,track->enc->codec->name,31);
     put_byte(pb, strlen(compressor_name));
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)compressor_name, 31);
+#else
     put_buffer(pb, compressor_name, 31);
+#endif
 
     if (track->mode == MODE_MOV && track->enc->bits_per_sample)
         put_be16(pb, track->enc->bits_per_sample);
@@ -820,13 +824,21 @@ static int mov_write_hdlr_tag(ByteIOContext *pb, MOVTrack *track)
     put_be32(pb, 0); /* size */
     put_tag(pb, "hdlr");
     put_be32(pb, 0); /* Version & flags */
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)hdlr, 4); /* handler */
+#else
     put_buffer(pb, hdlr, 4); /* handler */
+#endif
     put_tag(pb, hdlr_type); /* handler type */
     put_be32(pb ,0); /* reserved */
     put_be32(pb ,0); /* reserved */
     put_be32(pb ,0); /* reserved */
     put_byte(pb, strlen(descr)); /* string counter */
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)descr, strlen(descr)); /* handler description */
+#else
     put_buffer(pb, descr, strlen(descr)); /* handler description */
+#endif
     return updateSize(pb, pos);
 }
 
@@ -1091,12 +1103,20 @@ static int mov_write_string_data_tag(ByteIOContext *pb, const char *data, int lo
         put_tag(pb, "data");
         put_be32(pb, 1);
         put_be32(pb, 0);
+#ifdef __CW32__
+        put_buffer(pb, (const unsigned char*)data, strlen(data));
+#else
         put_buffer(pb, data, strlen(data));
+#endif
         return updateSize(pb, pos);
     }else{
         put_be16(pb, strlen(data)); /* string length */
         put_be16(pb, 0);
+#ifdef __CW32__
+        put_buffer(pb, (const unsigned char*)data, strlen(data));
+#else
         put_buffer(pb, data, strlen(data));
+#endif
         return strlen(data) + 4;
     }
 }
@@ -1220,7 +1240,11 @@ static int mov_write_3gp_udta_tag(ByteIOContext *pb, AVFormatContext *s,
                                   const char *tag, const char *str)
 {
     offset_t pos = url_ftell(pb);
+#ifdef __CW32__
+    if (!utf8len((const unsigned char*)str))
+#else
     if (!utf8len(str))
+#endif
         return 0;
     put_be32(pb, 0);   /* size */
     put_tag (pb, tag); /* type */
@@ -1229,7 +1253,11 @@ static int mov_write_3gp_udta_tag(ByteIOContext *pb, AVFormatContext *s,
         put_be16(pb, s->year);
     else {
         put_be16(pb, language_code("eng")); /* language */
+#ifdef __CW32__
+        ascii_to_wc(pb, (const unsigned char*)str);
+#else
         ascii_to_wc(pb, str);
+#endif
         if (!strcmp(tag, "albm") && s->year)
             put_byte(pb, s->year);
     }
@@ -1283,14 +1311,22 @@ static int mov_write_udta_tag(ByteIOContext *pb, MOVContext *mov,
 static void mov_write_psp_udta_tag(ByteIOContext *pb,
                                   const char *str, const char *lang, int type)
 {
+#ifdef __CW32__
+    int len = utf8len((const unsigned char*)str)+1;
+#else
     int len = utf8len(str)+1;
+#endif
     if(len<=0)
         return;
     put_be16(pb, len*2+10);            /* size */
     put_be32(pb, type);                /* type */
     put_be16(pb, language_code(lang)); /* language */
     put_be16(pb, 0x01);                /* ? */
+#ifdef __CW32__
+    ascii_to_wc(pb, (const unsigned char*)str);
+#else
     ascii_to_wc(pb, str);
+#endif
 }
 
 static int mov_write_uuidusmt_tag(ByteIOContext *pb, AVFormatContext *s)
@@ -1702,8 +1738,15 @@ AVOutputFormat mov_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_movvideo_tags, codec_movaudio_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){codec_movvideo_tags, codec_movaudio_tags, 0},
+#endif
 };
 #endif
 #ifdef CONFIG_TGP_MUXER
@@ -1718,8 +1761,15 @@ AVOutputFormat tgp_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_3gp_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){codec_3gp_tags, 0},
+#endif
 };
 #endif
 #ifdef CONFIG_MP4_MUXER
@@ -1734,8 +1784,15 @@ AVOutputFormat mp4_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#endif
 };
 #endif
 #ifdef CONFIG_PSP_MUXER
@@ -1750,8 +1807,15 @@ AVOutputFormat psp_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#endif
 };
 #endif
 #ifdef CONFIG_TG2_MUXER
@@ -1766,8 +1830,15 @@ AVOutputFormat tg2_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_3gp_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){codec_3gp_tags, 0},
+#endif
 };
 #endif
 #ifdef CONFIG_IPOD_MUXER
@@ -1782,7 +1853,14 @@ AVOutputFormat ipod_muxer = {
     mov_write_header,
     mov_write_packet,
     mov_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag = (const AVCodecTag*[]){ff_mp4_obj_type, 0},
+#endif
 };
 #endif

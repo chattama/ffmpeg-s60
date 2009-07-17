@@ -240,7 +240,11 @@ int rtp_check_and_send_back_rr(RTPDemuxContext *s, int count)
     put_be32(pb, s->ssrc);
     put_byte(pb, 0x01);
     put_byte(pb, len);
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)s->hostname, len);
+#else
     put_buffer(pb, s->hostname, len);
+#endif
     // padding
     for (len = (6 + len) % 4; len % 4; len++) {
         put_byte(pb, 0);

@@ -258,5 +258,14 @@ AVCodec bmp_decoder = {
     NULL,
     bmp_decode_end,
     bmp_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("BMP image"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("BMP image"),
+#endif
 };

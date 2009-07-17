@@ -51,5 +51,16 @@ AVCodec rawvideo_encoder = {
     sizeof(AVFrame),
     raw_init_encoder,
     raw_encode,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("raw video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("raw video"),
+#endif
 };

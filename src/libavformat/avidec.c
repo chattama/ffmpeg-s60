@@ -89,10 +89,18 @@ static int get_riff(AVIContext *avi, ByteIOContext *pb)
     int i;
 
     /* check RIFF header */
+#ifndef __CW32__
     get_buffer(pb, header, 4);
+#else
+    get_buffer(pb, (unsigned char *)header, 4);
+#endif
     avi->riff_end = get_le32(pb);   /* RIFF chunk size */
     avi->riff_end += url_ftell(pb); /* RIFF chunk end */
+#ifndef __CW32__
     get_buffer(pb, header+4, 4);
+#else
+    get_buffer(pb, (unsigned char *)(header+4), 4);
+#endif
 
     for(i=0; avi_headers[i][0]; i++)
         if(!memcmp(header, avi_headers[i], 8))

@@ -680,7 +680,12 @@ static void floor_fit(venc_context_t * venc, floor_t * fc, float * coeffs, uint_
     int range = 255 / fc->multiplier + 1;
     int i;
     float tot_average = 0.;
+#ifndef __CW32__
     float averages[fc->values];
+#else
+    float *averages;
+    averages = av_malloc(sizeof(float)*fc->values);
+#endif
     for (i = 0; i < fc->values; i++){
         averages[i] = get_floor_average(fc, coeffs, i);
         tot_average += averages[i];
@@ -698,6 +703,9 @@ static void floor_fit(venc_context_t * venc, floor_t * fc, float * coeffs, uint_
             if (ff_vorbis_floor1_inverse_db_table[j * fc->multiplier] > average) break;
         posts[fc->list[i].sort] = j;
     }
+#ifdef __CW32__
+    av_free(averages);
+#endif
 }
 
 static int render_point(int x0, int y0, int x1, int y1, int x) {
@@ -706,8 +714,15 @@ static int render_point(int x0, int y0, int x1, int y1, int x) {
 
 static void floor_encode(venc_context_t * venc, floor_t * fc, PutBitContext * pb, uint_fast16_t * posts, float * floor, int samples) {
     int range = 255 / fc->multiplier + 1;
+#ifdef __CW32__
+    int *coded;
+#else
     int coded[fc->values]; // first 2 values are unused
+#endif
     int i, counter;
+#ifdef __CW32__
+    coded = av_malloc(sizeof(int)*fc->values);
+#endif
 
     put_bits(pb, 1, 1); // non zero
     put_bits(pb, ilog(range - 1), posts[0]);
@@ -776,6 +791,9 @@ static void floor_encode(venc_context_t * venc, floor_t * fc, PutBitContext * pb
     }
 
     ff_vorbis_floor1_render_list(fc->list, fc->values, posts, coded, fc->multiplier, floor, samples);
+#ifdef __CW32__
+    av_free(coded);
+#endif
 }
 
 static float * put_vector(codebook_t * book, PutBitContext * pb, float * num) {
@@ -802,8 +820,17 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
     int psize = rc->partition_size;
     int partitions = (rc->end - rc->begin) / psize;
     int channels = (rc->type == 2) ? 1 : real_ch;
+#ifdef __CW32__
+    int _i;
+    int **classes;
+#else
     int classes[channels][partitions];
+#endif
     int classwords = venc->codebooks[rc->classbook].ndimentions;
+#ifdef __CW32__
+    classes = av_malloc(sizeof(int*)*channels);
+    for (_i=0;_i<channels;_i++) classes[_i] = av_malloc(sizeof(int)*partitions);
+#endif
 
     assert(rc->type == 2);
     assert(real_ch == 2);
@@ -858,7 +885,13 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
                         s = real_ch * samples;
                         for (k = 0; k < psize; k += book->ndimentions) {
                             int dim, a2 = a1, b2 = b1;
+#ifndef __CW32__
                             float vec[book->ndimentions], * pv = vec;
+#else
+                            float *vec, *pv;
+                            vec = av_malloc(sizeof(float)*book->ndimentions);
+                            pv = vec;
+#endif
                             for (dim = book->ndimentions; dim--; ) {
                                 *pv++ = coeffs[a2 + b2];
                                 if ((a2 += samples) == s) {
@@ -874,12 +907,19 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
                                     b1++;
                                 }
                             }
+#ifdef __CW32__
+                            av_free(vec);
+#endif
                         }
                     }
                 }
             }
         }
     }
+#ifdef __CW32__
+    for (_i=0;_i<channels;_i++) av_free(classes[_i]);
+    av_free(classes);
+#endif
 }
 
 static int apply_window_and_mdct(venc_context_t * venc, signed short * audio, int samples) {
@@ -987,9 +1027,17 @@ static int vorbis_encode_frame(AVCodecContext * avccontext, unsigned char * pack
 
     for (i = 0; i < venc->channels; i++) {
         floor_t * fc = &venc->floors[mapping->floor[mapping->mux[i]]];
+#ifndef __CW32__
         uint_fast16_t posts[fc->values];
+#else
+        uint_fast16_t *posts;
+        posts = av_malloc(sizeof(uint_fast16_t)*fc->values);
+#endif
         floor_fit(venc, fc, &venc->coeffs[i * samples], posts, samples);
         floor_encode(venc, fc, &pb, posts, &venc->floor[i * samples], samples);
+#ifdef __CW32__
+        av_free(posts);
+#endif
     }
 
     for (i = 0; i < venc->channels * samples; i++) {
@@ -1083,6 +1131,16 @@ AVCodec vorbis_encoder = {
     vorbis_encode_init,
     vorbis_encode_frame,
     vorbis_encode_close,
+#ifdef __CW32__
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Vorbis"),
+#else
     .capabilities= CODEC_CAP_DELAY,
     .long_name = NULL_IF_CONFIG_SMALL("Vorbis"),
+#endif
 };

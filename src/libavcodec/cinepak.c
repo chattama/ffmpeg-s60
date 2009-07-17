@@ -463,5 +463,13 @@ AVCodec cinepak_decoder = {
     cinepak_decode_end,
     cinepak_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Cinepak"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Cinepak"),
+#endif
 };

@@ -269,6 +269,22 @@ static const enum PixelFormat supported_pixel_formats[] = { PIX_FMT_YUV420P, PIX
 /*! AVCodec struct exposed to libavcodec */
 AVCodec libtheora_encoder =
 {
+#ifdef __CW32__
+    "libtheora",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_THEORA,
+    sizeof(TheoraContext),
+    encode_init,
+    encode_frame,
+    encode_close,
+    0,
+    0,
+    0,
+    0,
+    0,
+    supported_pixel_formats,
+    NULL_IF_CONFIG_SMALL("libtheora Theora"),
+#else
     .name = "libtheora",
     .type = CODEC_TYPE_VIDEO,
     .id = CODEC_ID_THEORA,
@@ -278,4 +294,5 @@ AVCodec libtheora_encoder =
     .encode = encode_frame,
     .pix_fmts = supported_pixel_formats,
     .long_name = NULL_IF_CONFIG_SMALL("libtheora Theora"),
+#endif
 };

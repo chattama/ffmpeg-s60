@@ -86,13 +86,27 @@ old_flac_header (AVFormatContext * s, int idx)
 }
 
 ogg_codec_t flac_codec = {
+#ifdef __CW32__
+    (const signed char*)"\177FLAC",
+    5,
+    0,
+    flac_header
+#else
     .magic = "\177FLAC",
     .magicsize = 5,
     .header = flac_header
+#endif
 };
 
 ogg_codec_t old_flac_codec = {
+#ifdef __CW32__
+	(const signed char*)"fLaC",
+    4,
+    0,
+    old_flac_header
+#else
     .magic = "fLaC",
     .magicsize = 4,
     .header = old_flac_header
+#endif
 };

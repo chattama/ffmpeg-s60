@@ -621,7 +621,11 @@ SwsFunc yuv2rgb_get_func_ptr (SwsContext *c)
 #endif
 #ifdef CONFIG_MLIB
     {
+#ifdef __CW32__
+        SwsFunc t= (SwsFunc)yuv2rgb_init_mlib(c);
+#else
         SwsFunc t= yuv2rgb_init_mlib(c);
+#endif
         if (t) return t;
     }
 #endif

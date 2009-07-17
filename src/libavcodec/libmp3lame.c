@@ -217,6 +217,16 @@ AVCodec libmp3lame_encoder = {
     MP3lame_encode_init,
     MP3lame_encode_frame,
     MP3lame_encode_close,
+#ifdef __CW32__
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libmp3lame MP3 (MPEG audio layer 3)"),
+#else
     .capabilities= CODEC_CAP_DELAY,
     .long_name= NULL_IF_CONFIG_SMALL("libmp3lame MP3 (MPEG audio layer 3)"),
+#endif
 };

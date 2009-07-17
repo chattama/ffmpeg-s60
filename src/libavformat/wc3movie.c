@@ -184,7 +184,11 @@ static int wc3_read_header(AVFormatContext *s,
                 bytes_to_read = size;
             else
                 bytes_to_read = 512;
+#ifdef __CW32__
+            if ((ret = get_buffer(pb, (unsigned char*)s->title, bytes_to_read)) != bytes_to_read)
+#else
             if ((ret = get_buffer(pb, s->title, bytes_to_read)) != bytes_to_read)
+#endif
                 return AVERROR(EIO);
             break;
 

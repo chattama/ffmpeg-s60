@@ -432,7 +432,14 @@ static inline int encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], in
 static void encode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride, int plane_index){
     int x,y,i;
     const int ring_size= s->avctx->context_model ? 3 : 2;
+    
+#ifndef __CW32__
     int_fast16_t sample_buffer[ring_size][w+6], *sample[ring_size];
+#else
+    int_fast16_t **sample_buffer, **sample;
+    sample_buffer = av_malloc(sizeof(int_fast16_t)*ring_size*(w+16));
+    sample = av_malloc(sizeof(int_fast16_t)*ring_size);
+#endif
     s->run_index=0;
 
     memset(sample_buffer, 0, sizeof(sample_buffer));
@@ -450,12 +457,22 @@ static void encode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride,
         encode_line(s, w, sample, plane_index, 8);
 //STOP_TIMER("encode line")}
     }
+#ifdef __CW32__
+    av_free(sample_buffer);
+    av_free(sample);
+#endif
 }
 
 static void encode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int stride){
     int x, y, p, i;
     const int ring_size= s->avctx->context_model ? 3 : 2;
+#ifndef __CW32__
     int_fast16_t sample_buffer[3][ring_size][w+6], *sample[3][ring_size];
+#else
+    int_fast16_t ***sample_buffer, ***sample;
+    sample_buffer = av_malloc(sizeof(int_fast16_t)*ring_size*(w+16));
+    sample = av_malloc(sizeof(int_fast16_t)*ring_size);
+#endif
     s->run_index=0;
 
     memset(sample_buffer, 0, sizeof(sample_buffer));
@@ -489,6 +506,10 @@ static void encode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int st
             encode_line(s, w, sample[p], FFMIN(p, 1), 9);
         }
     }
+#ifdef __CW32__
+    av_free(sample_buffer);
+    av_free(sample);
+#endif
 }
 
 static void write_quant_table(RangeCoder *c, int16_t *quant_table){
@@ -763,8 +784,15 @@ static inline void decode_line(FFV1Context *s, int w, int_fast16_t *sample[2], i
 
 static void decode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride, int plane_index){
     int x, y;
+#ifndef __CW32__
     int_fast16_t sample_buffer[2][w+6];
+#else
+    int_fast16_t **sample_buffer;
+#endif
     int_fast16_t *sample[2];
+#ifdef __CW32__
+    sample_buffer = av_malloc(sizeof(int_fast16_t)*2*(w+16));
+#endif
     sample[0]=sample_buffer[0]+3;
     sample[1]=sample_buffer[1]+3;
 
@@ -788,12 +816,22 @@ static void decode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride,
         }
 //STOP_TIMER("decode-line")}
     }
+#ifdef __CW32__
+    av_free(sample_buffer);
+#endif
 }
 
 static void decode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int stride){
     int x, y, p;
+#ifndef __CW32__
     int_fast16_t sample_buffer[3][2][w+6];
+#else
+    int_fast16_t ***sample_buffer;
+#endif
     int_fast16_t *sample[3][2];
+#ifdef __CW32__
+    sample_buffer = av_malloc(sizeof(int_fast16_t)*3*2*(w+16));
+#endif
     for(x=0; x<3; x++){
         sample[x][0] = sample_buffer[x][0]+3;
         sample[x][1] = sample_buffer[x][1]+3;
@@ -831,6 +869,9 @@ static void decode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int st
             src[x + stride*y]= b + (g<<8) + (r<<16);
         }
     }
+#ifdef __CW32__
+    av_free(sample_buffer);
+#endif
 }
 
 static int read_quant_table(RangeCoder *c, int16_t *quant_table, int scale){
@@ -1022,7 +1063,14 @@ AVCodec ffv1_decoder = {
     decode_frame,
     CODEC_CAP_DR1 /*| CODEC_CAP_DRAW_HORIZ_BAND*/,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+#else
     .long_name= NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+#endif
 };
 
 #ifdef CONFIG_ENCODERS
@@ -1034,7 +1082,17 @@ AVCodec ffv1_encoder = {
     encode_init,
     encode_frame,
     common_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV444P, PIX_FMT_YUV422P, PIX_FMT_YUV411P, PIX_FMT_YUV410P, PIX_FMT_RGB32, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV444P, PIX_FMT_YUV422P, PIX_FMT_YUV411P, PIX_FMT_YUV410P, PIX_FMT_RGB32, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+#endif
 };
 #endif

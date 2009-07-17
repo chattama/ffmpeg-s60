@@ -90,7 +90,11 @@ static int libdirac_decode_frame(AVCodecContext *avccontext,
 
     if (buf_size>0)
         /* set data to decode into buffer */
+#ifdef __CW32__
+        dirac_buffer (p_dirac_params->p_decoder, (unsigned char*)buf, (unsigned char*)(buf+buf_size));
+#else
         dirac_buffer (p_dirac_params->p_decoder, buf, buf+buf_size);
+#endif
 
     while (1) {
          /* parse data and process result */
@@ -204,6 +208,14 @@ AVCodec libdirac_decoder = {
     libdirac_decode_close,
     libdirac_decode_frame,
     CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    libdirac_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libdirac Dirac 2.2"),
+#else
     .flush = libdirac_flush,
     .long_name = NULL_IF_CONFIG_SMALL("libdirac Dirac 2.2"),
+#endif
 } ;

@@ -582,5 +582,14 @@ AVCodec wavpack_decoder = {
     NULL,
     NULL,
     wavpack_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("WavPack"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("WavPack"),
+#endif
 };

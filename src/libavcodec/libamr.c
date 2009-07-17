@@ -97,6 +97,9 @@ typedef struct AMR_bitrates
 static int getBitrateMode(int bitrate)
 {
     /* make the correspondance between bitrate and mode */
+#ifdef __CW32__
+    AMR_bitrates rates[8];
+#else
     AMR_bitrates rates[]={ {4750,MR475},
                            {5150,MR515},
                            {5900,MR59},
@@ -106,6 +109,7 @@ static int getBitrateMode(int bitrate)
                            {10200,MR102},
                            {12200,MR122},
                          };
+#endif
     int i;
 
     for(i=0;i<8;i++)
@@ -493,6 +497,10 @@ static int amr_nb_encode_frame(AVCodecContext *avctx,
 
 #if defined(CONFIG_LIBAMR_NB) || defined(CONFIG_LIBAMR_NB_FIXED)
 
+#ifdef __CW32__
+typedef int (close)(AVCodecContext *);
+typedef int (decode)(AVCodecContext *, void *outdata, int *outdata_size, const uint8_t *buf, int buf_size);
+#endif
 AVCodec libamr_nb_decoder =
 {
     "libamr_nb",
@@ -502,8 +510,18 @@ AVCodec libamr_nb_decoder =
     amr_nb_decode_init,
     NULL,
     amr_nb_decode_close,
+#ifdef __CW32__
+    (decode*)amr_nb_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libamr-nb Adaptive Multi-Rate (AMR) Narrow-Band"),
+#else
     amr_nb_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("libamr-nb Adaptive Multi-Rate (AMR) Narrow-Band"),
+#endif
 };
 
 AVCodec libamr_nb_encoder =
@@ -516,7 +534,16 @@ AVCodec libamr_nb_encoder =
     amr_nb_encode_frame,
     amr_nb_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libamr-nb Adaptive Multi-Rate (AMR) Narrow-Band"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("libamr-nb Adaptive Multi-Rate (AMR) Narrow-Band"),
+#endif
 };
 
 #endif
@@ -695,9 +722,19 @@ AVCodec libamr_wb_decoder =
     sizeof(AMRWBContext),
     amr_wb_decode_init,
     NULL,
+#ifdef __CW32__
+    (close*)amr_wb_decode_close,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libamr-wb Adaptive Multi-Rate (AMR) Wide-Band"),
+#else
     amr_wb_decode_close,
-    amr_wb_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("libamr-wb Adaptive Multi-Rate (AMR) Wide-Band"),
+#endif
 };
 
 AVCodec libamr_wb_encoder =
@@ -710,7 +747,16 @@ AVCodec libamr_wb_encoder =
     amr_wb_encode_frame,
     amr_wb_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libamr-wb Adaptive Multi-Rate (AMR) Wide-Band"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("libamr-wb Adaptive Multi-Rate (AMR) Wide-Band"),
+#endif
 };
 
 #endif //CONFIG_LIBAMR_WB

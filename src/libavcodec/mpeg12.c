@@ -2444,8 +2444,16 @@ AVCodec mpeg1video_decoder = {
     mpeg_decode_end,
     mpeg_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    ff_mpeg_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#else
     .flush= ff_mpeg_flush,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#endif
 };
 
 AVCodec mpeg2video_decoder = {
@@ -2458,8 +2466,16 @@ AVCodec mpeg2video_decoder = {
     mpeg_decode_end,
     mpeg_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    ff_mpeg_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MPEG-2 video"),
+#else
     .flush= ff_mpeg_flush,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-2 video"),
+#endif
 };
 
 //legacy decoder
@@ -2473,8 +2489,16 @@ AVCodec mpegvideo_decoder = {
     mpeg_decode_end,
     mpeg_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    ff_mpeg_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#else
     .flush= ff_mpeg_flush,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#endif
 };
 
 #ifdef HAVE_XVMC

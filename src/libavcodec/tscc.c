@@ -210,7 +210,11 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, const
         av_log(avctx, AV_LOG_ERROR, "Inflate reset error: %d\n", zret);
         return -1;
     }
+#ifdef __CW32__
+    c->zstream.next_in = (unsigned char*)encoded;
+#else
     c->zstream.next_in = encoded;
+#endif
     c->zstream.avail_in = len;
     c->zstream.next_out = c->decomp_buf;
     c->zstream.avail_out = c->decomp_size;
@@ -341,6 +345,14 @@ AVCodec tscc_decoder = {
         decode_end,
         decode_frame,
         CODEC_CAP_DR1,
+#ifdef __CW32__
+	    0,
+	    0,
+	    0,
+	    0,
+        NULL_IF_CONFIG_SMALL("TechSmith Screen Capture Codec"),
+#else
         .long_name = NULL_IF_CONFIG_SMALL("TechSmith Screen Capture Codec"),
+#endif
 };
 

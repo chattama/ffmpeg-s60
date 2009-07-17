@@ -171,12 +171,29 @@ static int bfi_decode_close(AVCodecContext * avctx)
 }
 
 AVCodec bfi_decoder = {
-    .name = "bfi",
-    .type = CODEC_TYPE_VIDEO,
-    .id = CODEC_ID_BFI,
-    .priv_data_size = sizeof(BFIContext),
-    .init = bfi_decode_init,
-    .close = bfi_decode_close,
-    .decode = bfi_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
+#ifdef __CW32__
+	    "bfi",
+	    CODEC_TYPE_VIDEO,
+	    CODEC_ID_BFI,
+	    sizeof(BFIContext),
+	    bfi_decode_init,
+	    0,
+	    bfi_decode_close,
+	    bfi_decode_frame,
+	    0,
+	    0,
+	    0,
+	    0,
+	    0,
+	    NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
+#else
+	    .name = "bfi",
+	    .type = CODEC_TYPE_VIDEO,
+	    .id = CODEC_ID_BFI,
+	    .priv_data_size = sizeof(BFIContext),
+	    .init = bfi_decode_init,
+	    .close = bfi_decode_close,
+	    .decode = bfi_decode_frame,
+	    .long_name = NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
+#endif
 };

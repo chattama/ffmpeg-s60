@@ -1430,5 +1430,14 @@ AVCodec dvbsub_decoder = {
     NULL,
     dvbsub_close_decoder,
     dvbsub_decode,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("DVB subtitles"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("DVB subtitles"),
+#endif
 };

@@ -332,8 +332,13 @@ static int mimic_decode_frame(AVCodecContext *avctx, void *data,
     prepare_avpic(ctx, &ctx->flipped_ptrs[ctx->cur_index],
                   (AVPicture*) &ctx->buf_ptrs[ctx->cur_index]);
 
+#ifdef __CW32__
+    ctx->swap_buf = av_fast_realloc(ctx->swap_buf, (unsigned int*)&ctx->swap_buf_size,
+                                 swap_buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+#else
     ctx->swap_buf = av_fast_realloc(ctx->swap_buf, &ctx->swap_buf_size,
                                  swap_buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+#endif
     if(!ctx->swap_buf)
         return AVERROR_NOMEM;
 
@@ -386,5 +391,13 @@ AVCodec mimic_decoder = {
     mimic_decode_end,
     mimic_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Mimic"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Mimic"),
+#endif
 };

@@ -31,6 +31,8 @@
 #include "dsputil.h"
 #include "mpegvideo.h"
 
+#define TEX_VLC_BITS 9
+
 typedef struct MDECContext{
     AVCodecContext *avctx;
     DSPContext dsp;
@@ -253,6 +255,14 @@ AVCodec mdec_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Sony PlayStation MDEC (Motion DECoder)"),
+#else
     .long_name= NULL_IF_CONFIG_SMALL("Sony PlayStation MDEC (Motion DECoder)"),
+#endif
 };
 

@@ -936,7 +936,12 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     int64_t pts;
     int64_t pos= *ppos;
     int i;
+#ifndef __CW32__
     int64_t start_pos[s->nb_streams];
+#else
+    int64_t *start_pos;
+    start_pos = av_malloc(sizeof(int64_t)*s->nb_streams);
+#endif
 
     for(i=0; i<s->nb_streams; i++){
         start_pos[i]= pos;
@@ -950,6 +955,9 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     asf_reset_header(s);
     for(;;){
         if (av_read_frame(s, pkt) < 0){
+#ifdef __CW32__
+        	av_free(start_pos);
+#endif
             av_log(s, AV_LOG_INFO, "asf_read_pts failed\n");
             return AV_NOPTS_VALUE;
         }
@@ -976,6 +984,9 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     *ppos= pos;
 //printf("found keyframe at %"PRId64" stream %d stamp:%"PRId64"\n", *ppos, stream_index, pts);
 
+#ifdef __CW32__
+    av_free(start_pos);
+#endif
     return pts;
 }
 

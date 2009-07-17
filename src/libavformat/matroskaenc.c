@@ -176,7 +176,11 @@ static void put_ebml_binary(ByteIOContext *pb, unsigned int elementid,
 
 static void put_ebml_string(ByteIOContext *pb, unsigned int elementid, const char *str)
 {
+#ifdef __CW32__
+    put_ebml_binary(pb, elementid, (const unsigned char*)str, strlen(str));
+#else
     put_ebml_binary(pb, elementid, str, strlen(str));
+#endif
 }
 
 /**
@@ -429,7 +433,11 @@ static int put_flac_codecpriv(AVFormatContext *s, ByteIOContext *pb, AVCodecCont
         return -1;
     } else if (codec->extradata_size == FLAC_STREAMINFO_SIZE) {
         // only the streaminfo packet
+#ifdef __CW32__
+        put_buffer(pb, (const unsigned char*)"fLaC", 4);
+#else
         put_buffer(pb, "fLaC", 4);
+#endif
         put_byte(pb, 0x80);
         put_be24(pb, FLAC_STREAMINFO_SIZE);
     } else if(memcmp("fLaC", codec->extradata, 4)) {
@@ -828,8 +836,16 @@ AVOutputFormat matroska_muxer = {
     mkv_write_header,
     mkv_write_packet,
     mkv_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, 0},
+    CODEC_ID_TEXT,
+#else
     .codec_tag = (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, 0},
     .subtitle_codec = CODEC_ID_TEXT,
+#endif
 };
 
 AVOutputFormat matroska_audio_muxer = {
@@ -843,5 +859,12 @@ AVOutputFormat matroska_audio_muxer = {
     mkv_write_header,
     mkv_write_packet,
     mkv_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_wav_tags, 0},
+#else
     .codec_tag = (const AVCodecTag*[]){codec_wav_tags, 0},
+#endif
 };

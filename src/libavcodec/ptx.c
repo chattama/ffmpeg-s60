@@ -114,5 +114,12 @@ AVCodec ptx_decoder = {
     ptx_decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("V.Flash PTX image"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("V.Flash PTX image"),
+#endif
 };

@@ -698,7 +698,16 @@ AVCodec smacker_decoder = {
     NULL,
     decode_end,
     decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Smacker video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Smacker video"),
+#endif
 };
 
 AVCodec smackaud_decoder = {
@@ -710,6 +719,15 @@ AVCodec smackaud_decoder = {
     NULL,
     NULL,
     smka_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Smacker audio"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Smacker audio"),
+#endif
 };
 

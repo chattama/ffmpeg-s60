@@ -411,6 +411,13 @@ AVCodec ulti_decoder = {
     ulti_decode_frame,
     CODEC_CAP_DR1,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("IBM UltiMotion"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("IBM UltiMotion"),
+#endif
 };
 

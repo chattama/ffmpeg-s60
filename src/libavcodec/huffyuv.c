@@ -282,10 +282,21 @@ static void heap_sift(heap_elem_t *h, int root, int size)
 }
 
 static void generate_len_table(uint8_t *dst, uint64_t *stats, int size){
+#ifndef __CW32__
     heap_elem_t h[size];
     int up[2*size];
     int len[2*size];
+#else
+    heap_elem_t *h;
+    int *up;
+    int *len;
+#endif
     int offset, i, next;
+#ifdef __CW32__
+    h = av_malloc(sizeof(heap_elem_t)*size);
+    up = av_malloc(sizeof(int)*2*size);
+    len = av_malloc(sizeof(int)*2*size);
+#endif
 
     for(offset=1; ; offset<<=1){
         for(i=0; i<size; i++){
@@ -316,6 +327,11 @@ static void generate_len_table(uint8_t *dst, uint64_t *stats, int size){
         }
         if(i==size) break;
     }
+#ifdef __CW32__
+    av_free(h);
+    av_free(up);
+    av_free(len);
+#endif
 }
 #endif /* CONFIG_ENCODERS */
 
@@ -1445,7 +1461,14 @@ AVCodec huffyuv_decoder = {
     decode_frame,
     CODEC_CAP_DR1 | CODEC_CAP_DRAW_HORIZ_BAND,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Huffyuv / HuffYUV"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Huffyuv / HuffYUV"),
+#endif
 };
 
 AVCodec ffvhuff_decoder = {
@@ -1459,7 +1482,14 @@ AVCodec ffvhuff_decoder = {
     decode_frame,
     CODEC_CAP_DR1 | CODEC_CAP_DRAW_HORIZ_BAND,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
+#endif
 };
 #endif
 
@@ -1473,8 +1503,18 @@ AVCodec huffyuv_encoder = {
     encode_init,
     encode_frame,
     encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV422P, PIX_FMT_RGB32, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Huffyuv / HuffYUV"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV422P, PIX_FMT_RGB32, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Huffyuv / HuffYUV"),
+#endif
 };
 
 AVCodec ffvhuff_encoder = {
@@ -1485,8 +1525,18 @@ AVCodec ffvhuff_encoder = {
     encode_init,
     encode_frame,
     encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_RGB32, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_RGB32, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
+#endif
 };
 
 #endif //CONFIG_ENCODERS

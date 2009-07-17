@@ -28,7 +28,11 @@ static int framecrc_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     char buf[256];
 
     snprintf(buf, sizeof(buf), "%d, %"PRId64", %d, 0x%08x\n", pkt->stream_index, pkt->dts, pkt->size, crc);
+#ifdef __CW32__
+    put_buffer(s->pb, (const unsigned char*)buf, strlen(buf));
+#else
     put_buffer(s->pb, buf, strlen(buf));
+#endif
     put_flush_packet(s->pb);
     return 0;
 }

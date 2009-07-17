@@ -331,7 +331,12 @@ static int svq1_encode_plane(SVQ1Context *s, int plane, unsigned char *src_plane
         s->m.me.dia_size= s->avctx->dia_size;
         s->m.first_slice_line=1;
         for (y = 0; y < block_height; y++) {
+#ifndef __CW32__
             uint8_t src[stride*16];
+#else
+            uint8_t *src;
+            src = av_malloc(sizeof(uint8_t)*stride*16);
+#endif
 
             s->m.new_picture.data[0]= src - y*16*stride; //ugly
             s->m.mb_y= y;
@@ -352,6 +357,9 @@ static int svq1_encode_plane(SVQ1Context *s, int plane, unsigned char *src_plane
                 ff_estimate_p_frame_motion(&s->m, x, y);
             }
             s->m.first_slice_line=0;
+#ifdef __CW32__
+            av_free(src);
+#endif
         }
 
         ff_fix_long_p_mvs(&s->m);
@@ -360,7 +368,12 @@ static int svq1_encode_plane(SVQ1Context *s, int plane, unsigned char *src_plane
 
     s->m.first_slice_line=1;
     for (y = 0; y < block_height; y++) {
+#ifndef __CW32__
         uint8_t src[stride*16];
+#else
+        uint8_t *src;
+        src = av_malloc(sizeof(uint8_t)*stride*16);
+#endif
 
         for(i=0; i<16 && i + 16*y<height; i++){
             memcpy(&src[i*stride], &src_plane[(i+16*y)*src_stride], width);
@@ -378,7 +391,12 @@ static int svq1_encode_plane(SVQ1Context *s, int plane, unsigned char *src_plane
             uint8_t *decoded= decoded_plane + offset;
             uint8_t *ref= ref_plane + offset;
             int score[4]={0,0,0,0}, best;
+#ifndef __CW32__
             uint8_t temp[16*stride];
+#else
+            uint8_t *temp;
+            temp = av_malloc(sizeof(uint8_t)*16*stride);
+#endif
 
             if(s->pb.buf_end - s->pb.buf - (put_bits_count(&s->pb)>>3) < 3000){ //FIXME check size
                 av_log(s->avctx, AV_LOG_ERROR, "encoded frame too large\n");
@@ -473,8 +491,14 @@ static int svq1_encode_plane(SVQ1Context *s, int plane, unsigned char *src_plane
             if(best==0){
                 s->dsp.put_pixels_tab[0][0](decoded, temp, stride, 16);
             }
+#ifdef __CW32__
+            av_free(temp);
+#endif
         }
         s->m.first_slice_line=0;
+#ifdef __CW32__
+        av_free(src);
+#endif
     }
     return 0;
 }
@@ -584,6 +608,16 @@ AVCodec svq1_encoder = {
     svq1_encode_init,
     svq1_encode_frame,
     svq1_encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV410P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV410P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1"),
+#endif
 };

@@ -146,5 +146,12 @@ AVCodec mjpegb_decoder = {
     mjpegb_decode_frame,
     CODEC_CAP_DR1,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Apple MJPEG-B"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Apple MJPEG-B"),
+#endif
 };

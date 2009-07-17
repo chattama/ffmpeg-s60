@@ -582,5 +582,10 @@ AVInputFormat ogg_demuxer = {
     ogg_read_close,
     NULL,
     ogg_read_timestamp,
+#ifdef __CW32__
+    0,
+    "ogg",
+#else
     .extensions = "ogg",
+#endif
 };

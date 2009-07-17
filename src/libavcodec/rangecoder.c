@@ -53,7 +53,11 @@ void ff_init_range_decoder(RangeCoder *c, const uint8_t *buf, int buf_size){
     /* cast to avoid compiler warning */
     ff_init_range_encoder(c, (uint8_t *) buf, buf_size);
 
+#ifndef __CW32__
     c->low = bytestream_get_be16(&c->bytestream);
+#else
+    c->low = bytestream_get_be16((const uint8_t**)&c->bytestream);
+#endif
 }
 
 void ff_build_rac_states(RangeCoder *c, int factor, int max_p){

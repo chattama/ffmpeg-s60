@@ -208,5 +208,13 @@ AVCodec mmvideo_decoder = {
     mm_decode_end,
     mm_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("American Laser Games MM Video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("American Laser Games MM Video"),
+#endif
 };

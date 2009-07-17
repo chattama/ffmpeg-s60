@@ -479,12 +479,26 @@ static int alac_decode_frame(AVCodecContext *avctx,
 
     if (!isnotcompressed) {
         /* so it is compressed */
+#ifndef __CW32__
         int16_t predictor_coef_table[channels][32];
         int predictor_coef_num[channels];
         int prediction_type[channels];
         int prediction_quantitization[channels];
         int ricemodifier[channels];
         int i, chan;
+#else
+        int16_t **predictor_coef_table;
+        int *predictor_coef_num;
+        int *prediction_type;
+        int *prediction_quantitization;
+        int *ricemodifier;
+        int i, chan;
+        predictor_coef_table = av_malloc(sizeof(int16_t)*channels*32);
+        predictor_coef_num = av_malloc(sizeof(int)*channels);
+        prediction_type = av_malloc(sizeof(int)*channels);
+        prediction_quantitization = av_malloc(sizeof(int)*channels);
+        ricemodifier = av_malloc(sizeof(int)*channels);
+#endif
 
         interlacing_shift = get_bits(&alac->gb, 8);
         interlacing_leftweight = get_bits(&alac->gb, 8);
@@ -533,6 +547,13 @@ static int alac_decode_frame(AVCodecContext *avctx,
                  */
             }
         }
+#ifdef __CW32__
+        av_free(predictor_coef_table);
+        av_free(predictor_coef_num);
+        av_free(prediction_type);
+        av_free(prediction_quantitization);
+        av_free(ricemodifier);
+#endif
     } else {
         /* not compressed, easy case */
         int i, chan;
@@ -620,5 +641,14 @@ AVCodec alac_decoder = {
     NULL,
     alac_decode_close,
     alac_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("ALAC (Apple Lossless Audio Codec)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("ALAC (Apple Lossless Audio Codec)"),
+#endif
 };

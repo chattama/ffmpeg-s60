@@ -311,11 +311,7 @@ static av_always_inline av_const float roundf(float x)
 }
 #endif /* HAVE_ROUNDF */
 
-#if __CW32__
-#define restrict __restrict
-#endif
-
-#if __SYMBIAN32__
+#ifdef __SYMBIAN32__
 #define setmode(fd,mode)
 #endif
 

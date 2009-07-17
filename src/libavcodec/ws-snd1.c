@@ -149,5 +149,14 @@ AVCodec ws_snd1_decoder = {
     NULL,
     NULL,
     ws_snd_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Westwood Audio (SND1)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Westwood Audio (SND1)"),
+#endif
 };

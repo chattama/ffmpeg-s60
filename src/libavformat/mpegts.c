@@ -340,10 +340,17 @@ static void mpegts_close_filter(MpegTSContext *ts, MpegTSFilter *filter)
 }
 
 static int analyze(const uint8_t *buf, int size, int packet_size, int *index){
+#ifdef __CW32__
+    int *stat;
+#else
     int stat[packet_size];
+#endif
     int i;
     int x=0;
     int best_score=0;
+#ifdef __CW32__
+    stat = av_malloc(sizeof(int)*packet_size);
+#endif
 
     memset(stat, 0, packet_size*sizeof(int));
 
@@ -360,6 +367,9 @@ static int analyze(const uint8_t *buf, int size, int packet_size, int *index){
         if(x == packet_size) x= 0;
     }
 
+#ifdef __CW32__
+    av_free(stat);
+#endif
     return best_score;
 }
 
@@ -1505,7 +1515,11 @@ AVInputFormat mpegts_demuxer = {
     mpegts_read_close,
     read_seek,
     mpegts_get_pcr,
+#ifdef __CW32__
+    AVFMT_SHOW_IDS,
+#else
     .flags = AVFMT_SHOW_IDS,
+#endif
 };
 
 AVInputFormat mpegtsraw_demuxer = {
@@ -1518,5 +1532,9 @@ AVInputFormat mpegtsraw_demuxer = {
     mpegts_read_close,
     read_seek,
     mpegts_get_pcr,
+#ifdef __CW32__
+    AVFMT_SHOW_IDS,
+#else
     .flags = AVFMT_SHOW_IDS,
+#endif
 };

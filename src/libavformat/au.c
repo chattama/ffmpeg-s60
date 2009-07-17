@@ -182,7 +182,17 @@ AVInputFormat au_demuxer = {
     au_read_packet,
     NULL,
     pcm_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_au_tags, 0},
+#else
     .codec_tag= (const AVCodecTag*[]){codec_au_tags, 0},
+#endif
 };
 #endif
 
@@ -198,6 +208,13 @@ AVOutputFormat au_muxer = {
     au_write_header,
     au_write_packet,
     au_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_au_tags, 0},
+#else
     .codec_tag= (const AVCodecTag*[]){codec_au_tags, 0},
+#endif
 };
 #endif //CONFIG_AU_MUXER

@@ -152,7 +152,7 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         uint8_t scanline[bytes_per_scanline];
 #endif
 #ifdef __CW32__
-        scanline = (uint8_t*)av_malloc(sizeof(uint8_t)*bytes_per_scanline);
+        scanline = av_malloc(sizeof(uint8_t)*bytes_per_scanline);
 #endif
 
         for (y=0; y<h; y++) {
@@ -166,6 +166,9 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
             ptr += stride;
         }
+#ifdef __CW32__
+        av_free(scanline);
+#endif
 
     } else if (nplanes == 1 && bits_per_pixel == 8) {
 #ifdef __CW32__
@@ -175,7 +178,7 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 #endif
         const uint8_t *palstart = bufstart + buf_size - 769;
 #ifdef __CW32__
-        scanline = (uint8_t*)av_malloc(sizeof(uint8_t)*bytes_per_scanline);
+        scanline = av_malloc(sizeof(uint8_t)*bytes_per_scanline);
 #endif
 
         for (y=0; y<h; y++, ptr+=stride) {
@@ -189,8 +192,14 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         }
         if (*buf++ != 12) {
             av_log(avctx, AV_LOG_ERROR, "expected palette after image data\n");
+#ifdef __CW32__
+            av_free(scanline);
+#endif
             return -1;
         }
+#ifdef __CW32__
+        av_free(scanline);
+#endif
 
     } else if (nplanes == 1) {   /* all packed formats, max. 16 colors */
 #ifdef __CW32__
@@ -200,7 +209,7 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 #endif
         GetBitContext s;
 #ifdef __CW32__
-        scanline = (uint8_t*)av_malloc(sizeof(uint8_t)*bytes_per_scanline);
+        scanline = av_malloc(sizeof(uint8_t)*bytes_per_scanline);
 #endif
 
         for (y=0; y<h; y++) {
@@ -212,6 +221,9 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
                 ptr[x] = get_bits(&s, bits_per_pixel);
             ptr += stride;
         }
+#ifdef __CW32__
+        av_free(scanline);
+#endif
 
     } else {    /* planar, 4, 8 or 16 colors */
 #ifdef __CW32__
@@ -221,7 +233,7 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 #endif
         int i;
 #ifdef __CW32__
-        scanline = (uint8_t*)av_malloc(sizeof(uint8_t)*bytes_per_scanline);
+        scanline = av_malloc(sizeof(uint8_t)*bytes_per_scanline);
 #endif
 
         for (y=0; y<h; y++) {
@@ -237,6 +249,9 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             }
             ptr += stride;
         }
+#ifdef __CW32__
+        av_free(scanline);
+#endif
     }
 
     if (nplanes == 1 && bits_per_pixel == 8) {

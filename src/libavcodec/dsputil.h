@@ -456,6 +456,10 @@ typedef struct DSPContext {
     void (*x8_setup_spatial_compensation)(uint8_t *src, uint8_t *dst, int linesize,
            int * range, int * sum,  int edges);
 
+    /* rv30 functions */
+    qpel_mc_func put_rv30_tpel_pixels_tab[4][16];
+    qpel_mc_func avg_rv30_tpel_pixels_tab[4][16];
+
     /* ape functions */
     /**
      * Add contents of the second vector to the first one.

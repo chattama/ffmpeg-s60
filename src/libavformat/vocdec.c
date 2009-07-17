@@ -141,5 +141,17 @@ AVInputFormat voc_demuxer = {
     voc_probe,
     voc_read_header,
     voc_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){voc_codec_tags, 0},
+#else
     .codec_tag=(const AVCodecTag*[]){voc_codec_tags, 0},
+#endif
 };

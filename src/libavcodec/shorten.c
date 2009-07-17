@@ -252,7 +252,12 @@ static int16_t * interleave_buffer(int16_t *samples, int nchan, int blocksize, i
 static void decode_subframe_lpc(ShortenContext *s, int channel, int residual_size, int pred_order)
 {
     int sum, i, j;
+#ifndef __CW32__
     int coeffs[pred_order];
+#else
+    int *coeffs;
+    coeffs = av_malloc(sizeof(int)*pred_order);
+#endif
 
     for (i=0; i<pred_order; i++)
         coeffs[i] = get_sr_golomb_shorten(&s->gb, LPCQUANT);
@@ -263,6 +268,9 @@ static void decode_subframe_lpc(ShortenContext *s, int channel, int residual_siz
             sum += coeffs[j] * s->decoded[channel][i-j-1];
         s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + (sum >> LPCQUANT);
     }
+#ifdef __CW32__
+    av_free(coeffs);
+#endif
 }
 
 
@@ -531,6 +539,15 @@ AVCodec shorten_decoder = {
     NULL,
     shorten_decode_close,
     shorten_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    shorten_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Shorten"),
+#else
     .flush= shorten_flush,
     .long_name= NULL_IF_CONFIG_SMALL("Shorten"),
+#endif
 };

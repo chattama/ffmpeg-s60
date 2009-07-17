@@ -51,7 +51,11 @@ static int mjpega_dump_header(AVBitStreamFilterContext *bsfc, AVCodecContext *av
     bytestream_put_byte(&poutbufp, APP1);
     bytestream_put_be16(&poutbufp, 42); /* size */
     bytestream_put_be32(&poutbufp, 0);
+#ifdef __CW32__
+    bytestream_put_buffer(&poutbufp, (const unsigned char*)"mjpg", 4);
+#else
     bytestream_put_buffer(&poutbufp, "mjpg", 4);
+#endif
     bytestream_put_be32(&poutbufp, buf_size + 44); /* field size */
     bytestream_put_be32(&poutbufp, buf_size + 44); /* pad field size */
     bytestream_put_be32(&poutbufp, 0);             /* next ptr */

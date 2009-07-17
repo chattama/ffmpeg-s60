@@ -99,5 +99,12 @@ AVOutputFormat voc_muxer = {
     voc_write_header,
     voc_write_packet,
     voc_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){voc_codec_tags, 0},
+#else
     .codec_tag=(const AVCodecTag*[]){voc_codec_tags, 0},
+#endif
 };

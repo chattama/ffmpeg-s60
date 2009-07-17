@@ -333,5 +333,14 @@ AVCodec gif_decoder = {
     NULL,
     gif_decode_close,
     gif_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
+#endif
 };

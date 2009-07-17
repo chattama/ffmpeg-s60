@@ -58,7 +58,11 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
         if (end - p < s)
             break;
 
+#ifdef __CW32__
+        t = (const char*)p;
+#else
         t = p;
+#endif
         p += s;
         n--;
 
@@ -71,8 +75,15 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
         v++;
 
         if (tl && vl) {
+#ifndef __CW32__
             char tt[tl + 1];
             char ct[vl + 1];
+#else
+            char *tt;
+            char *ct;
+            tt = av_malloc(sizeof(char)*(tl + 1));
+            ct = av_malloc(sizeof(char)*(vl + 1));
+#endif
 
             for (j = 0; j < tl; j++)
                 tt[j] = toupper(t[j]);
@@ -96,6 +107,10 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
                 as->track = atoi(ct);
             else if (!strcmp(tt, "ALBUM"))
                 av_strlcpy(as->album, ct, sizeof(as->album));
+#ifdef __CW32__
+            av_free(tt);
+            av_free(ct);
+#endif
         }
     }
 
@@ -220,7 +235,14 @@ vorbis_header (AVFormatContext * s, int idx)
 }
 
 ogg_codec_t vorbis_codec = {
+#ifdef __CW32__
+	(const signed char*)"\001vorbis",
+    7,
+    0,
+    vorbis_header
+#else
     .magic = "\001vorbis",
     .magicsize = 7,
     .header = vorbis_header
+#endif
 };

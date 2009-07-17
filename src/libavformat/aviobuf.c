@@ -26,8 +26,10 @@
 
 #define IO_BUFFER_SIZE 32768
 
+#ifdef __CW32__
 typedef int (*packet_func)(void *opaque, uint8_t *buf, int buf_size);
 typedef offset_t (*seek_func)(void *opaque, offset_t offset, int whence);
+#endif
 
 static void fill_buffer(ByteIOContext *s);
 
@@ -541,7 +543,11 @@ int url_fdopen(ByteIOContext **s, URLContext *h)
 
     if (init_put_byte(*s, buffer, buffer_size,
                       (h->flags & URL_WRONLY || h->flags & URL_RDWR), h,
+#ifndef __CW32__
+                      url_read, url_write, url_seek) < 0) {
+#else
                       (packet_func)url_read, (packet_func)url_write, (seek_func)url_seek) < 0) {
+#endif
         av_free(buffer);
         av_freep(s);
         return AVERROR(EIO);
@@ -626,7 +632,11 @@ int url_fprintf(ByteIOContext *s, const char *fmt, ...)
     va_start(ap, fmt);
     ret = vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
+#ifndef __CW32__
+    put_buffer(s, buf, strlen(buf));
+#else
     put_buffer(s, (const unsigned char*)buf, strlen(buf));
+#endif
     return ret;
 }
 #endif //CONFIG_MUXERS

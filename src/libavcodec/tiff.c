@@ -496,5 +496,12 @@ AVCodec tiff_decoder = {
     decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("TIFF image"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("TIFF image"),
+#endif
 };

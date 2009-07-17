@@ -237,5 +237,14 @@ AVCodec ra_288_decoder =
     NULL,
     NULL,
     ra288_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("RealAudio 2.0 (28.8K)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("RealAudio 2.0 (28.8K)"),
+#endif
 };

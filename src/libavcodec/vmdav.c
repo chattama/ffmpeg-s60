@@ -561,7 +561,15 @@ AVCodec vmdvideo_decoder = {
     vmdvideo_decode_end,
     vmdvideo_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Sierra VMD video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Sierra VMD video"),
+#endif
 };
 
 AVCodec vmdaudio_decoder = {
@@ -573,5 +581,14 @@ AVCodec vmdaudio_decoder = {
     NULL,
     NULL,
     vmdaudio_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Sierra VMD audio"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Sierra VMD audio"),
+#endif
 };

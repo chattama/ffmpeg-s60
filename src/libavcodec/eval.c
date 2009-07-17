@@ -443,8 +443,9 @@ AVEvalExpr * ff_parse(const char *s, const char **const_name,
 #ifndef __CW32__
     char w[strlen(s) + 1], * wp = w;
 #else
-    char *w, * wp = w;
-    w = (char*)av_malloc(sizeof(char)*(strlen(s) + 1));
+    char *w, *wp;
+    w = av_malloc(sizeof(char)*(strlen(s) + 1));
+    wp = w;
 #endif
 
     while (*s)
@@ -463,8 +464,14 @@ AVEvalExpr * ff_parse(const char *s, const char **const_name,
     e = parse_expr(&p);
     if (!verify_expr(e)) {
         ff_eval_free(e);
+#ifdef __CW32__
+        av_free(w);
+#endif
         return NULL;
     }
+#ifdef __CW32__
+    av_free(w);
+#endif
     return e;
 }
 

@@ -31,8 +31,15 @@ void ff_kbd_window_init(float *window, float alpha, int n)
 {
    int i, j;
    double sum = 0.0, bessel, tmp;
+#ifdef __CW32__
+   double *local_window;
+#else
    double local_window[n];
+#endif
    double alpha2 = (alpha * M_PI / n) * (alpha * M_PI / n);
+#ifdef __CW32__
+   local_window = av_malloc(sizeof(double)*n);
+#endif
 
    for (i = 0; i < n; i++) {
        tmp = i * (n - i) * alpha2;
@@ -46,6 +53,9 @@ void ff_kbd_window_init(float *window, float alpha, int n)
    sum++;
    for (i = 0; i < n; i++)
        window[i] = sqrt(local_window[i] / sum);
+#ifdef __CW32__
+    av_free(local_window);
+#endif
 }
 
 // Generate a sine window.

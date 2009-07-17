@@ -1050,7 +1050,11 @@ static int dvvideo_decode_frame(AVCodecContext *avctx,
     s->picture.interlaced_frame = 1;
     s->picture.top_field_first = 0;
 
+#ifndef __CW32__
     s->buf = buf;
+#else
+    s->buf = (uint8_t*)buf;
+#endif
     avctx->execute(avctx, dv_decode_mt, (void**)&dv_anchor[0], NULL,
                    s->sys->n_difchan * s->sys->difseg_size * 27);
 
@@ -1235,8 +1239,19 @@ AVCodec dvvideo_encoder = {
     sizeof(DVVideoContext),
     dvvideo_init,
     dvvideo_encode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]) {PIX_FMT_YUV411P, PIX_FMT_YUV422P, PIX_FMT_YUV420P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
+#else
     .pix_fmts = (enum PixelFormat[]) {PIX_FMT_YUV411P, PIX_FMT_YUV422P, PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
+#endif
 };
 #endif // CONFIG_DVVIDEO_ENCODER
 
@@ -1252,6 +1267,13 @@ AVCodec dvvideo_decoder = {
     dvvideo_decode_frame,
     CODEC_CAP_DR1,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
+#endif
 };
 #endif

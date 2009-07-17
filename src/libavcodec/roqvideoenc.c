@@ -1064,7 +1064,17 @@ AVCodec roq_encoder =
     roq_encode_init,
     roq_encode_frame,
     roq_encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (AVRational[]){{30,1}, {0,0}},
+    (enum PixelFormat[]){PIX_FMT_YUV444P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("id RoQ video"),
+#else
     .supported_framerates = (AVRational[]){{30,1}, {0,0}},
     .pix_fmts = (enum PixelFormat[]){PIX_FMT_YUV444P, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("id RoQ video"),
+#endif
 };

@@ -236,6 +236,14 @@ AVCodec rl2_decoder = {
     rl2_decode_end,
     rl2_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("RL2 video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("RL2 video"),
+#endif
 };
 

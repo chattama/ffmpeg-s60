@@ -146,5 +146,11 @@ AVInputFormat tta_demuxer = {
     tta_read_packet,
     NULL,
     tta_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "tta",
+#else
     .extensions = "tta",
+#endif
 };

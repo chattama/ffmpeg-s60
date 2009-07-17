@@ -73,6 +73,9 @@ static int oma_read_header(AVFormatContext *s,
     uint8_t buf[EA3_HEADER_SIZE];
     uint8_t *edata;
     AVStream *st;
+#ifdef __CW32__
+    const uint8_t tag[] = {'E', 'A', '3'};
+#endif
 
     ret = get_buffer(s->pb, buf, 10);
     if (ret != 10)
@@ -89,7 +92,11 @@ static int oma_read_header(AVFormatContext *s,
     if (ret != EA3_HEADER_SIZE)
         return -1;
 
+#ifdef __CW32__
+    if (memcmp(buf, tag, 3) || buf[4] != 0 || buf[5] != EA3_HEADER_SIZE) {
+#else
     if (memcmp(buf, (uint8_t[]){'E', 'A', '3'},3) || buf[4] != 0 || buf[5] != EA3_HEADER_SIZE) {
+#endif
         av_log(s, AV_LOG_ERROR, "Couldn't find the EA3 header !\n");
         return -1;
     }
@@ -177,7 +184,12 @@ static int oma_read_packet(AVFormatContext *s, AVPacket *pkt)
 
 static int oma_read_probe(AVProbeData *p)
 {
+#ifdef __CW32__
+    const uint8_t tag[] = {'e', 'a', '3', 3, 0};
+    if (!memcmp(p->buf, tag, 5))
+#else
     if (!memcmp(p->buf, (uint8_t[]){'e', 'a', '3', 3, 0},5))
+#endif
         return AVPROBE_SCORE_MAX;
     else
         return 0;
@@ -193,8 +205,18 @@ AVInputFormat oma_demuxer = {
     oma_read_packet,
     0,
     pcm_read_seek,
+#ifdef __CW32__
+    0,
+    AVFMT_GENERIC_INDEX,
+    "oma,aa3",
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_oma_tags, 0},
+#else
     .flags= AVFMT_GENERIC_INDEX,
     .extensions = "oma,aa3",
     .codec_tag= (const AVCodecTag*[]){codec_oma_tags, 0},
+#endif
 };
 

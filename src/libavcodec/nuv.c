@@ -71,7 +71,11 @@ static const uint8_t fallback_cquant[] = {
 static void copy_frame(AVFrame *f, const uint8_t *src,
                        int width, int height) {
     AVPicture pic;
+#ifdef __CW32__
+    avpicture_fill(&pic, (unsigned char*)src, PIX_FMT_YUV420P, width, height);
+#else
     avpicture_fill(&pic, src, PIX_FMT_YUV420P, width, height);
+#endif
     av_picture_copy((AVPicture *)f, &pic, PIX_FMT_YUV420P, width, height);
 }
 
@@ -270,6 +274,14 @@ AVCodec nuv_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("NuppelVideo"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("NuppelVideo"),
+#endif
 };
 

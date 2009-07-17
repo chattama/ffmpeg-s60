@@ -777,6 +777,16 @@ AVCodec libxvid_encoder = {
     ff_xvid_encode_init,
     ff_xvid_encode_frame,
     ff_xvid_encode_close,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("libxvidcore MPEG-4 part 2"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("libxvidcore MPEG-4 part 2"),
+#endif
 };

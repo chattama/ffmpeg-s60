@@ -418,7 +418,11 @@ static int swf_write_video(AVFormatContext *s,
         put_swf_tag(s, TAG_STREAMBLOCK | TAG_LONG);
         put_le16(pb, swf->sound_samples);
         put_le16(pb, 0); // seek samples
+#ifdef __CW32__
+        av_fifo_generic_read(&swf->audio_fifo, frame_size, (void (*)(void *, void *, int))&put_buffer, pb);
+#else
         av_fifo_generic_read(&swf->audio_fifo, frame_size, &put_buffer, pb);
+#endif
         put_swf_end_tag(s);
 
         /* update FIFO */
@@ -448,7 +452,11 @@ static int swf_write_audio(AVFormatContext *s,
         return -1;
     }
 
+#ifdef __CW32__
+    av_fifo_generic_write(&swf->audio_fifo, (void*)buf, size, NULL);
+#else
     av_fifo_generic_write(&swf->audio_fifo, buf, size, NULL);
+#endif
     swf->sound_samples += enc->frame_size;
 
     /* if audio only stream make sure we add swf frames */

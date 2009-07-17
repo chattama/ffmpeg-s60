@@ -41,20 +41,6 @@
 #    include <math.h>
 #endif /* HAVE_AV_CONFIG_H */
 
-#if __CW32__
-
-#include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <limits.h>
-#include <errno.h>
-#include <math.h>
-
-#endif
-
 #ifndef av_always_inline
 #if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
 #    define av_always_inline __attribute__((always_inline)) inline

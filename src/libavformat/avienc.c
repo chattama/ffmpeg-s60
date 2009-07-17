@@ -274,7 +274,11 @@ static int avi_write_header(AVFormatContext *s)
             put_byte(pb, 0);        /* bIndexSubType (0 == frame index) */
             put_byte(pb, 0);        /* bIndexType (0 == AVI_INDEX_OF_INDEXES) */
             put_le32(pb, 0);        /* nEntriesInUse (will fill out later on) */
+#ifndef __CW32__
             put_tag(pb, avi_stream2fourcc(&tag[0], i, stream->codec_type));
+#else
+            put_tag(pb, avi_stream2fourcc((char*)&tag[0], i, stream->codec_type));
+#endif
                                     /* dwChunkId */
             put_le64(pb, 0);        /* dwReserved[3]
             put_le32(pb, 0);           Must be 0.    */
@@ -501,7 +505,11 @@ static int avi_write_packet(AVFormatContext *s, AVPacket *pkt)
         avi->movi_list = avi_start_new_riff(avi, pb, "AVIX", "movi");
     }
 
+#ifndef __CW32__
     avi_stream2fourcc(&tag[0], stream_index, enc->codec_type);
+#else
+    avi_stream2fourcc((char*)&tag[0], stream_index, enc->codec_type);
+#endif
     if(pkt->flags&PKT_FLAG_KEY)
         flags = 0x10;
     if (enc->codec_type == CODEC_TYPE_AUDIO) {
@@ -602,6 +610,13 @@ AVOutputFormat avi_muxer = {
     avi_write_header,
     avi_write_packet,
     avi_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, 0},
+#else
     .codec_tag= (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, 0},
+#endif
 };
 #endif //CONFIG_AVI_MUXER

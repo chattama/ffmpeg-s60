@@ -170,6 +170,20 @@ static int select_blocksize(int samplerate, int block_time_ms)
 
 static av_cold int flac_encode_init(AVCodecContext *avctx)
 {
+#ifdef __CW32__
+	static const int t1[] = { 27, 27, 27,105,105,105,105,105,105,105,105,105,105};
+	static const int t2[] = {  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
+	static const int t3[] = {  2,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
+	static const int t4[] = {  3,  4,  4,  6,  8,  8,  8,  8, 12, 12, 12, 32, 32};
+	static const int t5[] = { 
+			ORDER_METHOD_EST,    ORDER_METHOD_EST,    ORDER_METHOD_EST,
+            ORDER_METHOD_EST,    ORDER_METHOD_EST,    ORDER_METHOD_EST,
+            ORDER_METHOD_4LEVEL, ORDER_METHOD_LOG,    ORDER_METHOD_4LEVEL,
+            ORDER_METHOD_LOG,    ORDER_METHOD_SEARCH, ORDER_METHOD_LOG,
+            ORDER_METHOD_SEARCH};
+	static const int t6[] = {  2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
+	static const int t7[] = {  2,  2,  3,  3,  3,  8,  8,  8,  8,  8,  8,  8,  8};
+#endif
     int freq = avctx->sample_rate;
     int channels = avctx->channels;
     FlacEncodeContext *s = avctx->priv_data;
@@ -233,6 +247,15 @@ static av_cold int flac_encode_init(AVCodecContext *avctx)
         return -1;
     }
 
+#ifdef __CW32__
+    s->options.block_time_ms       = t1[level];
+    s->options.use_lpc             = t2[level];
+    s->options.min_prediction_order= t3[level];
+    s->options.max_prediction_order= t4[level];
+    s->options.prediction_order_method = t5[level];
+    s->options.min_partition_order = t6[level];
+    s->options.max_partition_order = t7[level];
+#else
     s->options.block_time_ms       = ((int[]){ 27, 27, 27,105,105,105,105,105,105,105,105,105,105})[level];
     s->options.use_lpc             = ((int[]){  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1})[level];
     s->options.min_prediction_order= ((int[]){  2,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1})[level];
@@ -244,6 +267,7 @@ static av_cold int flac_encode_init(AVCodecContext *avctx)
                                                    ORDER_METHOD_SEARCH})[level];
     s->options.min_partition_order = ((int[]){  2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0})[level];
     s->options.max_partition_order = ((int[]){  2,  2,  3,  3,  3,  8,  8,  8,  8,  8,  8,  8,  8})[level];
+#endif
 
     /* set compression option overrides from AVCodecContext */
     if(avctx->use_lpc >= 0) {
@@ -606,8 +630,15 @@ void ff_flac_compute_autocorr(const int32_t *data, int len, int lag,
                               double *autoc)
 {
     int i, j;
+#ifndef __CW32__
     double tmp[len + lag + 1];
     double *data1= tmp + lag;
+#else
+    double *tmp;
+    double *data1;
+    tmp = av_malloc(sizeof(double)*(len + lag + 1));
+    data1= tmp + lag;
+#endif
 
     apply_welch_window(data, len, data1);
 
@@ -633,6 +664,9 @@ void ff_flac_compute_autocorr(const int32_t *data, int len, int lag,
         }
         autoc[j] = sum;
     }
+#ifdef __CW32__
+    av_free(tmp);
+#endif
 }
 
 /**
@@ -1048,9 +1082,16 @@ static int encode_residual(FlacEncodeContext *ctx, int ch)
        omethod == ORDER_METHOD_4LEVEL ||
        omethod == ORDER_METHOD_8LEVEL) {
         int levels = 1 << omethod;
+#ifdef __CW32__
+        uint32_t *bits;
+#else
         uint32_t bits[levels];
+#endif
         int order;
         int opt_index = levels-1;
+#ifdef __CW32__
+        bits = av_malloc(sizeof(uint32_t)*levels);
+#endif
         opt_order = max_order-1;
         bits[opt_index] = UINT32_MAX;
         for(i=levels-1; i>=0; i--) {
@@ -1065,6 +1106,9 @@ static int encode_residual(FlacEncodeContext *ctx, int ch)
             }
         }
         opt_order++;
+#ifdef __CW32__
+        av_free(bits);
+#endif
     } else if(omethod == ORDER_METHOD_SEARCH) {
         // brute-force optimal order search
         uint32_t bits[MAX_LPC_ORDER];
@@ -1484,6 +1528,15 @@ AVCodec flac_encoder = {
     flac_encode_frame,
     flac_encode_close,
     NULL,
+#ifdef __CW32__
+    CODEC_CAP_SMALL_LAST_FRAME,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
+#else
     .capabilities = CODEC_CAP_SMALL_LAST_FRAME,
     .long_name = NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
+#endif
 };

@@ -935,10 +935,20 @@ AVCodec mpeg1video_encoder = {
     encode_init,
     MPV_encode_picture,
     MPV_encode_end,
+#ifdef __CW32__
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    ff_frame_rate_tab+1,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#else
     .supported_framerates= ff_frame_rate_tab+1,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .capabilities= CODEC_CAP_DELAY,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-1 video"),
+#endif
 };
 
 AVCodec mpeg2video_encoder = {
@@ -949,8 +959,18 @@ AVCodec mpeg2video_encoder = {
     encode_init,
     MPV_encode_picture,
     MPV_encode_end,
+#ifdef __CW32__
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    ff_frame_rate_tab+1,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("MPEG-2 video"),
+#else
     .supported_framerates= ff_frame_rate_tab+1,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_NONE},
     .capabilities= CODEC_CAP_DELAY,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-2 video"),
+#endif
 };

@@ -70,9 +70,19 @@ static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t 
 {
     int i;
     int counts[17] = {0}, codes[17];
+#ifdef __CW32__
+    uint16_t *cw, *syms;
+    uint8_t *bits2;
+#else
     uint16_t cw[size], syms[size];
     uint8_t bits2[size];
+#endif
     int maxbits = 0, realsize = 0;
+#ifdef __CW32__
+    cw = av_malloc(sizeof(uint16_t)*size);
+    syms = av_malloc(sizeof(uint16_t)*size);
+    bits2 = av_malloc(sizeof(uint8_t)*size);
+#endif
 
     for(i = 0; i < size; i++){
         if(bits[i]){
@@ -94,6 +104,11 @@ static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t 
                     bits2, 1, 1,
                     cw,    2, 2,
                     syms,  2, 2, INIT_VLC_USE_STATIC);
+#ifdef __CW32__
+    av_free(cw);
+    av_free(syms);
+    av_free(bits2);
+#endif
 }
 
 /**
@@ -221,7 +236,11 @@ static int rv34_decode_cbp(GetBitContext *gb, RV34VLC *vlc, int table)
     int ones;
     static const int cbp_masks[3] = {0x100000, 0x010000, 0x110000};
     static const int shifts[4] = { 0, 2, 8, 10 };
+#ifdef __CW32__
+    int *curshift = (int*)shifts;
+#else
     int *curshift = shifts;
+#endif
     int i, t, mask;
 
     code = get_vlc2(gb, vlc->cbppattern[table].table, 9, 2);
@@ -808,7 +827,11 @@ static void rv34_pred_4x4_block(RV34DecContext *r, uint8_t *dst, int stride, int
     }
     if(!right && up){
         topleft = dst[-stride + 3] * 0x01010101;
+#ifdef __CW32__
+        prev = (unsigned char*)&topleft;
+#else
         prev = &topleft;
+#endif
     }
     r->h.pred4x4[itype](dst, prev, stride);
 }

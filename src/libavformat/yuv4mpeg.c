@@ -106,14 +106,22 @@ static int yuv4_write_packet(AVFormatContext *s, AVPacket *pkt)
             av_log(s, AV_LOG_ERROR, "Error. YUV4MPEG stream header write failed.\n");
             return AVERROR(EIO);
         } else {
+#ifdef __CW32__
+            put_buffer(pb, (const unsigned char*)buf2, strlen(buf2));
+#else
             put_buffer(pb, buf2, strlen(buf2));
+#endif
         }
     }
 
     /* construct frame header */
 
     m = snprintf(buf1, sizeof(buf1), "%s\n", Y4M_FRAME_MAGIC);
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)buf1, strlen(buf1));
+#else
     put_buffer(pb, buf1, strlen(buf1));
+#endif
 
     width = st->codec->width;
     height = st->codec->height;
@@ -177,7 +185,12 @@ AVOutputFormat yuv4mpegpipe_muxer = {
     CODEC_ID_RAWVIDEO,
     yuv4_write_header,
     yuv4_write_packet,
+#ifdef __CW32__
+    0,
+    AVFMT_RAWPICTURE,
+#else
     .flags = AVFMT_RAWPICTURE,
+#endif
 };
 #endif
 
@@ -376,7 +389,11 @@ static int yuv4_read_packet(AVFormatContext *s, AVPacket *pkt)
 static int yuv4_probe(AVProbeData *pd)
 {
     /* check file header */
+#ifdef __CW32__
+    if (strncmp((const char*)pd->buf, Y4M_MAGIC, sizeof(Y4M_MAGIC)-1)==0)
+#else
     if (strncmp(pd->buf, Y4M_MAGIC, sizeof(Y4M_MAGIC)-1)==0)
+#endif
         return AVPROBE_SCORE_MAX;
     else
         return 0;
@@ -390,6 +407,14 @@ AVInputFormat yuv4mpegpipe_demuxer = {
     yuv4_probe,
     yuv4_read_header,
     yuv4_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    "y4m"
+#else
     .extensions = "y4m"
+#endif
 };
 #endif

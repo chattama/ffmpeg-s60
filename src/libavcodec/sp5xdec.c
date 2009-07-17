@@ -199,7 +199,14 @@ AVCodec sp5x_decoder = {
     sp5x_decode_frame,
     CODEC_CAP_DR1,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Sunplus JPEG (SP5X)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Sunplus JPEG (SP5X)"),
+#endif
 };
 
 AVCodec amv_decoder = {
@@ -211,5 +218,14 @@ AVCodec amv_decoder = {
     NULL,
     ff_mjpeg_decode_end,
     sp5x_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("AMV Video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("AMV Video"),
+#endif
 };

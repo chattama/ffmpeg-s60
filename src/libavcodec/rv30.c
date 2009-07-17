@@ -134,6 +134,9 @@ static av_cold int rv30_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
+#ifdef __CW32__
+typedef int (decode)(AVCodecContext *, void *outdata, int *outdata_size, const uint8_t *buf, int buf_size);
+#endif
 AVCodec rv30_decoder = {
     "rv30",
     CODEC_TYPE_VIDEO,
@@ -142,7 +145,19 @@ AVCodec rv30_decoder = {
     rv30_decode_init,
     NULL,
     ff_rv34_decode_end,
+#ifdef __CW32__
+    (decode*)ff_rv34_decode_frame,
+#else
     ff_rv34_decode_frame,
+#endif
     CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("RealVideo 3.0"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("RealVideo 3.0"),
+#endif
 };

@@ -133,5 +133,14 @@ AVCodec xsub_decoder = {
     NULL,
     NULL,
     decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("XSUB"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("XSUB"),
+#endif
 };

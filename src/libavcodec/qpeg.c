@@ -316,5 +316,13 @@ AVCodec qpeg_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Q-team QPEG"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Q-team QPEG"),
+#endif
 };

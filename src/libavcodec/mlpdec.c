@@ -1159,7 +1159,11 @@ next_substr:
 
     rematrix_channels(m, m->max_decoded_substream);
 
+#ifdef __CW32__
+    if (output_data(m, m->max_decoded_substream, data, (unsigned int*)data_size) < 0)
+#else
     if (output_data(m, m->max_decoded_substream, data, data_size) < 0)
+#endif
         return -1;
 
     return length;
@@ -1178,6 +1182,15 @@ AVCodec mlp_decoder = {
     NULL,
     NULL,
     read_access_unit,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Meridian Lossless Packing"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Meridian Lossless Packing"),
+#endif
 };
 

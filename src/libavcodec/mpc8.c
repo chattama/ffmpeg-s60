@@ -361,5 +361,14 @@ AVCodec mpc8_decoder = {
     NULL,
     NULL,
     mpc8_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Musepack SV8"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Musepack SV8"),
+#endif
 };

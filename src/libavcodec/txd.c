@@ -163,5 +163,12 @@ AVCodec txd_decoder = {
     txd_decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Renderware TXD (TeXture Dictionary) image"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Renderware TXD (TeXture Dictionary) image"),
+#endif
 };

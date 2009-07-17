@@ -117,7 +117,17 @@ AVCodec libgsm_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libgsm GSM"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
+#endif
 };
 
 AVCodec libgsm_ms_encoder = {
@@ -128,7 +138,17 @@ AVCodec libgsm_ms_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
+#endif
 };
 
 static int libgsm_decode_frame(AVCodecContext *avctx,
@@ -149,6 +169,9 @@ static int libgsm_decode_frame(AVCodecContext *avctx,
     return avctx->block_align;
 }
 
+#ifdef __CW32__
+typedef int (decode)(AVCodecContext *, void *outdata, int *outdata_size, const uint8_t *buf, int buf_size);
+#endif
 AVCodec libgsm_decoder = {
     "libgsm",
     CODEC_TYPE_AUDIO,
@@ -157,8 +180,18 @@ AVCodec libgsm_decoder = {
     libgsm_init,
     NULL,
     libgsm_close,
+#ifdef __CW32__
+    (decode*)libgsm_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libgsm GSM"),
+#else
     libgsm_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
+#endif
 };
 
 AVCodec libgsm_ms_decoder = {
@@ -169,6 +202,16 @@ AVCodec libgsm_ms_decoder = {
     libgsm_init,
     NULL,
     libgsm_close,
+#ifdef __CW32__
+    (decode*)libgsm_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
+#else
     libgsm_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
+#endif
 };

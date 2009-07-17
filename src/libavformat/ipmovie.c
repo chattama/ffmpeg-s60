@@ -507,7 +507,11 @@ static int process_ipmovie_chunk(IPMVEContext *s, ByteIOContext *pb,
 
 static int ipmovie_probe(AVProbeData *p)
 {
+#ifdef __CW32__
+    if (strncmp((const char*)p->buf, IPMOVIE_SIGNATURE, IPMOVIE_SIGNATURE_SIZE) != 0)
+#else
     if (strncmp(p->buf, IPMOVIE_SIGNATURE, IPMOVIE_SIGNATURE_SIZE) != 0)
+#endif
         return 0;
 
     return AVPROBE_SCORE_MAX;

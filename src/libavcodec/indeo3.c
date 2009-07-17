@@ -1135,5 +1135,12 @@ AVCodec indeo3_decoder = {
     indeo3_decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Intel Indeo 3"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Intel Indeo 3"),
+#endif
 };

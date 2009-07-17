@@ -354,7 +354,11 @@ static int png_decode_idat(PNGDecContext *s, int length)
 {
     int ret;
     s->zstream.avail_in = length;
+#ifdef __CW32__
+    s->zstream.next_in = (unsigned char*)s->bytestream;
+#else
     s->zstream.next_in = s->bytestream;
+#endif
     s->bytestream += length;
 
     if(s->bytestream > s->bytestream_end)
@@ -618,5 +622,12 @@ AVCodec png_decoder = {
     decode_frame,
     0 /*CODEC_CAP_DR1*/ /*| CODEC_CAP_DRAW_HORIZ_BAND*/,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("PNG image"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("PNG image"),
+#endif
 };

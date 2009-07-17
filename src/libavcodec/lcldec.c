@@ -697,7 +697,15 @@ AVCodec mszh_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) MSZH"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) MSZH"),
+#endif
 };
 #endif
 
@@ -712,6 +720,14 @@ AVCodec zlib_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
+#endif
 };
 #endif

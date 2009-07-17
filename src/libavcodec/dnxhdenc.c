@@ -848,14 +848,31 @@ static int dnxhd_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
+#ifdef __CW32__
+typedef int (encode)(AVCodecContext *, uint8_t *buf, int buf_size, void *data);
+#endif
 AVCodec dnxhd_encoder = {
     "dnxhd",
     CODEC_TYPE_VIDEO,
     CODEC_ID_DNXHD,
     sizeof(DNXHDEncContext),
     dnxhd_encode_init,
+#ifdef __CW32__
+    (encode*)dnxhd_encode_picture,
+#else
     dnxhd_encode_picture,
+#endif
     dnxhd_encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV422P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("VC3/DNxHD"),
+#else
     .pix_fmts = (enum PixelFormat[]){PIX_FMT_YUV422P, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("VC3/DNxHD"),
+#endif
 };

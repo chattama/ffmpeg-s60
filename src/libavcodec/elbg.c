@@ -122,10 +122,18 @@ static int simple_lbg(int dim,
 {
     int i, idx;
     int numpoints[2] = {0,0};
+#ifndef __CW32__
     int newcentroid[2][dim];
+#else
+    int **newcentroid;
+#endif
     cell *tempcell;
 
+#ifdef __CW32__
+    newcentroid = av_mallocz(sizeof(int)*2*dim);
+#else
     memset(newcentroid, 0, sizeof(newcentroid));
+#endif
 
     newutility[0] =
     newutility[1] = 0;
@@ -142,12 +150,23 @@ static int simple_lbg(int dim,
     vect_division(centroid[1], newcentroid[1], numpoints[1], dim);
 
     for (tempcell = cells; tempcell; tempcell=tempcell->next) {
+#ifndef __CW32__
         int dist[2] = {distance_limited(centroid[0], points + tempcell->index*dim, dim, INT_MAX),
                        distance_limited(centroid[1], points + tempcell->index*dim, dim, INT_MAX)};
         int idx = dist[0] > dist[1];
+#else
+        int dist[2];
+        int idx;
+        dist[0] = distance_limited(centroid[0], points + tempcell->index*dim, dim, INT_MAX);
+        dist[1] = distance_limited(centroid[1], points + tempcell->index*dim, dim, INT_MAX);
+        idx = dist[0] > dist[1];
+#endif
         newutility[idx] += dist[idx];
     }
 
+#ifdef __CW32__
+    av_free(newcentroid);
+#endif
     return newutility[0] + newutility[1];
 }
 
@@ -155,9 +174,18 @@ static void get_new_centroids(elbg_data *elbg, int huc, int *newcentroid_i,
                               int *newcentroid_p)
 {
     cell *tempcell;
+#ifdef __CW32__
+    int *min;
+    int *max;
+#else
     int min[elbg->dim];
     int max[elbg->dim];
+#endif
     int i;
+#ifdef __CW32__
+    min = av_malloc(sizeof(int)*elbg->dim);
+    max = av_malloc(sizeof(int)*elbg->dim);
+#endif
 
     for (i=0; i< elbg->dim; i++) {
         min[i]=INT_MAX;
@@ -174,6 +202,10 @@ static void get_new_centroids(elbg_data *elbg, int huc, int *newcentroid_i,
         newcentroid_i[i] = min[i] + (max[i] - min[i])/3;
         newcentroid_p[i] = min[i] + (2*(max[i] - min[i]))/3;
     }
+#ifdef __CW32__
+    av_free(min);
+    av_free(max);
+#endif
 }
 
 /**
@@ -245,9 +277,20 @@ static void try_shift_candidate(elbg_data *elbg, int idx[3])
 {
     int j, k, olderror=0, newerror, cont=0;
     int newutility[3];
+#ifdef __CW32__
+    int **newcentroid;
+    int *newcentroid_ptrs[3];
+#else
     int newcentroid[3][elbg->dim];
     int *newcentroid_ptrs[3] = { newcentroid[0], newcentroid[1], newcentroid[2] };
+#endif
     cell *tempcell;
+#ifdef __CW32__
+    newcentroid = av_malloc(sizeof(int)*3*elbg->dim);
+    newcentroid_ptrs[0] = newcentroid[0];
+    newcentroid_ptrs[1] = newcentroid[1];
+    newcentroid_ptrs[2] = newcentroid[2];
+#endif
 
     for (j=0; j<3; j++)
         olderror += elbg->utility[idx[j]];
@@ -283,6 +326,9 @@ static void try_shift_candidate(elbg_data *elbg, int idx[3])
 
         evaluate_utility_inc(elbg);
     }
+#ifdef __CW32__
+    av_free(newcentroid);
+#endif
  }
 
 /**

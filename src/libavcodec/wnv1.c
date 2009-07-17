@@ -131,6 +131,9 @@ static av_cold int decode_init(AVCodecContext *avctx){
     return 0;
 }
 
+#ifdef __CW32__
+typedef int (decode)(AVCodecContext *, void *outdata, int *outdata_size, const uint8_t *buf, int buf_size);
+#endif
 AVCodec wnv1_decoder = {
     "wnv1",
     CODEC_TYPE_VIDEO,
@@ -139,7 +142,19 @@ AVCodec wnv1_decoder = {
     decode_init,
     NULL,
     NULL,
+#ifdef __CW32__
+    (decode*)decode_frame,
+#else
     decode_frame,
+#endif
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Winnov WNV1"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Winnov WNV1"),
+#endif
 };

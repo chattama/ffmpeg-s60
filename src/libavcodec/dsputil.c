@@ -2737,6 +2737,8 @@ void ff_intrax8dsp_init(DSPContext* c, AVCodecContext *avctx);
 /* H264 specific */
 void ff_h264dspenc_init(DSPContext* c, AVCodecContext *avctx);
 
+void ff_rv30dsp_init(DSPContext* c, AVCodecContext *avctx);
+
 static void wmv2_mspel8_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int w){
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     int i;
@@ -3701,14 +3703,19 @@ static int rd8x8_c(/*MpegEncContext*/ void *c, uint8_t *src1, uint8_t *src2, int
     DECLARE_ALIGNED_8 (uint64_t, aligned_bak[stride]);
 #endif
     DCTELEM * const temp= (DCTELEM*)aligned_temp;
+#ifdef __CW32__
+    uint8_t * bak;
+#else
     uint8_t * const bak= (uint8_t*)aligned_bak;
+#endif
     int i, last, run, bits, level, distortion, start_i;
     const int esc_length= s->ac_esc_length;
     uint8_t * length;
     uint8_t * last_length;
 
 #ifdef __CW32__
-    aligned_bak = (uint64_t*)av_malloc(sizeof(uint64_t) * stride);
+    aligned_bak = av_malloc(sizeof(uint64_t)*stride);
+    bak = (uint8_t*)aligned_bak;
 #endif
     assert(h==8);
 
@@ -3774,6 +3781,9 @@ static int rd8x8_c(/*MpegEncContext*/ void *c, uint8_t *src1, uint8_t *src2, int
 
     distortion= s->dsp.sse[1](NULL, bak, src1, stride, 8);
 
+#ifdef __CW32__
+    av_free(aligned_bak);
+#endif
     return distortion + ((bits*s->qscale*s->qscale*109 + 64)>>7);
 }
 
@@ -4402,6 +4412,9 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
 #endif
 #if defined(CONFIG_H264_ENCODER)
     ff_h264dspenc_init(c,avctx);
+#endif
+#if defined(CONFIG_RV30_DECODER)
+    ff_rv30dsp_init(c,avctx);
 #endif
 
     c->put_mspel_pixels_tab[0]= put_mspel8_mc00_c;

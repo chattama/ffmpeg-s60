@@ -226,5 +226,11 @@ AVInputFormat mpc_demuxer = {
     mpc_read_packet,
     mpc_read_close,
     mpc_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "mpc",
+#else
     .extensions = "mpc",
+#endif
 };

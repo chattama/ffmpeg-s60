@@ -219,5 +219,13 @@ AVCodec roq_decoder = {
     roq_decode_end,
     roq_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("id RoQ video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("id RoQ video"),
+#endif
 };

@@ -43,8 +43,13 @@ static int pnm_decode_frame(AVCodecContext *avctx,
     unsigned char *ptr;
 
     s->bytestream_start=
+#ifdef __CW32__
+    s->bytestream= (unsigned char*)buf;
+    s->bytestream_end= (unsigned char*)(buf + buf_size);
+#else
     s->bytestream= buf;
     s->bytestream_end= buf + buf_size;
+#endif
 
     if(ff_pnm_decode_header(avctx, s) < 0)
         return -1;
@@ -203,14 +208,27 @@ static int pnm_encode_frame(AVCodecContext *avctx, unsigned char *outbuf, int bu
     default:
         return -1;
     }
+#ifdef __CW32__
+    snprintf((char *)s->bytestream, s->bytestream_end - s->bytestream,
+             "P%c\n%d %d\n",
+             c, avctx->width, h1);
+    s->bytestream += strlen((const char*)s->bytestream);
+#else
     snprintf(s->bytestream, s->bytestream_end - s->bytestream,
              "P%c\n%d %d\n",
              c, avctx->width, h1);
     s->bytestream += strlen(s->bytestream);
+#endif
     if (avctx->pix_fmt != PIX_FMT_MONOWHITE) {
+#ifdef __CW32__
+        snprintf((char *)s->bytestream, s->bytestream_end - s->bytestream,
+                 "%d\n", (avctx->pix_fmt != PIX_FMT_GRAY16BE) ? 255 : 65535);
+        s->bytestream += strlen((const char*)s->bytestream);
+#else
         snprintf(s->bytestream, s->bytestream_end - s->bytestream,
                  "%d\n", (avctx->pix_fmt != PIX_FMT_GRAY16BE) ? 255 : 65535);
         s->bytestream += strlen(s->bytestream);
+#endif
     }
 
     ptr = p->data[0];
@@ -289,10 +307,17 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf, int bu
     default:
         return -1;
     }
+#ifdef __CW32__
+    snprintf((char*)s->bytestream, s->bytestream_end - s->bytestream,
+             "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLETYPE %s\nENDHDR\n",
+             w, h, depth, maxval, tuple_type);
+    s->bytestream += strlen((const char*)s->bytestream);
+#else
     snprintf(s->bytestream, s->bytestream_end - s->bytestream,
              "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLETYPE %s\nENDHDR\n",
              w, h, depth, maxval, tuple_type);
     s->bytestream += strlen(s->bytestream);
+#endif
 
     ptr = p->data[0];
     linesize = p->linesize[0];
@@ -364,8 +389,17 @@ AVCodec pgm_encoder = {
     pnm_encode_frame,
     NULL, //encode_end,
     pnm_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_GRAY8, PIX_FMT_GRAY16BE, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("PGM (Portable GrayMap) image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_GRAY8, PIX_FMT_GRAY16BE, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PGM (Portable GrayMap) image"),
+#endif
 };
 #endif // CONFIG_PGM_ENCODER
 
@@ -379,8 +413,17 @@ AVCodec pgmyuv_encoder = {
     pnm_encode_frame,
     NULL, //encode_end,
     pnm_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("PGMYUV (Portable GrayMap YUV) image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PGMYUV (Portable GrayMap YUV) image"),
+#endif
 };
 #endif // CONFIG_PGMYUV_ENCODER
 
@@ -394,8 +437,17 @@ AVCodec ppm_encoder = {
     pnm_encode_frame,
     NULL, //encode_end,
     pnm_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("PPM (Portable PixelMap) image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PPM (Portable PixelMap) image"),
+#endif
 };
 #endif // CONFIG_PPM_ENCODER
 
@@ -409,8 +461,17 @@ AVCodec pbm_encoder = {
     pnm_encode_frame,
     NULL, //encode_end,
     pnm_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_MONOWHITE, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("PBM (Portable BitMap) image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_MONOWHITE, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PBM (Portable BitMap) image"),
+#endif
 };
 #endif // CONFIG_PBM_ENCODER
 
@@ -424,7 +485,16 @@ AVCodec pam_encoder = {
     pam_encode_frame,
     NULL, //encode_end,
     pnm_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"),
+#endif
 };
 #endif // CONFIG_PAM_ENCODER

@@ -304,7 +304,11 @@ static int escape124_decode_frame(AVCodecContext *avctx,
 
             while (can_safely_read(&gb, 1) && !get_bits1(&gb)) {
                 unsigned mask;
+#ifndef __CW32__
                 mb = decode_macroblock(s, &gb, &cb_index, superblock_index);
+#else
+                mb = decode_macroblock(s, &gb, (int*)&cb_index, superblock_index);
+#endif
                 mask = get_bits(&gb, 16);
                 multi_mask |= mask;
                 for (i = 0; i < 16; i++) {
@@ -328,14 +332,23 @@ static int escape124_decode_frame(AVCodecContext *avctx,
                     if (multi_mask & mask_matrix[i]) {
                         if (!can_safely_read(&gb, 1))
                             break;
+#ifndef __CW32__
                         mb = decode_macroblock(s, &gb, &cb_index,
                                                superblock_index);
+#else
+                        mb = decode_macroblock(s, &gb, (int*)&cb_index,
+                                               superblock_index);
+#endif
                         insert_mb_into_sb(&sb, mb, i);
                     }
                 }
             } else if (frame_flags & (1 << 16)) {
                 while (can_safely_read(&gb, 1) && !get_bits1(&gb)) {
+#ifndef __CW32__
                     mb = decode_macroblock(s, &gb, &cb_index, superblock_index);
+#else
+                    mb = decode_macroblock(s, &gb, (int*)&cb_index, superblock_index);
+#endif
                     insert_mb_into_sb(&sb, mb, get_bits(&gb, 4));
                 }
             }
@@ -380,6 +393,14 @@ AVCodec escape124_decoder = {
     escape124_decode_close,
     escape124_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Escape 124"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Escape 124"),
+#endif
 };
 

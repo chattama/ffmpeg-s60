@@ -140,7 +140,15 @@ AVCodec cljr_decoder = {
     NULL,
     decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
+#endif
 };
 #if 0
 #ifdef CONFIG_ENCODERS

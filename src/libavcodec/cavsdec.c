@@ -698,6 +698,14 @@ AVCodec cavs_decoder = {
     ff_cavs_end,
     cavs_decode_frame,
     CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    cavs_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Chinese AVS video (AVS1-P2, JiZhun profile)"),
+#else
     .flush= cavs_flush,
     .long_name= NULL_IF_CONFIG_SMALL("Chinese AVS video (AVS1-P2, JiZhun profile)"),
+#endif
 };

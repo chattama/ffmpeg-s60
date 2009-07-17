@@ -236,6 +236,16 @@ AVCodec wmv2_encoder = {
     wmv2_encode_init,
     MPV_encode_picture,
     MPV_encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Windows Media Video 8"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Windows Media Video 8"),
+#endif
 };

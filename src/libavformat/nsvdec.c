@@ -318,7 +318,11 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
 
         p = strings = av_mallocz(strings_size + 1);
         endp = strings + strings_size;
+#ifdef __CW32__
+        get_buffer(pb, (unsigned char*)strings, strings_size);
+#else
         get_buffer(pb, strings, strings_size);
+#endif
         while (p < endp) {
             while (*p == ' ')
                 p++; /* strip out spaces */

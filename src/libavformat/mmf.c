@@ -81,7 +81,11 @@ static int mmf_write_header(AVFormatContext *s)
     put_tag(pb, "VN:libavcodec,"); /* metadata ("ST:songtitle,VN:version,...") */
     end_tag_be(pb, pos);
 
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)"ATR\x00", 4);
+#else
     put_buffer(pb, "ATR\x00", 4);
+#endif
     put_be32(pb, 0);
     mmf->atrpos = url_ftell(pb);
     put_byte(pb, 0); /* format type */
@@ -95,7 +99,11 @@ static int mmf_write_header(AVFormatContext *s)
     put_be32(pb, 16);
     mmf->atsqpos = url_ftell(pb);
     /* Will be filled on close */
+#ifdef __CW32__
+    put_buffer(pb, (const unsigned char*)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+#else
     put_buffer(pb, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+#endif
 
     mmf->awapos = start_tag(pb, "Awa\x01");
 
@@ -152,10 +160,18 @@ static int mmf_write_trailer(AVFormatContext *s)
 
         /* "nop" */
         put_varlength(pb, gatetime); /* start time */
+#ifdef __CW32__
+        put_buffer(pb, (const unsigned char*)"\xff\x00", 2); /* nop */
+#else
         put_buffer(pb, "\xff\x00", 2); /* nop */
+#endif
 
         /* "end of sequence" */
+#ifdef __CW32__
+        put_buffer(pb, (const unsigned char*)"\x00\x00\x00\x00", 4);
+#else
         put_buffer(pb, "\x00\x00\x00\x00", 4);
+#endif
 
         url_fseek(pb, pos, SEEK_SET);
 

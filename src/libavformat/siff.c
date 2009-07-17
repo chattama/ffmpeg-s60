@@ -232,5 +232,13 @@ AVInputFormat siff_demuxer = {
     siff_probe,
     siff_read_header,
     siff_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    "vb,son"
+#else
     .extensions = "vb,son"
+#endif
 };

@@ -727,7 +727,12 @@ static int svq1_decode_frame(AVCodecContext *avctx,
         current += 16*linesize;
       }
     } else {
+#ifndef __CW32__
       svq1_pmv_t pmv[width/8+3];
+#else
+        svq1_pmv_t *pmv;
+      pmv = av_malloc(sizeof(svq1_pmv_t)*(width/8+3));
+#endif
       /* delta frame */
       memset (pmv, 0, ((width / 8) + 3) * sizeof(svq1_pmv_t));
 
@@ -740,6 +745,9 @@ static int svq1_decode_frame(AVCodecContext *avctx,
 #ifdef DEBUG_SVQ1
     av_log(s->avctx, AV_LOG_INFO, "Error in svq1_decode_delta_block %i\n",result);
 #endif
+#ifdef __CW32__
+    		av_free(pmv);
+#endif
             return result;
           }
         }
@@ -748,6 +756,9 @@ static int svq1_decode_frame(AVCodecContext *avctx,
         pmv[0].y = 0;
 
         current += 16*linesize;
+#ifdef __CW32__
+        av_free(pmv);
+#endif
       }
     }
   }
@@ -824,7 +835,15 @@ AVCodec svq1_decoder = {
     svq1_decode_end,
     svq1_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    ff_mpeg_flush,
+    0,
+    (enum PixelFormat[]){PIX_FMT_YUV410P, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1"),
+#else
     .flush= ff_mpeg_flush,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV410P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1"),
+#endif
 };

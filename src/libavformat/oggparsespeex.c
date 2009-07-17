@@ -55,7 +55,14 @@ static int speex_header(AVFormatContext *s, int idx) {
 }
 
 ogg_codec_t speex_codec = {
+#ifdef __CW32__
+	(const signed char*)"Speex   ",
+    8,
+    0,
+    speex_header
+#else
     .magic = "Speex   ",
     .magicsize = 8,
     .header = speex_header
+#endif
 };

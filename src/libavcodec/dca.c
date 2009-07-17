@@ -1258,6 +1258,22 @@ static av_cold int dca_decode_init(AVCodecContext * avctx)
 
 
 AVCodec dca_decoder = {
+#ifdef __CW32__
+    "dca",
+    CODEC_TYPE_AUDIO,
+    CODEC_ID_DTS,
+    sizeof(DCAContext),
+    dca_decode_init,
+    0,
+    0,
+    dca_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("DCA (DTS Coherent Acoustics)"),
+#else
     .name = "dca",
     .type = CODEC_TYPE_AUDIO,
     .id = CODEC_ID_DTS,
@@ -1265,4 +1281,5 @@ AVCodec dca_decoder = {
     .init = dca_decode_init,
     .decode = dca_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("DCA (DTS Coherent Acoustics)"),
+#endif
 };

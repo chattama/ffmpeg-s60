@@ -335,7 +335,11 @@ static void id3v2_read_ttag(AVFormatContext *s, int taglen, char *dst, int dstle
 
     case 3:  /* UTF-8 */
         len = FFMIN(taglen, dstlen-1);
+#ifndef __CW32__
+        get_buffer(s->pb, dst, len);
+#else
         get_buffer(s->pb, (unsigned char*)dst, len);
+#endif
         dst[len] = 0;
         break;
     }
@@ -658,9 +662,15 @@ static void id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
     buf[0] = 'T';
     buf[1] = 'A';
     buf[2] = 'G';
+#ifndef __CW32__
+    strncpy(buf + 3, s->title, 30);
+    strncpy(buf + 33, s->author, 30);
+    strncpy(buf + 63, s->album, 30);
+#else
     strncpy((char*)(buf + 3), s->title, 30);
     strncpy((char*)(buf + 33), s->author, 30);
     strncpy((char*)(buf + 63), s->album, 30);
+#endif
     v = s->year;
     if (v > 0) {
         for(i = 0;i < 4; i++) {
@@ -668,7 +678,11 @@ static void id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
             v = v / 10;
         }
     }
+#ifndef __CW32__
+    strncpy(buf + 97, s->comment, 30);
+#else
     strncpy((char*)(buf + 97), s->comment, 30);
+#endif
     if (s->track != 0) {
         buf[125] = 0;
         buf[126] = s->track;
@@ -698,7 +712,11 @@ static void id3v2_put_ttag(AVFormatContext *s, const char *string, uint32_t tag)
     id3v2_put_size(s, len + 1);
     put_be16(s->pb, 0);
     put_byte(s->pb, 3); /* UTF-8 */
+#ifndef __CW32__
+    put_buffer(s->pb, string, len);
+#else
     put_buffer(s->pb, (const unsigned char*)string, len);
+#endif
 }
 
 

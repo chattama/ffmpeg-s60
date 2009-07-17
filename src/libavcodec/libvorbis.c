@@ -216,6 +216,16 @@ AVCodec libvorbis_encoder = {
     oggvorbis_encode_init,
     oggvorbis_encode_frame,
     oggvorbis_encode_close,
+#ifdef __CW32__
+    0,
+    CODEC_CAP_DELAY,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("libvorbis Vorbis"),
+#else
     .capabilities= CODEC_CAP_DELAY,
     .long_name= NULL_IF_CONFIG_SMALL("libvorbis Vorbis"),
+#endif
 } ;

@@ -143,7 +143,11 @@ static av_cold int imc_decode_init(AVCodecContext * avctx)
     /* initialize the VLC tables */
     for(i = 0; i < 4 ; i++) {
         for(j = 0; j < 4; j++) {
+#ifdef __CW32__
+            huffman_vlc[i][j].table = (VLC_TYPE(*)[2])vlc_tables[vlc_offsets[i * 4 + j]];
+#else
             huffman_vlc[i][j].table = vlc_tables[vlc_offsets[i * 4 + j]];
+#endif
             huffman_vlc[i][j].table_allocated = vlc_offsets[i * 4 + j + 1] - vlc_offsets[i * 4 + j];
             init_vlc(&huffman_vlc[i][j], 9, imc_huffman_sizes[i],
                      imc_huffman_lens[i][j], 1, 1,
@@ -817,6 +821,22 @@ static av_cold int imc_decode_close(AVCodecContext * avctx)
 
 
 AVCodec imc_decoder = {
+#ifdef __CW32__
+    "imc",
+    CODEC_TYPE_AUDIO,
+    CODEC_ID_IMC,
+    sizeof(IMCContext),
+    imc_decode_init,
+    0,
+    imc_decode_close,
+    imc_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("IMC (Intel Music Coder)"),
+#else
     .name = "imc",
     .type = CODEC_TYPE_AUDIO,
     .id = CODEC_ID_IMC,
@@ -825,4 +845,5 @@ AVCodec imc_decoder = {
     .close = imc_decode_close,
     .decode = imc_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("IMC (Intel Music Coder)"),
+#endif
 };

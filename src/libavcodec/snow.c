@@ -382,6 +382,16 @@ typedef struct BlockNode{
     uint8_t level; //FIXME merge into type?
 }BlockNode;
 
+#ifdef __CW32__
+static const BlockNode null_block= { //FIXME add border maybe
+    0,
+    0,
+    0,
+    {128,128,128},
+    0,
+    0,
+};
+#else
 static const BlockNode null_block= { //FIXME add border maybe
     .color= {128,128,128},
     .mx= 0,
@@ -390,6 +400,7 @@ static const BlockNode null_block= { //FIXME add border maybe
     .type= 0,
     .level= 0,
 };
+#endif
 
 #define LOG2_MB_SIZE 4
 #define MB_SIZE (1<<LOG2_MB_SIZE)
@@ -847,10 +858,17 @@ inv_liftS(IDWTELEM *dst, IDWTELEM *src, IDWTELEM *ref,
 #endif /* ! liftS */
 
 static void horizontal_decompose53i(DWTELEM *b, int width){
+#ifdef __CW32__
+    DWTELEM *temp;
+#else
     DWTELEM temp[width];
+#endif
     const int width2= width>>1;
     int x;
     const int w2= (width+1)>>1;
+#ifdef __CW32__
+    temp = av_malloc(sizeof(DWTELEM)*width);
+#endif
 
     for(x=0; x<width2; x++){
         temp[x   ]= b[2*x    ];
@@ -893,6 +911,9 @@ static void horizontal_decompose53i(DWTELEM *b, int width){
     lift(b+w2, temp+w2, temp, 1, 1, 1, width, -1, 0, 1, 1, 0);
     lift(b   , temp   , b+w2, 1, 1, 1, width,  1, 2, 2, 0, 0);
 #endif /* 0 */
+#ifdef __CW32__
+    av_free(temp);
+#endif
 }
 
 static void vertical_decompose53iH0(DWTELEM *b0, DWTELEM *b1, DWTELEM *b2, int width){
@@ -932,13 +953,23 @@ static void spatial_decompose53i(DWTELEM *buffer, int width, int height, int str
 }
 
 static void horizontal_decompose97i(DWTELEM *b, int width){
+#ifdef __CW32__
+    DWTELEM *temp;
+#else
     DWTELEM temp[width];
+#endif
     const int w2= (width+1)>>1;
+#ifdef __CW32__
+    temp = av_malloc(sizeof(DWTELEM)*width);
+#endif
 
     lift (temp+w2, b    +1, b      , 1, 2, 2, width,  W_AM, W_AO, W_AS, 1, 1);
     liftS(temp   , b      , temp+w2, 1, 2, 1, width,  W_BM, W_BO, W_BS, 0, 0);
     lift (b   +w2, temp+w2, temp   , 1, 1, 1, width,  W_CM, W_CO, W_CS, 1, 0);
     lift (b      , temp   , b   +w2, 1, 1, 1, width,  W_DM, W_DO, W_DS, 0, 0);
+#ifdef __CW32__
+    av_free(temp);
+#endif
 }
 
 
@@ -1016,10 +1047,17 @@ void ff_spatial_dwt(DWTELEM *buffer, int width, int height, int stride, int type
 }
 
 static void horizontal_compose53i(IDWTELEM *b, int width){
-    IDWTELEM temp[width];
+#ifdef __CW32__
+    IDWTELEM *temp;
+#else
+    DWTELEM temp[width];
+#endif
     const int width2= width>>1;
     const int w2= (width+1)>>1;
     int x;
+#ifdef __CW32__
+    temp = av_malloc(sizeof(IDWTELEM)*width);
+#endif
 
 #if 0
     int A1,A2,A3,A4;
@@ -1060,6 +1098,9 @@ static void horizontal_compose53i(IDWTELEM *b, int width){
     }
     if(width&1)
         b[2*x    ]= temp[x   ];
+#ifdef __CW32__
+    av_free(temp);
+#endif
 }
 
 static void vertical_compose53iH0(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2, int width){
@@ -1136,7 +1177,11 @@ static void av_unused spatial_compose53i(IDWTELEM *buffer, int width, int height
 
 
 void ff_snow_horizontal_compose97i(IDWTELEM *b, int width){
-    IDWTELEM temp[width];
+#ifdef __CW32__
+	IDWTELEM *temp;
+#else
+	IDWTELEM temp[width];
+#endif
     const int w2= (width+1)>>1;
 
     inv_lift (temp   , b      , b   +w2, 1, 1, 1, width,  W_DM, W_DO, W_DS, 0, 1);
@@ -1341,9 +1386,16 @@ static int encode_subband_c0run(SnowContext *s, SubBand *b, IDWTELEM *src, IDWTE
 
     if(1){
         int run=0;
+#ifdef __CW32__
+        int *runs;
+#else
         int runs[w*h];
+#endif
         int run_index=0;
         int max_index;
+#ifdef __CW32__
+        runs = av_malloc(sizeof(int)*w*h);
+#endif
 
         for(y=0; y<h; y++){
             for(x=0; x<w; x++){
@@ -1450,6 +1502,9 @@ static int encode_subband_c0run(SnowContext *s, SubBand *b, IDWTELEM *src, IDWTE
                 }
             }
         }
+#ifdef __CW32__
+        av_free(runs);
+#endif
     }
     return 0;
 }
@@ -1693,12 +1748,21 @@ static inline void set_blocks(SnowContext *s, int level, int x, int y, int l, in
 }
 
 static inline void init_ref(MotionEstContext *c, uint8_t *src[3], uint8_t *ref[3], uint8_t *ref2[3], int x, int y, int ref_index){
+#ifdef __CW32__
+    int offset[3];
+#else
     const int offset[3]= {
           y*c->  stride + x,
         ((y*c->uvstride + x)>>1),
         ((y*c->uvstride + x)>>1),
     };
+#endif
     int i;
+#ifdef __CW32__
+    offset[0] = y*c->  stride + x;
+    offset[1] = ((y*c->uvstride + x)>>1);
+    offset[2] = ((y*c->uvstride + x)>>1);
+#endif
     for(i=0; i<3; i++){
         c->src[0][i]= src [i];
         c->ref[0][i]= ref [i] + offset[i];
@@ -1760,9 +1824,13 @@ static int encode_q_branch(SnowContext *s, int level, int x, int y){
     int l,cr,cb;
     const int stride= s->current_picture.linesize[0];
     const int uvstride= s->current_picture.linesize[1];
+#ifdef __CW32__
+    uint8_t *current_data[3];
+#else
     uint8_t *current_data[3]= { s->input_picture.data[0] + (x + y*  stride)*block_w,
                                 s->input_picture.data[1] + (x + y*uvstride)*block_w/2,
                                 s->input_picture.data[2] + (x + y*uvstride)*block_w/2};
+#endif
     int P[10][2];
     int16_t last_mv[3][2];
     int qpel= !!(s->avctx->flags & CODEC_FLAG_QPEL); //unused
@@ -1773,6 +1841,11 @@ static int encode_q_branch(SnowContext *s, int level, int x, int y){
     int my_context= av_log2(2*FFABS(left->my - top->my));
     int s_context= 2*left->level + 2*top->level + tl->level + tr->level;
     int ref, best_ref, ref_score, ref_mx, ref_my;
+#ifdef __CW32__
+    current_data[0] = s->input_picture.data[0] + (x + y*  stride)*block_w;
+    current_data[1] = s->input_picture.data[1] + (x + y*uvstride)*block_w/2;
+    current_data[2] = s->input_picture.data[2] + (x + y*uvstride)*block_w/2;
+#endif
 
     assert(sizeof(s->block_state) >= 256);
     if(s->keyframe){
@@ -2139,10 +2212,20 @@ static void mc_block(Plane *p, uint8_t *dst, const uint8_t *src, uint8_t *tmp, i
 
     int x, y, b, r, l;
     int16_t tmpIt   [64*(32+HTAPS_MAX)];
+#ifdef __CW32__
+    uint8_t **tmp2t;
+    int16_t *tmpI= tmpIt;
+    uint8_t *tmp2;
+#else
     uint8_t tmp2t[3][stride*(32+HTAPS_MAX)];
     int16_t *tmpI= tmpIt;
     uint8_t *tmp2= tmp2t[0];
+#endif
     const uint8_t *hpel[11];
+#ifdef __CW32__
+    tmp2t = av_malloc(sizeof(uint8_t)*3*stride*(32+HTAPS_MAX));
+    tmp2= tmp2t[0];
+#endif
     assert(dx<16 && dy<16);
     r= brane[dx + 16*dy]&15;
     l= brane[dx + 16*dy]>>4;
@@ -2281,14 +2364,27 @@ static void mc_block(Plane *p, uint8_t *dst, const uint8_t *src, uint8_t *tmp, i
             dst +=stride;
         }
     }
+#ifdef __CW32__
+    av_free(tmp2t);
+#endif
 }
 
+#ifdef __CW32__
+#define mca(dx,dy,b_w)\
+static void mc_block_hpel ## dx ## dy ## b_w(uint8_t *dst, const uint8_t *src, int stride, int h){\
+    uint8_t *tmp = av_malloc(sizeof(uint8_t)*stride*(b_w+HTAPS_MAX-1));\
+    assert(h==b_w);\
+    mc_block(NULL, dst, src-(HTAPS_MAX/2-1)-(HTAPS_MAX/2-1)*stride, tmp, stride, b_w, b_w, dx, dy);\
+    av_free(tmp);\
+}
+#else
 #define mca(dx,dy,b_w)\
 static void mc_block_hpel ## dx ## dy ## b_w(uint8_t *dst, const uint8_t *src, int stride, int h){\
     uint8_t tmp[stride*(b_w+HTAPS_MAX-1)];\
     assert(h==b_w);\
     mc_block(NULL, dst, src-(HTAPS_MAX/2-1)-(HTAPS_MAX/2-1)*stride, tmp, stride, b_w, b_w, dx, dy);\
 }
+#endif
 
 mca( 0, 0,16)
 mca( 8, 0,16)
@@ -2423,9 +2519,16 @@ static av_always_inline void add_yblock(SnowContext *s, int sliced, slice_buffer
     BlockNode *rb= lb+1;
     uint8_t *block[4];
     int tmp_step= src_stride >= 7*MB_SIZE ? MB_SIZE : MB_SIZE*src_stride;
+#ifdef __CW32__
+    uint8_t *tmp;
+#else
     uint8_t tmp[src_stride*7*MB_SIZE]; //FIXME align
+#endif
     uint8_t *ptmp;
     int x,y;
+#ifdef __CW32__
+    tmp = av_malloc(sizeof(uint8_t)*src_stride*7*MB_SIZE);
+#endif
 
     if(b_x<0){
         lt= rt;
@@ -2461,7 +2564,14 @@ static av_always_inline void add_yblock(SnowContext *s, int sliced, slice_buffer
         b_h = h - src_y;
     }
 
+#ifdef __CW32__
+    if(b_w<=0 || b_h<=0) {
+        av_free(tmp);
+    	return;
+    }
+#else
     if(b_w<=0 || b_h<=0) return;
+#endif
 
     assert(src_stride > 2*MB_SIZE + 5);
 
@@ -2568,6 +2678,9 @@ static av_always_inline void add_yblock(SnowContext *s, int sliced, slice_buffer
         }
     }
 #endif /* 0 */
+#ifdef __CW32__
+    av_free(tmp);
+#endif
 }
 
 static av_always_inline void predict_slice_buffered(SnowContext *s, slice_buffer * sb, IDWTELEM * old_buffer, int plane_index, int add, int mb_y){
@@ -2785,8 +2898,13 @@ static int get_block_rd(SnowContext *s, int mb_x, int mb_y, int plane_index, con
     uint8_t *dst= s->current_picture.data[plane_index];
     uint8_t *src= s->  input_picture.data[plane_index];
     IDWTELEM *pred= (IDWTELEM*)s->m.obmc_scratchpad + plane_index*block_size*block_size*4;
+#ifdef __CW32__
+    uint8_t *cur;
+    uint8_t *tmp;
+#else
     uint8_t cur[ref_stride*2*MB_SIZE]; //FIXME alignment
     uint8_t tmp[ref_stride*(2*MB_SIZE+HTAPS_MAX-1)];
+#endif
     const int b_stride = s->b_width << s->block_max_depth;
     const int b_height = s->b_height<< s->block_max_depth;
     const int w= p->width;
@@ -2801,6 +2919,10 @@ static int get_block_rd(SnowContext *s, int mb_x, int mb_y, int plane_index, con
     int x1= FFMIN(block_w*2, w-sx);
     int y1= FFMIN(block_w*2, h-sy);
     int i,x,y;
+#ifdef __CW32__
+    cur = av_malloc(sizeof(uint8_t)*ref_stride*2*MB_SIZE);
+    tmp = av_malloc(sizeof(uint8_t)*ref_stride*(2*MB_SIZE+HTAPS_MAX-1));
+#endif
 
     pred_block(s, cur, tmp, ref_stride, sx, sy, block_w*2, block_w*2, &s->block[mb_x + mb_y*b_stride], plane_index, w, h);
 
@@ -2871,6 +2993,10 @@ static int get_block_rd(SnowContext *s, int mb_x, int mb_y, int plane_index, con
         if(mb_x == b_stride-2)
             rate += get_block_bits(s, mb_x + 1, mb_y + 1, 1);
     }
+#ifdef __CW32__
+    av_free(cur);
+    av_free(tmp);
+#endif
     return distortion + rate*penalty_factor;
 }
 
@@ -2981,15 +3107,31 @@ static av_always_inline int check_block(SnowContext *s, int mb_x, int mb_y, int 
 /* special case for int[2] args we discard afterwards,
  * fixes compilation problem with gcc 2.95 */
 static av_always_inline int check_block_inter(SnowContext *s, int mb_x, int mb_y, int p0, int p1, const uint8_t *obmc_edged, int *best_rd){
+#ifndef __CW32__
     int p[2] = {p0, p1};
+#else
+    int p[2];
+    p[0] = p0;
+    p[0] = p1;
+#endif
     return check_block(s, mb_x, mb_y, p, 0, obmc_edged, best_rd);
 }
 
 static av_always_inline int check_4block_inter(SnowContext *s, int mb_x, int mb_y, int p0, int p1, int ref, int *best_rd){
     const int b_stride= s->b_width << s->block_max_depth;
     BlockNode *block= &s->block[mb_x + mb_y * b_stride];
+#ifdef __CW32__
+    BlockNode backup[4];
+#else
     BlockNode backup[4]= {block[0], block[1], block[b_stride], block[b_stride+1]};
+#endif
     int rd, index, value;
+#ifdef __CW32__
+    backup[0] = block[0];
+    backup[1] = block[1];
+    backup[2] = block[b_stride];
+    backup[3] = block[b_stride+1];
+#endif
 
     assert(mb_x>=0 && mb_y>=0);
     assert(mb_x<b_stride);
@@ -3059,7 +3201,12 @@ static void iterative_me(SnowContext *s){
                 BlockNode *blb= mb_x           && mb_y+1<b_height ? &s->block[index+b_stride-1] : NULL;
                 BlockNode *brb= mb_x+1<b_width && mb_y+1<b_height ? &s->block[index+b_stride+1] : NULL;
                 const int b_w= (MB_SIZE >> s->block_max_depth);
+#ifndef __CW32__
                 uint8_t obmc_edged[b_w*2][b_w*2];
+#else
+                uint8_t **obmc_edged;
+                obmc_edged = av_malloc(sizeof(uint8_t)*b_w*2*b_w*2);
+#endif
 
                 if(pass && (block->type & BLOCK_OPT))
                     continue;
@@ -3127,7 +3274,14 @@ static void iterative_me(SnowContext *s){
 
                 // get previous score (cannot be cached due to OBMC)
                 if(pass > 0 && (block->type&BLOCK_INTRA)){
+#ifndef __CW32__
                     int color0[3]= {block->color[0], block->color[1], block->color[2]};
+#else
+                    int color0[3];
+                    color0[0] = block->color[0];
+                    color0[1] = block->color[1];
+                    color0[2] = block->color[2];
+#endif
                     check_block(s, mb_x, mb_y, color0, 1, *obmc_edged, &best_rd);
                 }else
                     check_block_inter(s, mb_x, mb_y, block->mx, block->my, *obmc_edged, &best_rd);
@@ -4661,7 +4815,14 @@ AVCodec snow_decoder = {
     decode_frame,
     0 /*CODEC_CAP_DR1*/ /*| CODEC_CAP_DRAW_HORIZ_BAND*/,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Snow"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Snow"),
+#endif
 };
 
 #ifdef CONFIG_SNOW_ENCODER
@@ -4673,7 +4834,17 @@ AVCodec snow_encoder = {
     encode_init,
     encode_frame,
     encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Snow"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Snow"),
+#endif
 };
 #endif
 

@@ -53,8 +53,13 @@ static inline void addkey(uint64_t dst[2], uint64_t src[2], uint64_t round_key[2
 }
 
 static void subshift(uint8_t s0[2][16], int s, uint8_t *box){
+#ifndef __CW32__
+    uint8_t (*s1)[16]= s0[0] - s;
+    uint8_t (*s3)[16]= s0[0] + s;
+#else
     uint8_t (*s1)[16]= (uint8_t(*)[16])(s0[0] - s);
     uint8_t (*s3)[16]= (uint8_t(*)[16])(s0[0] + s);
+#endif
     s0[0][0]=box[s0[1][ 0]]; s0[0][ 4]=box[s0[1][ 4]]; s0[0][ 8]=box[s0[1][ 8]]; s0[0][12]=box[s0[1][12]];
     s1[0][3]=box[s1[1][ 7]]; s1[0][ 7]=box[s1[1][11]]; s1[0][11]=box[s1[1][15]]; s1[0][15]=box[s1[1][ 3]];
     s0[0][2]=box[s0[1][10]]; s0[0][10]=box[s0[1][ 2]]; s0[0][ 6]=box[s0[1][14]]; s0[0][14]=box[s0[1][ 6]];
@@ -80,15 +85,39 @@ static inline void mix(uint8_t state[2][4][4], uint32_t multbl[4][256], int s1, 
 static inline void crypt(AVAES *a, int s, uint8_t *sbox, uint32_t *multbl){
     int r;
 
+#ifndef __CW32__
+    for(r=a->rounds-1; r>0; r--){
+        mix(a->state, multbl, 3-s, 1+s);
+        addkey(a->state[1], a->state[0], a->round_key[r]);
+    }
+    subshift(a->state[0][0], s, sbox);
+#else
     for(r=a->rounds-1; r>0; r--){
         mix(a->state, (uint32_t(*)[256])multbl, 3-s, 1+s);
         addkey((uint64_t*)(a->state[1]), (uint64_t*)(a->state[0]), (uint64_t*)(a->round_key[r]));
     }
     subshift((uint8_t(*)[16])(a->state[0][0]), s, sbox);
+#endif
 }
 
 void av_aes_crypt(AVAES *a, uint8_t *dst, uint8_t *src, int count, uint8_t *iv, int decrypt){
     while(count--){
+#ifndef __CW32__
+        addkey(a->state[1], src, a->round_key[a->rounds]);
+        if(decrypt) {
+            crypt(a, 0, inv_sbox, dec_multbl);
+            if(iv){
+                addkey(a->state[0], a->state[0], iv);
+                memcpy(iv, src, 16);
+            }
+            addkey(dst, a->state[0], a->round_key[0]);
+        }else{
+            if(iv) addkey(a->state[1], a->state[1], iv);
+            crypt(a, 2,     sbox, enc_multbl);
+            addkey(dst, a->state[0], a->round_key[0]);
+            if(iv) memcpy(iv, dst, 16);
+        }
+#else
         addkey((uint64_t*)(a->state[1]), (uint64_t*)src, (uint64_t*)(a->round_key[a->rounds]));
         if(decrypt) {
             crypt(a, 0, inv_sbox, (uint32_t*)dec_multbl);
@@ -103,6 +132,7 @@ void av_aes_crypt(AVAES *a, uint8_t *dst, uint8_t *src, int count, uint8_t *iv, 
             addkey((uint64_t*)dst, (uint64_t*)(a->state[0]), (uint64_t*)(a->round_key[0]));
             if(iv) memcpy(iv, dst, 16);
         }
+#endif
         src+=16;
         dst+=16;
     }
@@ -129,8 +159,10 @@ int av_aes_init(AVAES *a, const uint8_t *key, int key_bits, int decrypt) {
     int rounds= KC + 6;
     uint8_t  log8[256];
     uint8_t alog8[512];
+#ifdef __CW32__
     int c1[4] = {0xe, 0x9, 0xd, 0xb};
     int c2[4] = {0x2, 0x1, 0x1, 0x3};
+#endif
 
     if(!enc_multbl[0][sizeof(enc_multbl)/sizeof(enc_multbl[0][0])-1]){
         j=1;
@@ -148,8 +180,13 @@ int av_aes_init(AVAES *a, const uint8_t *key, int key_bits, int decrypt) {
             inv_sbox[j]= i;
             sbox    [i]= j;
         }
+#ifndef __CW32__
+        init_multbl2(dec_multbl[0], (int[4]){0xe, 0x9, 0xd, 0xb}, log8, alog8, inv_sbox);
+        init_multbl2(enc_multbl[0], (int[4]){0x2, 0x1, 0x1, 0x3}, log8, alog8, sbox);
+#else
         init_multbl2((uint8_t*)dec_multbl[0], c1, log8, alog8, inv_sbox);
         init_multbl2((uint8_t*)enc_multbl[0], c2, log8, alog8, sbox);
+#endif
     }
 
     if(key_bits!=128 && key_bits!=192 && key_bits!=256)
@@ -179,8 +216,13 @@ int av_aes_init(AVAES *a, const uint8_t *key, int key_bits, int decrypt) {
         for(i=1; i<rounds; i++){
             uint8_t tmp[3][16];
             memcpy(tmp[2], a->round_key[i][0], 16);
+#ifndef __CW32__
+            subshift(tmp[1], 0, sbox);
+            mix(tmp, dec_multbl, 1, 3);
+#else
             subshift((uint8_t(*)[16])(tmp[1]), 0, sbox);
             mix((uint8_t(*)[4][4])tmp, (uint32_t(*)[256])dec_multbl, 1, 3);
+#endif
             memcpy(a->round_key[i][0], tmp[0], 16);
         }
     }else{

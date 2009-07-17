@@ -2031,6 +2031,22 @@ static int qdm2_decode_frame(AVCodecContext *avctx,
 
 AVCodec qdm2_decoder =
 {
+#ifdef __CW32__
+    "qdm2",
+    CODEC_TYPE_AUDIO,
+    CODEC_ID_QDM2,
+    sizeof(QDM2Context),
+    qdm2_decode_init,
+    0,
+    qdm2_decode_close,
+    qdm2_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("QDesign Music Codec 2"),
+#else
     .name = "qdm2",
     .type = CODEC_TYPE_AUDIO,
     .id = CODEC_ID_QDM2,
@@ -2039,4 +2055,5 @@ AVCodec qdm2_decoder =
     .close = qdm2_decode_close,
     .decode = qdm2_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("QDesign Music Codec 2"),
+#endif
 };

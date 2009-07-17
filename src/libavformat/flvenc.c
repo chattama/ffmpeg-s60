@@ -120,7 +120,11 @@ static void put_amf_string(ByteIOContext *pb, const char *str)
 {
     size_t len = strlen(str);
     put_be16(pb, len);
+#ifndef __CW32__
+    put_buffer(pb, str, len);
+#else
     put_buffer(pb, (const unsigned char*)str, len);
+#endif
 }
 
 static void put_amf_double(ByteIOContext *pb, double d)
@@ -320,7 +324,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     if (enc->codec_type == CODEC_TYPE_VIDEO) {
         put_byte(pb, FLV_TAG_TYPE_VIDEO);
 
-        flags = enc->codec_tag;
+        flags = codec_get_tag(flv_video_codec_ids, enc->codec_id);
         if(flags == 0) {
             av_log(enc, AV_LOG_ERROR, "video codec %X not compatible with flv\n",enc->codec_id);
             return -1;

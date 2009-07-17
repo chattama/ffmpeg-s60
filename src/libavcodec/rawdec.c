@@ -122,7 +122,11 @@ static int raw_decode(AVCodecContext *avctx,
     if(buf_size < context->length - (avctx->pix_fmt==PIX_FMT_PAL8 ? 256*4 : 0))
         return -1;
 
+#ifndef __CW32__
     avpicture_fill(picture, buf, avctx->pix_fmt, avctx->width, avctx->height);
+#else
+    avpicture_fill(picture, (uint8_t*)buf, avctx->pix_fmt, avctx->width, avctx->height);
+#endif
     if(avctx->pix_fmt==PIX_FMT_PAL8 && buf_size < context->length){
         frame->data[1]= context->buffer;
     }
@@ -162,5 +166,14 @@ AVCodec rawvideo_decoder = {
     NULL,
     raw_close_decoder,
     raw_decode,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("raw video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("raw video"),
+#endif
 };

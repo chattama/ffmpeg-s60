@@ -836,6 +836,15 @@ AVCodec fourxm_decoder = {
     decode_end,
     decode_frame,
     /*CODEC_CAP_DR1,*/
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("4X Movie"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("4X Movie"),
+#endif
 };
 

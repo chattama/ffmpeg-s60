@@ -158,5 +158,13 @@ AVCodec avs_decoder = {
     NULL,
     avs_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("AVS (Audio Video Standard) video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("AVS (Audio Video Standard) video"),
+#endif
 };

@@ -312,7 +312,7 @@ static void v_block_filter(MpegEncContext *s, uint8_t *dst, int w, int h, int st
 }
 
 static void guess_mv(MpegEncContext *s){
-#ifdef __SYMBIAN32__
+#ifdef __CW32__
     uint8_t *fixed;
 #else
     uint8_t fixed[s->mb_stride * s->mb_height];
@@ -325,8 +325,8 @@ static void guess_mv(MpegEncContext *s){
     const int mb_height= s->mb_height;
     int i, depth, num_avail;
     int mb_x, mb_y;
-#ifdef __SYMBIAN32__
-    fixed = (uint8_t*)av_malloc(sizeof(uint8_t) * s->mb_stride * s->mb_height);
+#ifdef __CW32__
+    fixed = av_malloc(sizeof(uint8_t) * s->mb_stride * s->mb_height);
 #endif
 
     num_avail=0;
@@ -365,6 +365,9 @@ static void guess_mv(MpegEncContext *s){
                 decode_mb(s);
             }
         }
+#ifdef __CW32__
+        av_free(fixed);
+#endif
         return;
     }
 
@@ -544,7 +547,14 @@ score_sum+= best_score;
         }
 
         if(none_left)
+#ifdef __CW32__
+        {
+        av_free(fixed);
+#endif
             return;
+#ifdef __CW32__
+        }
+#endif
 
         for(i=0; i<s->mb_num; i++){
             int mb_xy= s->mb_index2xy[i];
@@ -553,6 +563,9 @@ score_sum+= best_score;
         }
 //        printf(":"); fflush(stdout);
     }
+#ifdef __CW32__
+    av_free(fixed);
+#endif
 }
 
 static int is_intra_more_likely(MpegEncContext *s){

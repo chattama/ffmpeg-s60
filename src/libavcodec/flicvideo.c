@@ -750,5 +750,9 @@ AVCodec flic_decoder = {
     NULL,
     NULL,
     NULL,
+#ifdef __CW32__
+    NULL_IF_CONFIG_SMALL("Autodesk Animator Flic video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Autodesk Animator Flic video"),
+#endif
 };

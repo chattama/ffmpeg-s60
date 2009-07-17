@@ -98,7 +98,11 @@ static int amf_get_string(ByteIOContext *ioc, char *buffer, int buffsize) {
         return -1;
     }
 
+#ifndef __CW32__
+    get_buffer(ioc, buffer, length);
+#else
     get_buffer(ioc, (unsigned char*)buffer, length);
+#endif
 
     buffer[length] = '\0';
 

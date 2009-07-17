@@ -78,10 +78,18 @@ static av_cold int eightsvx_decode_init(AVCodecContext *avctx)
 
     switch(avctx->codec->id) {
         case CODEC_ID_8SVX_FIB:
-          esc->table = fibonacci;
+#ifndef __CW32__
+            esc->table = fibonacci;
+#else
+            esc->table = (int16_t*)fibonacci;
+#endif
           break;
         case CODEC_ID_8SVX_EXP:
-          esc->table = exponential;
+#ifndef __CW32__
+            esc->table = exponential;
+#else
+            esc->table = (int16_t*)exponential;
+#endif
           break;
         default:
           return -1;
@@ -90,21 +98,55 @@ static av_cold int eightsvx_decode_init(AVCodecContext *avctx)
 }
 
 AVCodec eightsvx_fib_decoder = {
-  .name           = "8svx_fib",
-  .type           = CODEC_TYPE_AUDIO,
-  .id             = CODEC_ID_8SVX_FIB,
-  .priv_data_size = sizeof (EightSvxContext),
-  .init           = eightsvx_decode_init,
-  .decode         = eightsvx_decode_frame,
-  .long_name      = NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
+#ifdef __CW32__
+		  "8svx_fib",
+		  CODEC_TYPE_AUDIO,
+		  CODEC_ID_8SVX_FIB,
+		  sizeof (EightSvxContext),
+		  eightsvx_decode_init,
+		  0,
+		  0,
+		  eightsvx_decode_frame,
+		  0,
+		  0,
+		  0,
+		  0,
+		  0,
+		  NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
+#else
+		  .name           = "8svx_fib",
+		  .type           = CODEC_TYPE_AUDIO,
+		  .id             = CODEC_ID_8SVX_FIB,
+		  .priv_data_size = sizeof (EightSvxContext),
+		  .init           = eightsvx_decode_init,
+		  .decode         = eightsvx_decode_frame,
+		  .long_name      = NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
+#endif
 };
 
 AVCodec eightsvx_exp_decoder = {
-  .name           = "8svx_exp",
-  .type           = CODEC_TYPE_AUDIO,
-  .id             = CODEC_ID_8SVX_EXP,
-  .priv_data_size = sizeof (EightSvxContext),
-  .init           = eightsvx_decode_init,
-  .decode         = eightsvx_decode_frame,
-  .long_name      = NULL_IF_CONFIG_SMALL("8SVX exponential"),
+#ifdef __CW32__
+		  "8svx_exp",
+		  CODEC_TYPE_AUDIO,
+		  CODEC_ID_8SVX_EXP,
+		  sizeof (EightSvxContext),
+		  eightsvx_decode_init,
+		  0,
+		  0,
+		  eightsvx_decode_frame,
+		  0,
+		  0,
+		  0,
+		  0,
+		  0,
+		  NULL_IF_CONFIG_SMALL("8SVX exponential"),
+#else
+		  .name           = "8svx_exp",
+		  .type           = CODEC_TYPE_AUDIO,
+		  .id             = CODEC_ID_8SVX_EXP,
+		  .priv_data_size = sizeof (EightSvxContext),
+		  .init           = eightsvx_decode_init,
+		  .decode         = eightsvx_decode_frame,
+		  .long_name      = NULL_IF_CONFIG_SMALL("8SVX exponential"),
+#endif
 };

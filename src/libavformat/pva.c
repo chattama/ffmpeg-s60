@@ -207,5 +207,11 @@ AVInputFormat pva_demuxer = {
     pva_probe,
     pva_read_header,
     pva_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    pva_read_timestamp
+#else
     .read_timestamp = pva_read_timestamp
+#endif
 };

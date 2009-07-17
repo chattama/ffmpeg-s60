@@ -586,5 +586,9 @@ AVInputFormat mpegps_demuxer = {
     NULL,
     NULL, //mpegps_read_seek,
     mpegps_read_dts,
+#ifdef __CW32__
+    AVFMT_SHOW_IDS,
+#else
     .flags = AVFMT_SHOW_IDS,
+#endif
 };

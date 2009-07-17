@@ -228,5 +228,15 @@ AVCodec zlib_encoder = {
     encode_init,
     encode_frame,
     encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
+#endif
 };

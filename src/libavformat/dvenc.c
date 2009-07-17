@@ -253,7 +253,11 @@ int dv_assemble_frame(DVMuxContext *c, AVStream* st,
           /* FIXME: we have to have more sensible approach than this one */
         if (av_fifo_size(&c->audio_data[i]) + data_size >= 100*AVCODEC_MAX_AUDIO_FRAME_SIZE)
             av_log(st->codec, AV_LOG_ERROR, "Can't process DV frame #%d. Insufficient video data or severe sync problem.\n", c->frames);
+#ifdef __CW32__
+        av_fifo_generic_write(&c->audio_data[i], (void*)data, data_size, NULL);
+#else
         av_fifo_generic_write(&c->audio_data[i], data, data_size, NULL);
+#endif
 
         /* Lets see if we've got enough audio for one DV frame */
         c->has_audio |= ((reqasize <= av_fifo_size(&c->audio_data[i])) << i);

@@ -219,7 +219,7 @@ static void vp6_build_huff_tree(vp56_context_t *s, uint8_t coeff_model[],
 #endif
     int a, b, i;
 #ifdef __CW32__
-    nodes = (Node*)av_malloc(sizeof(Node)*2*size);
+    nodes = av_malloc(sizeof(Node)*2*size);
     tmp = &nodes[size];
 #endif
 
@@ -235,6 +235,9 @@ static void vp6_build_huff_tree(vp56_context_t *s, uint8_t coeff_model[],
     /* then build the huffman tree accodring to probabilities */
     ff_huff_build_tree(s->avctx, vlc, size, nodes, vp6_huff_cmp,
                        FF_HUFFMAN_FLAG_HNODE_FIRST);
+#ifdef __CW32__
+    av_free(nodes);
+#endif
 }
 
 static void vp6_parse_coeff_models(vp56_context_t *s)

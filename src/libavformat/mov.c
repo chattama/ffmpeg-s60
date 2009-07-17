@@ -266,7 +266,11 @@ static int mov_read_dref(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
 
             volume_len = get_byte(pb);
             volume_len = FFMIN(volume_len, 27);
+#ifndef __CW32__
+            get_buffer(pb, volume, 27);
+#else
             get_buffer(pb, (unsigned char*)volume, 27);
+#endif
             volume[volume_len] = 0;
             av_log(c->fc, AV_LOG_DEBUG, "volume %s, len %d\n", volume, volume_len);
 
@@ -283,7 +287,11 @@ static int mov_read_dref(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
                     dref->path = av_mallocz(len+1);
                     if (!dref->path)
                         return AVERROR(ENOMEM);
+#ifndef __CW32__
+                    get_buffer(pb, dref->path, len);
+#else
                     get_buffer(pb, (unsigned char*)dref->path, len);
+#endif
                     if (len > volume_len && !strncmp(dref->path, volume, volume_len)) {
                         len -= volume_len;
                         memmove(dref->path, dref->path+volume_len, len);
@@ -1335,7 +1343,11 @@ static void mov_parse_udta_string(ByteIOContext *pb, char *str, int size)
     uint16_t str_size = get_be16(pb); /* string length */;
 
     get_be16(pb); /* skip language */
+#ifndef __CW32__
+    get_buffer(pb, str, FFMIN(size, str_size));
+#else
     get_buffer(pb, (unsigned char*)str, FFMIN(size, str_size));
+#endif
 }
 
 static int mov_read_udta(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)

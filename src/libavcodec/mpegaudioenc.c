@@ -796,7 +796,16 @@ AVCodec mp2_encoder = {
     MPA_encode_frame,
     MPA_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
+#endif
 };
 
 #undef FIX

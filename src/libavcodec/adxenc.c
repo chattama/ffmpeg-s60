@@ -190,5 +190,14 @@ AVCodec adpcm_adx_encoder = {
     adx_encode_frame,
     adx_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("SEGA CRI ADX"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("SEGA CRI ADX"),
+#endif
 };

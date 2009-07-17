@@ -4682,7 +4682,11 @@ decode_intra_mb:
             }
             if(   IS_DIRECT(h->sub_mb_type[0]) || IS_DIRECT(h->sub_mb_type[1])
                || IS_DIRECT(h->sub_mb_type[2]) || IS_DIRECT(h->sub_mb_type[3])) {
+#ifndef __CW32__
+                pred_direct_motion(h, &mb_type);
+#else
                 pred_direct_motion(h, (int*)&mb_type);
+#endif
                 h->ref_cache[0][scan8[4]] =
                 h->ref_cache[1][scan8[4]] =
                 h->ref_cache[0][scan8[12]] =
@@ -4766,7 +4770,11 @@ decode_intra_mb:
             }
         }
     }else if(IS_DIRECT(mb_type)){
+#ifndef __CW32__
+        pred_direct_motion(h, &mb_type);
+#else
         pred_direct_motion(h, (int*)&mb_type);
+#endif
         dct8x8_allowed &= h->sps.direct_8x8_inference_flag;
     }else{
         int list, mx, my, i;
@@ -6998,7 +7006,11 @@ static int decode_unregistered_user_data(H264Context *h, int size){
     }
 
     user_data[i]= 0;
+#ifndef __CW32__
+    e= sscanf(user_data+16, "x264 - core %d"/*%s - H.264/MPEG-4 AVC codec - Copyleft 2005 - http://www.videolan.org/x264.html*/, &build);
+#else
     e= sscanf((const char*)(user_data+16), "x264 - core %d"/*%s - H.264/MPEG-4 AVC codec - Copyleft 2005 - http://www.videolan.org/x264.html*/, &build);
+#endif
     if(e==1 && build>=0)
         h->x264_build= build;
 

@@ -49,7 +49,11 @@ static int crc_write_trailer(struct AVFormatContext *s)
     char buf[64];
 
     snprintf(buf, sizeof(buf), "CRC=0x%08x\n", crc->crcval);
+#ifdef __CW32__
+    put_buffer(s->pb, (const unsigned char*)buf, strlen(buf));
+#else
     put_buffer(s->pb, buf, strlen(buf));
+#endif
     put_flush_packet(s->pb);
     return 0;
 }

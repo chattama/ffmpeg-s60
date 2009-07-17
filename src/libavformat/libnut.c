@@ -55,6 +55,9 @@ static int av_write(void * h, size_t len, const uint8_t * buf) {
 static int nut_write_header(AVFormatContext * avf) {
     NUTContext * priv = avf->priv_data;
     ByteIOContext * bc = avf->pb;
+#ifdef __CW32__
+    nut_muxer_opts_t mopts;
+#else
     nut_muxer_opts_t mopts = {
         .output = {
             .priv = bc,
@@ -66,8 +69,20 @@ static int nut_write_header(AVFormatContext * avf) {
         .max_distance = 32768,
         .fti = NULL,
     };
+#endif
     nut_stream_header_t * s;
     int i;
+#ifdef __CW32__
+    mopts.output.priv = bc;
+    mopts.output.write = av_write;
+    mopts.alloc.malloc = av_malloc;
+    mopts.alloc.realloc = av_realloc;
+    mopts.alloc.free = av_free;
+    mopts.write_index = 1;
+    mopts.realtime_stream = 0;
+    mopts.max_distance = 32768;
+    mopts.fti = NULL;
+#endif
 
     priv->s = s = av_mallocz((avf->nb_streams + 1) * sizeof*s);
 
@@ -161,7 +176,11 @@ AVOutputFormat libnut_muxer = {
     nut_write_header,
     nut_write_packet,
     nut_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+#else
     .flags = AVFMT_GLOBALHEADER,
+#endif
 };
 #endif //CONFIG_MUXERS
 
@@ -188,6 +207,9 @@ static off_t av_seek(void * h, long long pos, int whence) {
 static int nut_read_header(AVFormatContext * avf, AVFormatParameters * ap) {
     NUTContext * priv = avf->priv_data;
     ByteIOContext * bc = avf->pb;
+#ifdef __CW32__
+    nut_demuxer_opts_t dopts;
+#else
     nut_demuxer_opts_t dopts = {
         .input = {
             .priv = bc,
@@ -200,9 +222,22 @@ static int nut_read_header(AVFormatContext * avf, AVFormatParameters * ap) {
         .read_index = 1,
         .cache_syncpoints = 1,
     };
+#endif
     nut_context_t * nut = priv->nut = nut_demuxer_init(&dopts);
     nut_stream_header_t * s;
     int ret, i;
+#ifdef __CW32__
+    dopts.input.priv = bc;
+    dopts.input.seek = av_seek;
+    dopts.input.read = av_read;
+    dopts.input.eof = NULL;
+    dopts.input.file_pos = 0;
+    dopts.alloc.malloc = av_malloc;
+    dopts.alloc.realloc = av_realloc;
+    dopts.alloc.free = av_free;
+    dopts.read_index = 1;
+    dopts.cache_syncpoints = 1;
+#endif
 
     if ((ret = nut_read_headers(nut, &s, NULL))) {
         av_log(avf, AV_LOG_ERROR, " NUT error: %s\n", nut_error(ret));
@@ -281,8 +316,16 @@ static int nut_read_packet(AVFormatContext * avf, AVPacket * pkt) {
 
 static int nut_read_seek(AVFormatContext * avf, int stream_index, int64_t target_ts, int flags) {
     NUTContext * priv = avf->priv_data;
+#ifdef __CW32__
+    int active_streams[2];
+#else
     int active_streams[] = { stream_index, -1 };
+#endif
     double time_pos = target_ts * priv->s[stream_index].time_base.num / (double)priv->s[stream_index].time_base.den;
+#ifdef __CW32__
+    active_streams[0] = stream_index;
+    active_streams[1] = -1;
+#endif
 
     if (nut_seek(priv->nut, time_pos, 2*!(flags & AVSEEK_FLAG_BACKWARD), active_streams)) return -1;
 
@@ -306,5 +349,11 @@ AVInputFormat libnut_demuxer = {
     nut_read_packet,
     nut_read_close,
     nut_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "nut",
+#else
     .extensions = "nut",
+#endif
 };

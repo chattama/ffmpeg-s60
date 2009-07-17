@@ -186,8 +186,13 @@ static void do_output_subblock(RA144Context *ractx, const uint16_t  *lpc_coefs,
 
     if (cba_idx) {
         cba_idx += BLOCKSIZE/2 - 1;
+#ifdef __CW32__
+        copy_and_dup((int16_t*)buffer_a, (const int16_t*)ractx->adapt_cb, cba_idx);
+        m[0] = (irms((const int16_t*)buffer_a) * gval) >> 12;
+#else
         copy_and_dup(buffer_a, ractx->adapt_cb, cba_idx);
         m[0] = (irms(buffer_a) * gval) >> 12;
+#endif
     } else {
         m[0] = 0;
     }
@@ -200,19 +205,32 @@ static void do_output_subblock(RA144Context *ractx, const uint16_t  *lpc_coefs,
 
     block = ractx->adapt_cb + BUFFERSIZE - BLOCKSIZE;
 
+#ifdef __CW32__
+    add_wav((int16_t*)block, gain, cba_idx, m, (const int16_t*)buffer_a,
+    		cb1_vects[cb1_idx], cb2_vects[cb2_idx]);
+#else
     add_wav(block, gain, cba_idx, m, buffer_a,
             cb1_vects[cb1_idx], cb2_vects[cb2_idx]);
+#endif
 
     memcpy(ractx->curr_sblock, ractx->curr_sblock + 40,
            10*sizeof(*ractx->curr_sblock));
     memcpy(ractx->curr_sblock + 10, block,
            BLOCKSIZE*sizeof(*ractx->curr_sblock));
 
+#ifdef __CW32__
+    if (ff_acelp_lp_synthesis_filter(
+                                     ractx->curr_sblock + 10, (const int16_t*)lpc_coefs,
+                                     ractx->curr_sblock + 10, BLOCKSIZE,
+                                     10, 1, 0xfff)
+        )
+#else
     if (ff_acelp_lp_synthesis_filter(
                                      ractx->curr_sblock + 10, lpc_coefs,
                                      ractx->curr_sblock + 10, BLOCKSIZE,
                                      10, 1, 0xfff)
         )
+#endif
         memset(ractx->curr_sblock, 0, 50*sizeof(*ractx->curr_sblock));
 }
 
@@ -292,7 +310,11 @@ static int interp(RA144Context *ractx, int16_t *out, int block_num,
     if (eval_refl(work, out, ractx)) {
         // The interpolated coefficients are unstable, copy either new or old
         // coefficients
+#ifdef __CW32__
+        int_to_int16(out, (const int*)ractx->lpc_coef[copyold]);
+#else
         int_to_int16(out, ractx->lpc_coef[copyold]);
+#endif
         return rescale_rms(ractx->lpc_refl_rms[copyold], energy);
     } else {
         return rescale_rms(rms(work), energy);
@@ -325,6 +347,20 @@ static int ra144_decode_frame(AVCodecContext * avctx, void *vdata,
     for (i=0; i<10; i++)
         lpc_refl[i] = lpc_refl_cb[i][get_bits(&gb, sizes[i])];
 
+#ifdef __CW32__
+    eval_coefs((int*)ractx->lpc_coef[0], (const int*)lpc_refl);
+    ractx->lpc_refl_rms[0] = rms((const int*)lpc_refl);
+
+    energy = energy_tab[get_bits(&gb, 5)];
+
+    refl_rms[0] = interp(ractx, (int16_t*)block_coefs[0], 0, 1, ractx->old_energy);
+    refl_rms[1] = interp(ractx, (int16_t*)block_coefs[1], 1, energy <= ractx->old_energy,
+                    t_sqrt(energy*ractx->old_energy) >> 12);
+    refl_rms[2] = interp(ractx, (int16_t*)block_coefs[2], 2, 0, energy);
+    refl_rms[3] = rescale_rms(ractx->lpc_refl_rms[0], energy);
+
+    int_to_int16((int16_t*)block_coefs[3], (const int*)ractx->lpc_coef[0]);
+#else
     eval_coefs(ractx->lpc_coef[0], lpc_refl);
     ractx->lpc_refl_rms[0] = rms(lpc_refl);
 
@@ -337,6 +373,7 @@ static int ra144_decode_frame(AVCodecContext * avctx, void *vdata,
     refl_rms[3] = rescale_rms(ractx->lpc_refl_rms[0], energy);
 
     int_to_int16(block_coefs[3], ractx->lpc_coef[0]);
+#endif
 
     for (c=0; c<4; c++) {
         do_output_subblock(ractx, block_coefs[c], refl_rms[c], &gb);
@@ -364,5 +401,14 @@ AVCodec ra_144_decoder =
     NULL,
     NULL,
     ra144_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("RealAudio 1.0 (14.4K)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("RealAudio 1.0 (14.4K)"),
+#endif
 };

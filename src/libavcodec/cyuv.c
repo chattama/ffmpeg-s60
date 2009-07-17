@@ -181,6 +181,13 @@ AVCodec cyuv_decoder = {
     cyuv_decode_frame,
     CODEC_CAP_DR1,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"),
+#endif
 };
 

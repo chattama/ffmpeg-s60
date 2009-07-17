@@ -149,6 +149,22 @@ static av_cold int targa_encode_init(AVCodecContext *avctx)
 }
 
 AVCodec targa_encoder = {
+#ifdef __CW32__
+    "targa",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_TARGA,
+    sizeof(TargaContext),
+    targa_encode_init,
+    targa_encode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB555, PIX_FMT_GRAY8, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Truevision Targa image"),
+#else
     .name = "targa",
     .type = CODEC_TYPE_VIDEO,
     .id = CODEC_ID_TARGA,
@@ -157,4 +173,5 @@ AVCodec targa_encoder = {
     .encode = targa_encode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB555, PIX_FMT_GRAY8, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Truevision Targa image"),
+#endif
 };

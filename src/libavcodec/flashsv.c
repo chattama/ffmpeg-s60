@@ -193,7 +193,11 @@ static int flashsv_decode_frame(AVCodecContext *avctx,
                     av_log(avctx, AV_LOG_ERROR, "error in decompression (reset) of block %dx%d\n", i, j);
                     /* return -1; */
                 }
+#ifdef __CW32__
+                s->zstream.next_in = (unsigned char *)(buf+(get_bits_count(&gb)/8));
+#else
                 s->zstream.next_in = buf+(get_bits_count(&gb)/8);
+#endif
                 s->zstream.avail_in = size;
                 s->zstream.next_out = s->tmpblock;
                 s->zstream.avail_out = s->block_size*3;
@@ -254,6 +258,14 @@ AVCodec flashsv_decoder = {
     flashsv_decode_end,
     flashsv_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Flash Screen Video v1"),
+#else
     .pix_fmts = (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Flash Screen Video v1"),
+#endif
 };

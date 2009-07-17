@@ -39,7 +39,11 @@ static int mp3_header_decompress(AVBitStreamFilterContext *bsfc, AVCodecContext 
         return 0;
     }
 
+#ifdef __CW32__
+    if(avctx->extradata_size != 15 || strcmp((char*)avctx->extradata, "FFCMP3 0.0")){
+#else
     if(avctx->extradata_size != 15 || strcmp(avctx->extradata, "FFCMP3 0.0")){
+#endif
         av_log(avctx, AV_LOG_ERROR, "Extradata invalid %d\n", avctx->extradata_size);
         return -1;
     }

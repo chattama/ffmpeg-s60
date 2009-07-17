@@ -31,7 +31,11 @@ static int get_str(ByteIOContext *bc, char *string, unsigned int maxlen){
     unsigned int len= ff_get_v(bc);
 
     if(len && maxlen)
+#ifdef __CW32__
+        get_buffer(bc, (unsigned char*)string, FFMIN(len, maxlen));
+#else
         get_buffer(bc, string, FFMIN(len, maxlen));
+#endif
     while(len > maxlen){
         get_byte(bc);
         len--;
@@ -93,7 +97,11 @@ static int get_packetheader(NUTContext *nut, ByteIOContext *bc, int calculate_ch
 //    start= url_ftell(bc) - 8;
 
     startcode= be2me_64(startcode);
+#ifdef __CW32__
+    startcode= ff_crc04C11DB7_update(0, (unsigned char*)&startcode, 8);
+#else
     startcode= ff_crc04C11DB7_update(0, &startcode, 8);
+#endif
 
     init_checksum(bc, ff_crc04C11DB7_update, startcode);
     size= ff_get_v(bc);
@@ -271,7 +279,11 @@ static int decode_main_header(NUTContext *nut){
                 return -1;
             }
             nut->header[i]= av_malloc(nut->header_len[i]);
+#ifdef __CW32__
+            get_buffer(bc, (unsigned char*)nut->header[i], nut->header_len[i]);
+#else
             get_buffer(bc, nut->header[i], nut->header_len[i]);
+#endif
         }
         assert(nut->header_len[0]==0);
     }
@@ -846,11 +858,24 @@ assert(0);
 static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flags){
     NUTContext *nut = s->priv_data;
     AVStream *st= s->streams[stream_index];
+#ifdef __CW32__
+    syncpoint_t dummy;
+    syncpoint_t nopts_sp;
+    syncpoint_t *sp, *next_node[2];
+#else
     syncpoint_t dummy={.ts= pts*av_q2d(st->time_base)*AV_TIME_BASE};
     syncpoint_t nopts_sp= {.ts= AV_NOPTS_VALUE, .back_ptr= AV_NOPTS_VALUE};
     syncpoint_t *sp, *next_node[2]= {&nopts_sp, &nopts_sp};
+#endif
     int64_t pos, pos2, ts;
     int i;
+#ifdef __CW32__
+    dummy.ts= pts*av_q2d(st->time_base)*AV_TIME_BASE;
+    nopts_sp.ts= AV_NOPTS_VALUE;
+    nopts_sp.back_ptr= AV_NOPTS_VALUE;
+    next_node[0]= &nopts_sp;
+    next_node[1]= &nopts_sp;
+#endif
 
     if(st->index_entries){
         int index= av_index_search_timestamp(st, pts, flags);
@@ -860,7 +885,11 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
         pos2= st->index_entries[index].pos;
         ts  = st->index_entries[index].timestamp;
     }else{
+#ifdef __CW32__
+        av_tree_find(nut->syncpoints, &dummy, (int (*)(void *, const void *))ff_nut_sp_pts_cmp, (void **)next_node);
+#else
         av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pts_cmp, next_node);
+#endif
         av_log(s, AV_LOG_DEBUG, "%"PRIu64"-%"PRIu64" %"PRId64"-%"PRId64"\n", next_node[0]->pos, next_node[1]->pos,
                                                     next_node[0]->ts , next_node[1]->ts);
         pos= av_gen_search(s, -1, dummy.ts, next_node[0]->pos, next_node[1]->pos, next_node[1]->pos,
@@ -869,7 +898,11 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
         if(!(flags & AVSEEK_FLAG_BACKWARD)){
             dummy.pos= pos+16;
             next_node[1]= &nopts_sp;
+#ifdef __CW32__
+            av_tree_find(nut->syncpoints, &dummy, (int (*)(void *, const void *))ff_nut_sp_pos_cmp, (void **)next_node);
+#else
             av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pos_cmp, next_node);
+#endif
             pos2= av_gen_search(s, -2, dummy.pos, next_node[0]->pos     , next_node[1]->pos, next_node[1]->pos,
                                                 next_node[0]->back_ptr, next_node[1]->back_ptr, flags, &ts, nut_read_timestamp);
             if(pos2>=0)
@@ -877,7 +910,11 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
             //FIXME dir but I think it does not matter
         }
         dummy.pos= pos;
+#ifdef __CW32__
+        sp= av_tree_find(nut->syncpoints, &dummy, (int (*)(void *, const void *))ff_nut_sp_pos_cmp, (void **)NULL);
+#else
         sp= av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pos_cmp, NULL);
+#endif
 
         assert(sp);
         pos2= sp->back_ptr  - 15;
@@ -915,6 +952,12 @@ AVInputFormat nut_demuxer = {
     nut_read_packet,
     nut_read_close,
     read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "nut",
+#else
     .extensions = "nut",
+#endif
 };
 #endif

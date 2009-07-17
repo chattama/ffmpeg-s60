@@ -131,5 +131,13 @@ AVInputFormat mvi_demuxer = {
     NULL,
     read_header,
     read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    "mvi"
+#else
     .extensions = "mvi"
+#endif
 };

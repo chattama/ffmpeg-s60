@@ -292,7 +292,17 @@ AVCodec flashsv_encoder = {
     flashsv_encode_init,
     flashsv_encode_frame,
     flashsv_encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("Flash Screen Video"),
+#else
     .pix_fmts = (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Flash Screen Video"),
+#endif
 };
 

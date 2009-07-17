@@ -42,6 +42,10 @@
 #include <arpa/inet.h>
 #endif
 
+#ifdef __SYMBIAN32__
+#include <sys/select.h>
+#endif
+
 int ff_socket_nonblock(int socket, int enable);
 
 static inline int ff_network_init(void)

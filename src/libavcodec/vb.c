@@ -278,6 +278,15 @@ AVCodec vb_decoder = {
     NULL,
     decode_end,
     decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Beam Software VB"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Beam Software VB"),
+#endif
 };
 

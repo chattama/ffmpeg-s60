@@ -342,5 +342,13 @@ AVCodec dnxhd_decoder = {
     dnxhd_decode_close,
     dnxhd_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("VC3/DNxHD"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("VC3/DNxHD"),
+#endif
 };

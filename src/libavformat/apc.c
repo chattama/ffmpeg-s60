@@ -24,7 +24,11 @@
 
 static int apc_probe(AVProbeData *p)
 {
+#ifdef __CW32__
+    if (!strncmp((const char*)p->buf, "CRYO_APC", 8))
+#else
     if (!strncmp(p->buf, "CRYO_APC", 8))
+#endif
         return AVPROBE_SCORE_MAX;
 
     return 0;

@@ -56,5 +56,11 @@ AVInputFormat daud_demuxer = {
     daud_packet,
     NULL,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    "302",
+#else
     .extensions = "302",
+#endif
 };

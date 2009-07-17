@@ -888,7 +888,11 @@ static int atrac3_decode_frame(AVCodecContext *avctx,
         decode_bytes(buf, q->decoded_bytes_buffer, avctx->block_align);
         databuf = q->decoded_bytes_buffer;
     } else {
+#ifndef __CW32__
         databuf = buf;
+#else
+        databuf = (uint8_t*)buf;
+#endif
     }
 
     result = decodeFrame(q, databuf);
@@ -1064,12 +1068,29 @@ static int atrac3_decode_init(AVCodecContext *avctx)
 
 AVCodec atrac3_decoder =
 {
-    .name = "atrac3",
-    .type = CODEC_TYPE_AUDIO,
-    .id = CODEC_ID_ATRAC3,
-    .priv_data_size = sizeof(ATRAC3Context),
-    .init = atrac3_decode_init,
-    .close = atrac3_decode_close,
-    .decode = atrac3_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("Atrac 3 (Adaptive TRansform Acoustic Coding 3)"),
+#ifdef __CW32__
+	    "atrac3",
+	    CODEC_TYPE_AUDIO,
+	    CODEC_ID_ATRAC3,
+	    sizeof(ATRAC3Context),
+	    atrac3_decode_init,
+	    0,
+	    atrac3_decode_close,
+	    atrac3_decode_frame,
+	    0,
+	    0,
+	    0,
+	    0,
+	    0,
+	    NULL_IF_CONFIG_SMALL("Atrac 3 (Adaptive TRansform Acoustic Coding 3)"),
+#else
+	    .name = "atrac3",
+	    .type = CODEC_TYPE_AUDIO,
+	    .id = CODEC_ID_ATRAC3,
+	    .priv_data_size = sizeof(ATRAC3Context),
+	    .init = atrac3_decode_init,
+	    .close = atrac3_decode_close,
+	    .decode = atrac3_decode_frame,
+	    .long_name = NULL_IF_CONFIG_SMALL("Atrac 3 (Adaptive TRansform Acoustic Coding 3)"),
+#endif
 };

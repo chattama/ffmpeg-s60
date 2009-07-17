@@ -398,7 +398,11 @@ static int udp_open(URLContext *h, const char *uri, int flags)
         goto fail;
 
     len = sizeof(my_addr);
+#ifndef __CW32__
     getsockname(udp_fd, (struct sockaddr *)&my_addr, &len);
+#else
+    getsockname(udp_fd, (struct sockaddr *)&my_addr, (unsigned int *)&len);
+#endif
     s->local_port = udp_port(&my_addr, len);
 
     if (s->is_multicast) {

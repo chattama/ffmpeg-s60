@@ -126,9 +126,17 @@ static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     int is_mythtv, width, height, v_packs, a_packs;
     int stream_nr = 0;
     AVStream *vst = NULL, *ast = NULL;
+#ifdef __CW32__
+    get_buffer(pb, (unsigned char*)id_string, 12);
+#else
     get_buffer(pb, id_string, 12);
+#endif
     is_mythtv = !memcmp(id_string, "MythTVVideo", 12);
+#ifdef __CW32__
+    get_buffer(pb, (unsigned char*)version_string, 5);
+#else
     get_buffer(pb, version_string, 5);
+#endif
     url_fskip(pb, 3); // padding
     width = get_le32(pb);
     height = get_le32(pb);

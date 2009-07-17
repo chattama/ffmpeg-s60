@@ -174,5 +174,14 @@ AVCodec roq_dpcm_encoder = {
     roq_dpcm_encode_frame,
     roq_dpcm_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("id RoQ DPCM"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("id RoQ DPCM"),
+#endif
 };

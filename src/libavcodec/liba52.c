@@ -213,6 +213,9 @@ static av_cold int a52_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
+#ifdef __CW32__
+typedef int (decode)(AVCodecContext *, void *outdata, int *outdata_size, const uint8_t *buf, int buf_size);
+#endif
 AVCodec liba52_decoder = {
     "liba52",
     CODEC_TYPE_AUDIO,
@@ -221,6 +224,16 @@ AVCodec liba52_decoder = {
     a52_decode_init,
     NULL,
     a52_decode_end,
+#ifdef __CW32__
+    (decode*)a52_decode_frame,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("liba52 ATSC A/52 / AC-3"),
+#else
     a52_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("liba52 ATSC A/52 / AC-3"),
+#endif
 };

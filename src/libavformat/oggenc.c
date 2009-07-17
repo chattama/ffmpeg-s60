@@ -92,11 +92,19 @@ static int ogg_build_flac_headers(const uint8_t *extradata, int extradata_size,
     oggstream->header[0] = av_mallocz(51); // per ogg flac specs
     p = oggstream->header[0];
     bytestream_put_byte(&p, 0x7F);
+#ifdef __CW32__
+    bytestream_put_buffer(&p, (const unsigned char*)"FLAC", 4);
+#else
     bytestream_put_buffer(&p, "FLAC", 4);
+#endif
     bytestream_put_byte(&p, 1); // major version
     bytestream_put_byte(&p, 0); // minor version
     bytestream_put_be16(&p, 1); // headers packets without this one
+#ifdef __CW32__
+    bytestream_put_buffer(&p, (const unsigned char*)"fLaC", 4);
+#else
     bytestream_put_buffer(&p, "fLaC", 4);
+#endif
     bytestream_put_byte(&p, 0x00); // streaminfo
     bytestream_put_be24(&p, 34);
     bytestream_put_buffer(&p, extradata, 34);
@@ -106,7 +114,11 @@ static int ogg_build_flac_headers(const uint8_t *extradata, int extradata_size,
     bytestream_put_byte(&p, 0x84); // last metadata block and vorbis comment
     bytestream_put_be24(&p, oggstream->header_len[1] - 4);
     bytestream_put_le32(&p, strlen(vendor));
+#ifdef __CW32__
+    bytestream_put_buffer(&p, (const unsigned char*)vendor, strlen(vendor));
+#else
     bytestream_put_buffer(&p, vendor, strlen(vendor));
+#endif
     bytestream_put_le32(&p, 0); // user comment list length
     return 0;
 }
@@ -288,5 +300,11 @@ AVOutputFormat ogg_muxer = {
     ogg_write_header,
     ogg_write_packet,
     ogg_write_trailer,
+#ifdef __CW32__
+    0,
+    0,
+    ogg_interleave_per_granule,
+#else
     .interleave_packet = ogg_interleave_per_granule,
+#endif
 };

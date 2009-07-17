@@ -430,7 +430,11 @@ static void bit_alloc_masking(AC3EncodeContext *s,
                 memcpy(psd[blk][ch], psd[blk-1][ch], (N/2)*sizeof(int16_t));
                 memcpy(mask[blk][ch], mask[blk-1][ch], 50*sizeof(int16_t));
             } else {
+#ifndef __CW32__
                 ff_ac3_bit_alloc_calc_psd(encoded_exp[blk][ch], 0,
+#else
+                ff_ac3_bit_alloc_calc_psd((int8_t*)encoded_exp[blk][ch], 0,
+#endif
                                           s->nb_coefs[ch],
                                           psd[blk][ch], band_psd[blk][ch]);
                 ff_ac3_bit_alloc_calc_mask(&s->bit_alloc, band_psd[blk][ch],
@@ -1364,5 +1368,14 @@ AVCodec ac3_encoder = {
     AC3_encode_frame,
     AC3_encode_close,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("ATSC A/52 / AC-3"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("ATSC A/52 / AC-3"),
+#endif
 };

@@ -273,7 +273,11 @@ static void put_str(ByteIOContext *bc, const char *string){
     int len= strlen(string);
 
     put_v(bc, len);
+#ifdef __CW32__
+    put_buffer(bc, (const unsigned char*)string, len);
+#else
     put_buffer(bc, string, len);
+#endif
 }
 
 static void put_s(ByteIOContext *bc, int64_t val){
@@ -590,7 +594,11 @@ static int write_header(AVFormatContext *s){
     build_frame_code(s);
     assert(nut->frame_code['N'].flags == FLAG_INVALID);
 
+#ifdef __CW32__
+    put_buffer(bc, (const unsigned char*)ID_STRING, strlen(ID_STRING));
+#else
     put_buffer(bc, ID_STRING, strlen(ID_STRING));
+#endif
     put_byte(bc, 0);
 
     write_headers(nut, bc);
@@ -665,7 +673,12 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt){
 //FIXME: Ensure store_sp is 1 in the first place.
 
     if(store_sp){
+#ifndef __CW32__
         syncpoint_t *sp, dummy= {.pos= INT64_MAX};
+#else
+        syncpoint_t *sp, dummy;
+        dummy.pos= INT64_MAX;
+#endif
 
         ff_nut_reset_ts(nut, *nus->time_base, pkt->dts);
         for(i=0; i<s->nb_streams; i++){
@@ -679,7 +692,11 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt){
         }
         if(dummy.pos == INT64_MAX)
             dummy.pos= 0;
+#ifdef __CW32__
+        sp= av_tree_find(nut->syncpoints, &dummy, (int (*)(void *, const void *))ff_nut_sp_pos_cmp, NULL);
+#else
         sp= av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pos_cmp, NULL);
+#endif
 
         nut->last_syncpoint_pos= url_ftell(bc);
         ret = url_open_dyn_buf(&dyn_bc);
@@ -820,6 +837,13 @@ AVOutputFormat nut_muxer = {
     write_header,
     write_packet,
     write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, ff_nut_subtitle_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag= (const AVCodecTag*[]){codec_bmp_tags, codec_wav_tags, ff_nut_subtitle_tags, 0},
+#endif
 };

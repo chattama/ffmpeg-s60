@@ -327,6 +327,15 @@ AVCodec dxa_decoder = {
     NULL,
     decode_end,
     decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Feeble Files/ScummVM DXA"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Feeble Files/ScummVM DXA"),
+#endif
 };
 

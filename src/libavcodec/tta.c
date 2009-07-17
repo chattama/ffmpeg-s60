@@ -294,11 +294,22 @@ static int tta_decode_frame(AVCodecContext *avctx,
 
     init_get_bits(&s->gb, buf, buf_size*8);
     {
+#ifdef __CW32__
+        int32_t *predictors;
+        TTAFilter *filters;
+        TTARice *rices;
+#else
         int32_t predictors[s->channels];
         TTAFilter filters[s->channels];
         TTARice rices[s->channels];
+#endif
         int cur_chan = 0, framelen = s->frame_length;
         int32_t *p;
+#ifdef __CW32__
+        predictors = av_malloc(sizeof(int32_t)*s->channels);
+        filters = av_malloc(sizeof(TTAFilter)*s->channels);
+        rices = av_malloc(sizeof(TTARice)*s->channels);
+#endif
 
         // FIXME: seeking
         s->total_frames--;
@@ -419,6 +430,11 @@ static int tta_decode_frame(AVCodecContext *avctx,
             default:
                 av_log(s->avctx, AV_LOG_ERROR, "Error, only 16bit samples supported!\n");
         }
+#ifdef __CW32__
+        av_free(predictors);
+        av_free(filters);
+        av_free(rices);
+#endif
     }
 
 //    return get_bits_count(&s->gb)+7)/8;
@@ -443,5 +459,14 @@ AVCodec tta_decoder = {
     NULL,
     tta_decode_close,
     tta_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("True Audio"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("True Audio"),
+#endif
 };

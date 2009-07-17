@@ -291,8 +291,8 @@ static void adpcm_compress_trellis(AVCodecContext *avctx, const short *samples,
     const int max_paths = frontier*FREEZE_INTERVAL;
 #ifdef __CW32__
     TrellisPath *paths, *p;
-    TrellisNode *node_buf[2];
-    TrellisNode **nodep_buf[2];
+    TrellisNode **node_buf;
+    TrellisNode ***nodep_buf;
 #else
     TrellisPath paths[max_paths], *p;
     TrellisNode node_buf[2][frontier];
@@ -302,11 +302,9 @@ static void adpcm_compress_trellis(AVCodecContext *avctx, const short *samples,
     TrellisNode **nodes_next = nodep_buf[1];
     int pathn = 0, froze = -1, i, j, k;
 #ifdef __CW32__
-    paths = (TrellisPath*)av_malloc(sizeof(TrellisPath)*max_paths);
-    node_buf[0] = (TrellisNode*)av_malloc(sizeof(TrellisNode)*frontier);
-    node_buf[1] = (TrellisNode*)av_malloc(sizeof(TrellisNode)*frontier);
-    nodep_buf[0] = (TrellisNode**)av_malloc(sizeof(TrellisNode*)*frontier);
-    nodep_buf[1] = (TrellisNode**)av_malloc(sizeof(TrellisNode*)*frontier);
+    paths = av_malloc(sizeof(TrellisPath)*max_paths);
+    node_buf = av_malloc(sizeof(TrellisNode)*2*frontier);
+    nodep_buf = av_malloc(sizeof(TrellisNode*)*2*frontier);
 #endif
 
     assert(!(max_paths&(max_paths-1)));
@@ -449,6 +447,11 @@ static void adpcm_compress_trellis(AVCodecContext *avctx, const short *samples,
     c->step_index = nodes[0]->step;
     c->step = nodes[0]->step;
     c->idelta = nodes[0]->step;
+#ifdef __CW32__
+    av_free(paths);
+    av_free(node_buf);
+    av_free(nodep_buf);
+#endif
 }
 
 static int adpcm_encode_frame(AVCodecContext *avctx,
@@ -487,9 +490,7 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
 #ifndef __CW32__
                 uint8_t buf[2][n*8];
 #else
-                uint8_t *buf[2];
-                buf[0] = (uint8_t*)av_malloc(sizeof(uint8_t)*n*8);
-                buf[1] = (uint8_t*)av_malloc(sizeof(uint8_t)*n*8);
+                uint8_t **buf = av_malloc(sizeof(uint8_t)*2*n*8);
 #endif
                 adpcm_compress_trellis(avctx, samples, buf[0], &c->status[0], n*8);
                 if(avctx->channels == 2)
@@ -506,6 +507,9 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
                         *dst++ = buf[1][8*i+6] | (buf[1][8*i+7] << 4);
                     }
                 }
+#ifdef __CW32__
+                av_free(buf);
+#endif
             } else
             for (; n>0; n--) {
                 *dst = adpcm_ima_compress_sample(&c->status[0], samples[0]);
@@ -591,9 +595,7 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
 #ifndef __CW32__
             uint8_t buf[2][n];
 #else
-            uint8_t *buf[2];
-            buf[0] = (uint8_t*)av_malloc(sizeof(uint8_t)*n);
-            buf[1] = (uint8_t*)av_malloc(sizeof(uint8_t)*n);
+            uint8_t **buf = av_malloc(sizeof(uint8_t)*2*n);
 #endif
             adpcm_compress_trellis(avctx, samples+2, buf[0], &c->status[0], n);
             if (avctx->channels == 2)
@@ -603,6 +605,9 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
                 if (avctx->channels == 2)
                     put_bits(&pb, 4, buf[1][i]);
             }
+#ifdef __CW32__
+            av_free(buf);
+#endif
         } else {
             for (i=1; i<avctx->frame_size; i++) {
                 put_bits(&pb, 4, adpcm_ima_compress_sample(&c->status[0], samples[avctx->channels*i]));
@@ -644,9 +649,7 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
 #ifndef __CW32__
             uint8_t buf[2][n];
 #else
-            uint8_t *buf[2];
-            buf[0] = (uint8_t*)av_malloc(sizeof(uint8_t)*n);
-            buf[1] = (uint8_t*)av_malloc(sizeof(uint8_t)*n);
+            uint8_t **buf = av_malloc(sizeof(uint8_t)*2*n);
 #endif
             if(avctx->channels == 1) {
                 n *= 2;
@@ -659,6 +662,9 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
                 for(i=0; i<n; i++)
                     *dst++ = (buf[0][i] << 4) | buf[1][i];
             }
+#ifdef __CW32__
+            av_free(buf);
+#endif
         } else
         for(i=7*avctx->channels; i<avctx->block_align; i++) {
             int nibble;
@@ -673,9 +679,7 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
 #ifndef __CW32__
             uint8_t buf[2][n*2];
 #else
-            uint8_t *buf[2];
-            buf[0] = (uint8_t*)av_malloc(sizeof(uint8_t)*n*2);
-            buf[1] = (uint8_t*)av_malloc(sizeof(uint8_t)*n*2);
+            uint8_t **buf = av_malloc(sizeof(uint8_t)*2*n*2);
 #endif
             n *= 2;
             if(avctx->channels == 1) {
@@ -688,6 +692,9 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
                 for(i=0; i<n; i++)
                     *dst++ = buf[0][i] | (buf[1][i] << 4);
             }
+#ifdef __CW32__
+            av_free(buf);
+#endif
         } else
         for (; n>0; n--) {
             for(i = 0; i < avctx->channels; i++) {
@@ -1312,7 +1319,11 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
             srcC = src + (big_endian ? bytestream_get_be32(&src)
                                      : bytestream_get_le32(&src))
                        + (avctx->channels-channel-1) * 4;
+#ifndef __CW32__
+            samplesC = samples + channel;
+#else
             samplesC = (uint16_t*)(samples + channel);
+#endif
 
             if (avctx->codec->id == CODEC_ID_ADPCM_EA_R1) {
                 current_sample  = (int16_t)bytestream_get_le16(&srcC);
@@ -1582,7 +1593,11 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
         }
 
         for (ch = 0; ch <= st; ch++) {
+#ifndef __CW32__
+            samples = (unsigned short *) data + ch;
+#else
             samples = (short*)((unsigned short *) data + ch);
+#endif
 
             /* Read in every sample for this channel.  */
             for (i = 0; i < samplecnt / 14; i++) {

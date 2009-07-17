@@ -48,7 +48,11 @@ output_unchanged:
     if(avctx->extradata_size == 0){
         avctx->extradata_size=15;
         avctx->extradata= av_malloc(avctx->extradata_size);
+#ifdef __CW32__
+        strcpy((char*)avctx->extradata, "FFCMP3 0.0");
+#else
         strcpy(avctx->extradata, "FFCMP3 0.0");
+#endif
         memcpy(avctx->extradata+11, buf, 4);
     }
     if(avctx->extradata_size != 15){

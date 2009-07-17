@@ -108,5 +108,12 @@ AVInputFormat vc1t_demuxer = {
     vc1t_probe,
     vc1t_read_header,
     vc1t_read_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    AVFMT_GENERIC_INDEX,
+#else
     .flags = AVFMT_GENERIC_INDEX,
+#endif
 };

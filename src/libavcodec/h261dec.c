@@ -647,5 +647,13 @@ AVCodec h261_decoder = {
     h261_decode_end,
     h261_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("H.261"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("H.261"),
+#endif
 };

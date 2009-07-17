@@ -320,8 +320,15 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
 {
     int i, j;
     int coeff_prec, qlevel;
+#ifdef __CW32__
+    int *coeffs;
+#else
     int coeffs[pred_order];
+#endif
     int32_t *decoded = s->decoded[channel];
+#ifdef __CW32__
+    coeffs = av_malloc(sizeof(int)*pred_order);
+#endif
 
 //    av_log(s->avctx, AV_LOG_DEBUG, "  SUBFRAME LPC\n");
 
@@ -338,6 +345,9 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
     if (coeff_prec == 16)
     {
         av_log(s->avctx, AV_LOG_DEBUG, "invalid coeff precision\n");
+#ifdef __CW32__
+        av_free(coeffs);
+#endif
         return -1;
     }
 //    av_log(s->avctx, AV_LOG_DEBUG, "   qlp coeff prec: %d\n", coeff_prec);
@@ -345,6 +355,9 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
 //    av_log(s->avctx, AV_LOG_DEBUG, "   quant level: %d\n", qlevel);
     if(qlevel < 0){
         av_log(s->avctx, AV_LOG_DEBUG, "qlevel %d not supported, maybe buggy stream\n", qlevel);
+#ifdef __CW32__
+        av_free(coeffs);
+#endif
         return -1;
     }
 
@@ -355,7 +368,14 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
     }
 
     if (decode_residuals(s, channel, pred_order) < 0)
+#ifdef __CW32__
+    {
+        av_free(coeffs);
+#endif
         return -1;
+#ifdef __CW32__
+    }
+#endif
 
     if (s->bps > 16) {
         int64_t sum;
@@ -394,6 +414,9 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
         }
     }
 
+#ifdef __CW32__
+    av_free(coeffs);
+#endif
     return 0;
 }
 
@@ -774,6 +797,14 @@ AVCodec flac_decoder = {
     flac_decode_close,
     flac_decode_frame,
     CODEC_CAP_DELAY,
+#ifdef __CW32__
+    0,
+    flac_flush,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
+#else
     .flush= flac_flush,
     .long_name= NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
+#endif
 };

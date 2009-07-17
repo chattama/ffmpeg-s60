@@ -2626,7 +2626,14 @@ AVCodec theora_decoder = {
     vp3_decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Theora"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Theora"),
+#endif
 };
 #endif
 
@@ -2641,5 +2648,12 @@ AVCodec vp3_decoder = {
     vp3_decode_frame,
     0,
     NULL,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("On2 VP3"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("On2 VP3"),
+#endif
 };

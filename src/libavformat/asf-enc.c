@@ -828,8 +828,15 @@ AVOutputFormat asf_muxer = {
     asf_write_header,
     asf_write_packet,
     asf_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_asf_bmp_tags, codec_bmp_tags, codec_wav_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag= (const AVCodecTag*[]){codec_asf_bmp_tags, codec_bmp_tags, codec_wav_tags, 0},
+#endif
 };
 #endif
 
@@ -849,7 +856,14 @@ AVOutputFormat asf_stream_muxer = {
     asf_write_stream_header,
     asf_write_packet,
     asf_write_trailer,
+#ifdef __CW32__
+    AVFMT_GLOBALHEADER,
+    0,
+    0,
+    (const AVCodecTag*[]){codec_asf_bmp_tags, codec_bmp_tags, codec_wav_tags, 0},
+#else
     .flags = AVFMT_GLOBALHEADER,
     .codec_tag= (const AVCodecTag*[]){codec_asf_bmp_tags, codec_bmp_tags, codec_wav_tags, 0},
+#endif
 };
 #endif //CONFIG_ASF_STREAM_MUXER

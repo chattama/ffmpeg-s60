@@ -174,8 +174,13 @@ static int gif_image_write_header(uint8_t **bytestream,
     int i;
     unsigned int v;
 
+#ifdef __CW32__
+    bytestream_put_buffer(bytestream, (const unsigned char*)"GIF", 3);
+    bytestream_put_buffer(bytestream, (const unsigned char*)"89a", 3);
+#else
     bytestream_put_buffer(bytestream, "GIF", 3);
     bytestream_put_buffer(bytestream, "89a", 3);
+#endif
     bytestream_put_le16(bytestream, width);
     bytestream_put_le16(bytestream, height);
 
@@ -220,7 +225,11 @@ static int gif_image_write_header(uint8_t **bytestream,
         bytestream_put_byte(bytestream, 0x21);
         bytestream_put_byte(bytestream, 0xff);
         bytestream_put_byte(bytestream, 0x0b);
+#ifdef __CW32__
+        bytestream_put_buffer(bytestream, (const unsigned char*)"NETSCAPE2.0", 11);  // bytes 4 to 14
+#else
         bytestream_put_buffer(bytestream, "NETSCAPE2.0", 11);  // bytes 4 to 14
+#endif
         bytestream_put_byte(bytestream, 0x03); // byte 15
         bytestream_put_byte(bytestream, 0x01); // byte 16
         bytestream_put_le16(bytestream, (uint16_t)loop_count);
@@ -340,6 +349,16 @@ AVCodec gif_encoder = {
     gif_encode_init,
     gif_encode_frame,
     NULL, //encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_PAL8, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_PAL8, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
+#endif
 };

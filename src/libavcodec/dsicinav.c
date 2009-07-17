@@ -348,7 +348,15 @@ AVCodec dsicinvideo_decoder = {
     cinvideo_decode_end,
     cinvideo_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"),
+#endif
 };
 
 AVCodec dsicinaudio_decoder = {
@@ -360,5 +368,14 @@ AVCodec dsicinaudio_decoder = {
     NULL,
     NULL,
     cinaudio_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"),
+#endif
 };

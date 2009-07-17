@@ -94,6 +94,16 @@ AVCodec bmp_encoder = {
     bmp_encode_init,
     bmp_encode_frame,
     NULL, //encode_end,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
+    NULL_IF_CONFIG_SMALL("BMP image"),
+#else
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("BMP image"),
+#endif
 };

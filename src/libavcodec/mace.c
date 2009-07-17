@@ -437,7 +437,16 @@ AVCodec mace3_decoder = {
     NULL,
     NULL,
     mace_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 3:1"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 3:1"),
+#endif
 };
 
 AVCodec mace6_decoder = {
@@ -449,6 +458,15 @@ AVCodec mace6_decoder = {
     NULL,
     NULL,
     mace_decode_frame,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 6:1"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 6:1"),
+#endif
 };
 

@@ -294,6 +294,25 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
     return buf_size;
 }
 
+#ifdef __CW32__
+#define DPCM_DECODER(id, name, long_name_)      \
+AVCodec name ## _decoder = {                    \
+    #name,                                      \
+    CODEC_TYPE_AUDIO,                           \
+    id,                                         \
+    sizeof(DPCMContext),                        \
+    dpcm_decode_init,                           \
+    NULL,                                       \
+    NULL,                                       \
+    dpcm_decode_frame,                          \
+    0,\
+    0,\
+    0,\
+    0,\
+    0,\
+    NULL_IF_CONFIG_SMALL(long_name_), \
+};
+#else
 #define DPCM_DECODER(id, name, long_name_)      \
 AVCodec name ## _decoder = {                    \
     #name,                                      \
@@ -306,6 +325,7 @@ AVCodec name ## _decoder = {                    \
     dpcm_decode_frame,                          \
     .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 };
+#endif
 
 DPCM_DECODER(CODEC_ID_INTERPLAY_DPCM, interplay_dpcm, "Interplay DPCM");
 DPCM_DECODER(CODEC_ID_ROQ_DPCM, roq_dpcm, "id RoQ DPCM");

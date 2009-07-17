@@ -171,5 +171,13 @@ AVCodec aasc_decoder = {
     aasc_decode_end,
     aasc_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Autodesk RLE"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Autodesk RLE"),
+#endif
 };

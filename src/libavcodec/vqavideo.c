@@ -616,5 +616,13 @@ AVCodec vqa_decoder = {
     vqa_decode_end,
     vqa_decode_frame,
     CODEC_CAP_DR1,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    0,
+    NULL_IF_CONFIG_SMALL("Westwood Studios VQA (Vector Quantized Animation) video"),
+#else
     .long_name = NULL_IF_CONFIG_SMALL("Westwood Studios VQA (Vector Quantized Animation) video"),
+#endif
 };

@@ -66,7 +66,11 @@ ogm_header(AVFormatContext *s, int idx)
         p += 8;
         bytestream_get_buffer(&p, acid, 4);
         acid[4] = 0;
+#ifdef __CW32__
+        cid = strtol((const char*)acid, NULL, 16);
+#else
         cid = strtol(acid, NULL, 16);
+#endif
         st->codec->codec_id = codec_get_id(codec_wav_tags, cid);
         st->need_parsing = AVSTREAM_PARSE_FULL;
     }
@@ -150,29 +154,61 @@ ogm_packet(AVFormatContext *s, int idx)
 }
 
 ogg_codec_t ogm_video_codec = {
+#ifdef __CW32__
+    (const signed char*)"\001video",
+    6,
+    0,
+    ogm_header,
+    ogm_packet
+#else
     .magic = "\001video",
     .magicsize = 6,
     .header = ogm_header,
     .packet = ogm_packet
+#endif
 };
 
 ogg_codec_t ogm_audio_codec = {
+#ifdef __CW32__
+	(const signed char*)"\001audio",
+    6,
+    0,
+    ogm_header,
+    ogm_packet
+#else
     .magic = "\001audio",
     .magicsize = 6,
     .header = ogm_header,
     .packet = ogm_packet
+#endif
 };
 
 ogg_codec_t ogm_text_codec = {
+#ifdef __CW32__
+	(const signed char*)"\001text",
+    5,
+    0,
+    ogm_header,
+    ogm_packet
+#else
     .magic = "\001text",
     .magicsize = 5,
     .header = ogm_header,
     .packet = ogm_packet
+#endif
 };
 
 ogg_codec_t ogm_old_codec = {
+#ifdef __CW32__
+	(const signed char*)"\001Direct Show Samples embedded in Ogg",
+    35,
+    0,
+    ogm_dshow_header,
+    ogm_packet
+#else
     .magic = "\001Direct Show Samples embedded in Ogg",
     .magicsize = 35,
     .header = ogm_dshow_header,
     .packet = ogm_packet
+#endif
 };

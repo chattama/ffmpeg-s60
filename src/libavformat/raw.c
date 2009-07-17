@@ -529,9 +529,18 @@ AVInputFormat ac3_demuxer = {
     ac3_probe,
     audio_read_header,
     raw_read_partial_packet,
+#ifdef __CW32__
+    0,
+    0,
+    0,
+    AVFMT_GENERIC_INDEX,
+    "ac3",
+    CODEC_ID_AC3,
+#else
     .flags= AVFMT_GENERIC_INDEX,
     .extensions = "ac3",
     .value = CODEC_ID_AC3,
+#endif
 };
 #endif
 

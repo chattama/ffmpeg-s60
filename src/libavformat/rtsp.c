@@ -768,7 +768,11 @@ static void rtsp_send_cmd(AVFormatContext *s,
 #ifdef DEBUG
     printf("Sending:\n%s--\n", buf);
 #endif
+#ifdef __CW32__
+    url_write(rt->rtsp_hd, (unsigned char*)buf, strlen(buf));
+#else
     url_write(rt->rtsp_hd, buf, strlen(buf));
+#endif
 
     /* parse reply (XXX: use buffers) */
     line_count = 0;
@@ -1360,15 +1364,28 @@ AVInputFormat rtsp_demuxer = {
     rtsp_read_packet,
     rtsp_read_close,
     rtsp_read_seek,
+#ifdef __CW32__
+    0,
+    AVFMT_NOFILE,
+    0,
+    0,
+    rtsp_read_play,
+    rtsp_read_pause,
+#else
     .flags = AVFMT_NOFILE,
     .read_play = rtsp_read_play,
     .read_pause = rtsp_read_pause,
+#endif
 };
 #endif
 
 static int sdp_probe(AVProbeData *p1)
 {
+#ifdef __CW32__
+    const char *p = (const char*)p1->buf, *p_end = (const char*)(p1->buf + p1->buf_size);
+#else
     const char *p = p1->buf, *p_end = p1->buf + p1->buf_size;
+#endif
 
     /* we look for a line beginning "c=IN IP4" */
     while (p < p_end && *p != '\0') {
@@ -1399,7 +1416,11 @@ static int sdp_read_header(AVFormatContext *s,
     /* read the whole sdp file */
     /* XXX: better loading */
     content = av_malloc(SDP_MAX_SIZE);
+#ifdef __CW32__
+    size = get_buffer(s->pb, (unsigned char*)content, SDP_MAX_SIZE - 1);
+#else
     size = get_buffer(s->pb, content, SDP_MAX_SIZE - 1);
+#endif
     if (size <= 0) {
         av_free(content);
         return AVERROR_INVALIDDATA;
@@ -1475,7 +1496,11 @@ AVInputFormat sdp_demuxer = {
 static int redir_probe(AVProbeData *pd)
 {
     const char *p;
+#ifdef __CW32__
+    p = (const char*)pd->buf;
+#else
     p = pd->buf;
+#endif
     while (redir_isspace(*p))
         p++;
     if (av_strstart(p, "http://", NULL) ||

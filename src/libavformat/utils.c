@@ -443,11 +443,7 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
 
 /** size of probe buffer, for guessing file type from file contents */
 #define PROBE_BUF_MIN 2048
-#ifdef __SYMBIAN32__
-#define PROBE_BUF_MAX (1<<19)
-#else
 #define PROBE_BUF_MAX (1<<20)
-#endif
 
 int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
                        AVInputFormat *fmt,
@@ -1913,9 +1909,14 @@ static void compute_chapters_end(AVFormatContext *s)
 
 #define MAX_STD_TIMEBASES (60*12+5)
 static int get_std_framerate(int i){
+#ifndef __CW32__
+    if(i<60*12) return i*1001;
+    else        return ((int[]){24,30,60,12,15})[i-60*12]*1000*12;
+#else
 	const int t[] = {24,30,60,12,15};
     if(i<60*12) return i*1001;
     else        return t[i-60*12]*1000*12;
+#endif
 }
 
 /*
@@ -2300,7 +2301,11 @@ AVProgram *av_new_program(AVFormatContext *ac, int id)
         program = av_mallocz(sizeof(AVProgram));
         if (!program)
             return NULL;
+#ifdef __CW32__
+        dynarray_add(&ac->programs, (int*)&ac->nb_programs, program);
+#else
         dynarray_add(&ac->programs, &ac->nb_programs, program);
+#endif
         program->discard = AVDISCARD_NONE;
     }
     program->id = id;
@@ -2332,7 +2337,11 @@ AVChapter *ff_new_chapter(AVFormatContext *s, int id, AVRational time_base, int6
         chapter= av_mallocz(sizeof(AVChapter));
         if(!chapter)
             return NULL;
+#ifdef __CW32__
+        dynarray_add(&s->chapters, (int*)&s->nb_chapters, chapter);
+#else
         dynarray_add(&s->chapters, &s->nb_chapters, chapter);
+#endif
     }
     av_free(chapter->title);
     chapter->title = av_strdup(title);
@@ -2845,7 +2854,11 @@ int64_t parse_date(const char *datestr, int duration)
     if (!duration) {
         /* parse the year-month-day part */
         for (i = 0; i < sizeof(date_fmt) / sizeof(date_fmt[0]); i++) {
+#ifndef __CW32__
+            q = small_strptime(p, date_fmt[i], &dt);
+#else
             q = (const char*)small_strptime(p, date_fmt[i], &dt);
+#endif
             if (q) {
                 break;
             }
@@ -2869,7 +2882,11 @@ int64_t parse_date(const char *datestr, int duration)
 
         /* parse the hour-minute-second part */
         for (i = 0; i < sizeof(time_fmt) / sizeof(time_fmt[0]); i++) {
+#ifndef __CW32__
+            q = small_strptime(p, time_fmt[i], &dt);
+#else
             q = (const char*)small_strptime(p, time_fmt[i], &dt);
+#endif
             if (q) {
                 break;
             }
@@ -2881,7 +2898,11 @@ int64_t parse_date(const char *datestr, int duration)
             ++p;
         }
         /* parse datestr as HH:MM:SS */
+#ifndef __CW32__
+        q = small_strptime(p, time_fmt[0], &dt);
+#else
         q = (const char*)small_strptime(p, time_fmt[0], &dt);
+#endif
         if (!q) {
             /* parse datestr as S+ */
             dt.tm_sec = strtol(p, (char **)&q, 10);

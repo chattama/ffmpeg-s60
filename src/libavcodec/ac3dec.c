@@ -427,7 +427,11 @@ static void get_transform_coeffs_ch(AC3DecodeContext *s, int ch_index, mant_grou
     uint8_t *bap;
     int *coeffs;
 
+#ifndef __CW32__
     exps = s->dexps[ch_index];
+#else
+    exps = (uint8_t*)s->dexps[ch_index];
+#endif
     bap = s->bap[ch_index];
     coeffs = s->fixed_coeffs[ch_index];
     start = s->start_freq[ch_index];
@@ -1191,12 +1195,29 @@ static av_cold int ac3_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ac3_decoder = {
-    .name = "ac3",
-    .type = CODEC_TYPE_AUDIO,
-    .id = CODEC_ID_AC3,
-    .priv_data_size = sizeof (AC3DecodeContext),
-    .init = ac3_decode_init,
-    .close = ac3_decode_end,
-    .decode = ac3_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("ATSC A/52 / AC-3"),
+#ifdef __CW32__
+	    "ac3",
+	    CODEC_TYPE_AUDIO,
+	    CODEC_ID_AC3,
+	    sizeof (AC3DecodeContext),
+	    ac3_decode_init,
+	    0,
+	    ac3_decode_end,
+	    ac3_decode_frame,
+	    0,
+	    0,
+	    0,
+	    0,
+	    0,
+	    NULL_IF_CONFIG_SMALL("ATSC A/52 / AC-3"),
+#else
+	    .name = "ac3",
+	    .type = CODEC_TYPE_AUDIO,
+	    .id = CODEC_ID_AC3,
+	    .priv_data_size = sizeof (AC3DecodeContext),
+	    .init = ac3_decode_init,
+	    .close = ac3_decode_end,
+	    .decode = ac3_decode_frame,
+	    .long_name = NULL_IF_CONFIG_SMALL("ATSC A/52 / AC-3"),
+#endif
 };

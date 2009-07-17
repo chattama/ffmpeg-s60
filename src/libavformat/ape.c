@@ -125,14 +125,27 @@ static void ape_tag_read_field(AVFormatContext *s)
     url_fskip(pb, 1);
 
     for (i=0; tags[i].name; i++)
+#ifdef __CW32__
+        if (!strcmp ((const char*)buf, tags[i].name)) {
+#else
         if (!strcmp (buf, tags[i].name)) {
+#endif
             if (tags[i].size == sizeof(int)) {
                 char tmp[16];
+#ifdef __CW32__
+                get_buffer(pb, (unsigned char*)tmp, FFMIN(sizeof(tmp), size));
+#else
                 get_buffer(pb, tmp, FFMIN(sizeof(tmp), size));
+#endif
                 *(int *)(((char *)s)+tags[i].offset) = atoi(tmp);
             } else {
+#ifdef __CW32__
+                get_buffer(pb, (unsigned char*)((char *)s) + tags[i].offset,
+                           FFMIN(tags[i].size, size));
+#else
                 get_buffer(pb, ((char *)s) + tags[i].offset,
                            FFMIN(tags[i].size, size));
+#endif
             }
             break;
         }
@@ -155,7 +168,11 @@ static void ape_parse_tag(AVFormatContext *s)
     url_fseek(pb, file_size - APE_TAG_FOOTER_BYTES, SEEK_SET);
 
     get_buffer(pb, buf, 8);    /* APETAGEX */
+#ifdef __CW32__
+    if (strncmp((const char*)buf, "APETAGEX", 8)) {
+#else
     if (strncmp(buf, "APETAGEX", 8)) {
+#endif
         return;
     }
 
@@ -518,5 +535,11 @@ AVInputFormat ape_demuxer = {
     ape_read_packet,
     ape_read_close,
     ape_read_seek,
+#ifdef __CW32__
+    0,
+    0,
+    "ape,apl,mac"
+#else
     .extensions = "ape,apl,mac"
+#endif
 };

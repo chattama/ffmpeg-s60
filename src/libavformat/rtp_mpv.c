@@ -55,7 +55,11 @@ void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
             r1 = buf1;
             while (1) {
                 start_code = -1;
+#ifdef __CW32__
+                r = ff_find_start_code(r1, buf1 + size, (unsigned int*)&start_code);
+#else
                 r = ff_find_start_code(r1, buf1 + size, &start_code);
+#endif
                 if((start_code & 0xFFFFFF00) == 0x100) {
                     /* New start code found */
                     if (start_code == 0x100) {

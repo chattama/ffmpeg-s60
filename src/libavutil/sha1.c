@@ -136,9 +136,17 @@ void av_sha1_final(AVSHA1* ctx, uint8_t digest[20]){
     int i;
     uint64_t finalcount= be2me_64(ctx->count<<3);
 
+#ifndef __CW32__
+    av_sha1_update(ctx, "\200", 1);
+#else
     av_sha1_update(ctx, (const uint8_t*)"\200", 1);
+#endif
     while ((ctx->count & 63) != 56) {
+#ifndef __CW32__
+        av_sha1_update(ctx, "", 1);
+#else
         av_sha1_update(ctx, (const uint8_t*)"", 1);
+#endif
     }
     av_sha1_update(ctx, (uint8_t *)&finalcount, 8); /* Should cause a transform() */
     for(i=0; i<5; i++)
