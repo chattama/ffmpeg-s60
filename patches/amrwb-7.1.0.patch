@@ -1,0 +1,16 @@
+diff -crN amrwb-7.1.0-orig/libamrwb.mmp amrwb-7.1.0/libamrwb.mmp
+*** amrwb-7.1.0-orig/libamrwb.mmp	Thu Jan 01 09:00:00 1970
+--- amrwb-7.1.0/libamrwb.mmp	Thu Sep 04 12:43:06 2008
+***************
+*** 0 ****
+--- 1,10 ----
++ 
++ TARGET		libamrwb.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE .
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH .
++ SOURCE dec_acelp.c dec_dtx.c dec_gain.c dec_if.c dec_lpc.c dec_main.c dec_rom.c dec_util.c decoder.c enc_acelp.c enc_dtx.c enc_gain.c enc_if.c enc_lpc.c enc_main.c enc_rom.c enc_util.c encoder.c if_rom.c

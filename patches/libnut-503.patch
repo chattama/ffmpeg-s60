@@ -1,0 +1,272 @@
+diff -crN libnut-503-orig/libnut/demuxer.c libnut-503/libnut/demuxer.c
+*** libnut-503-orig/libnut/demuxer.c	Sat Jan 27 02:44:30 2007
+--- libnut-503/libnut/demuxer.c	Fri Sep 05 13:17:06 2008
+***************
+*** 7,12 ****
+--- 7,14 ----
+  #include "libnut.h"
+  #include "priv.h"
+  
++ #define ftello ftell
++ 
+  static size_t stream_read(void * priv, size_t len, uint8_t * buf) {
+  	return fread(buf, 1, len, priv);
+  }
+***************
+*** 549,554 ****
+--- 551,560 ----
+  	syncpoint_t s;
+  	int after_seek = nut->last_syncpoint ? 0 : 1;
+  	input_buffer_t itmp, * tmp = new_mem_buffer(&itmp);
++ #ifdef __CW32__
++ 	uint64_t *pts;
++ 	uint64_t *eor;
++ #endif
+  
+  	s.pos = bctello(nut->i) - 8;
+  
+***************
+*** 567,574 ****
+--- 573,585 ----
+  	s.pts_valid = !after_seek;
+  	if (nut->dopts.cache_syncpoints) { // either we're using syncpoint cache, or we're seeking and we need the cache
+  		int i;
++ #ifndef __CW32__
+  		uint64_t pts[nut->stream_count];
+  		uint64_t eor[nut->stream_count];
++ #else
++ 		pts = malloc(sizeof(uint64_t)*nut->stream_count);
++ 		eor = malloc(sizeof(uint64_t)*nut->stream_count);
++ #endif
+  		for (i = 0; i < nut->stream_count; i++) {
+  			pts[i] = nut->sc[i].last_key;
+  			eor[i] = nut->sc[i].eor;
+***************
+*** 579,586 ****
+--- 590,605 ----
+  			CHECK(add_syncpoint(nut, s, pts, eor, NULL));
+  		else // otherwise, queue to a linked list to avoid CPU cache trashing during playback
+  			CHECK(queue_add_syncpoint(nut, s, pts, eor));
++ #ifdef __CW32__
++ 		free(pts); pts = NULL;
++ 		free(eor); eor = NULL;
++ #endif
+  	}
+  err_out:
++ #ifdef __CW32__
++ 	if (pts) free(pts);
++ 	if (eor) free(eor);
++ #endif
+  	return err;
+  }
+  
+***************
+*** 1159,1167 ****
+--- 1178,1193 ----
+  	int i, err = 0;
+  	syncpoint_t s;
+  	off_t fake_hi, * guess = &nut->binary_guess;
++ #ifdef __CW32__
++ 	uint64_t *timebases;
++ #else
+  	uint64_t timebases[nut->timebase_count];
++ #endif
+  	syncpoint_list_t * sl = &nut->syncpoints;
+  	int a = 0;
++ #ifdef __CW32__
++ 	timebases = malloc(sizeof(uint64_t)*nut->timebase_count);
++ #endif
+  	for (i = 0; i < nut->timebase_count; i++) timebases[i] = (uint64_t)(time_pos / nut->tb[i].num * nut->tb[i].den);
+  	assert(sl->len); // it is impossible for the first syncpoint to not have been read
+  
+***************
+*** 1253,1258 ****
+--- 1279,1287 ----
+  	*stopper = HI;
+  err_out:
+  	if (err == NUT_ERR_EAGAIN) nut->i->buf_ptr = nut->i->buf;
++ #ifdef __CW32__
++ 	free(timebases);
++ #endif
+  	return err;
+  }
+  
+***************
+*** 1410,1415 ****
+--- 1439,1447 ----
+  	off_t start = 0, end = 0;
+  	int backwards = flags & 1 ? time_pos < 0 : 1;
+  	syncpoint_t stopper = { 0, 0, 0, 0, 0 };
++ #ifdef __CW32__
++ 	int *sync;
++ #endif
+  
+  	if (!nut->i->isc.seek) return NUT_ERR_NOT_SEEKABLE;
+  
+***************
+*** 1447,1456 ****
+--- 1479,1493 ----
+  		time_pos = nut->seek_time_pos;
+  	}
+  
++ #ifdef __CW32__
++ 	sync = malloc(sizeof(int)*nut->stream_count);
++ #endif
+  	if (nut->syncpoints.s[nut->syncpoints.len-1].seen_next) {
+  		syncpoint_list_t * sl = &nut->syncpoints;
+  		int i;
++ #ifndef __CW32__
+  		int sync[nut->stream_count];
++ #endif
+  		int good_sync = -2;
+  		int last_sync = 0;
+  		int backup = -1;
+***************
+*** 1488,1493 ****
+--- 1525,1533 ----
+  			if (flags & 2) end = sl->s[last_sync - 1].pos; // for forward seek
+  		}
+  	}
++ #ifdef __CW32__
++ 	free(sync);
++ #endif
+  
+  	if (start == 0) CHECK(binary_search_syncpoint(nut, time_pos, &start, &end, &stopper));
+  	else fprintf(stderr, "============= NO BINARY SEARCH   \n");
+diff -crN libnut-503-orig/libnut/framecode.c libnut-503/libnut/framecode.c
+*** libnut-503-orig/libnut/framecode.c	Fri Nov 24 16:24:00 2006
+--- libnut-503/libnut/framecode.c	Fri Sep 05 10:55:05 2008
+***************
+*** 18,30 ****
+--- 18,39 ----
+  void nut_framecode_generate(const nut_stream_header_t s[], nut_frame_table_input_t fti[256]) {
+  	int stream_count = count_streams(s);
+  	int i, n = 0, m = 0, tot_con = 0;
++ #ifdef __CW32__
++ 	enum e_consume {
++ #else
+  	enum {
++ #endif
+  		e_consume_none = 0,
+  		e_consume_mpeg4,
+  		e_consume_h264,
+  		e_consume_video,
+  		e_consume_vorbis,
++ #ifdef __CW32__
++ 	} *consume;
++ 	consume = malloc(sizeof(enum e_consume)*stream_count);
++ #else
+  	} consume[stream_count];
++ #endif
+  
+  	for (i = 0; i < stream_count; i++) consume[i] = e_consume_none;
+  
+***************
+*** 41,51 ****
+--- 50,68 ----
+  			fti[n++] = (fti_t){ NUT_FLAG_KEY|              FLAG_SIZE_MSB,    1,      i,   1,    0,     1 };
+  			fti[n++] = (fti_t){ NUT_FLAG_KEY|FLAG_CHECKSUM|FLAG_SIZE_MSB,    1,      i,   1,    0,     1 };
+  			fti[n++] = (fti_t){             FLAG_CODED_PTS|FLAG_SIZE_MSB,    0,      i,   1,    0,     1 };
++ #ifdef __CW32__
++ 			if (s[i].fourcc_len == 4 && !strncmp((const char*)s[i].fourcc, "mp4v", 4)) {
++ #else
+  			if (s[i].fourcc_len == 4 && !strncmp(s[i].fourcc, "mp4v", 4)) {
++ #endif
+  				fti[n++] = (fti_t){                                0,    1,      i,   7,    6,     1 };
+  				fti[n++] = (fti_t){                                0,    2,      i,   7,    6,     1 };
+  				consume[i] = e_consume_mpeg4;
++ #ifdef __CW32__
++ 			} else if (s[i].fourcc_len == 4 && !strncmp((const char*)s[i].fourcc, "h264", 4)) {
++ #else
+  			} else if (s[i].fourcc_len == 4 && !strncmp(s[i].fourcc, "h264", 4)) {
++ #endif
+  				consume[i] = e_consume_h264;
+  			} else {
+  				consume[i] = e_consume_video;
+***************
+*** 54,66 ****
+--- 71,91 ----
+  		case NUT_AUDIO_CLASS:
+  			fti[n++] = (fti_t){NUT_FLAG_KEY|               FLAG_SIZE_MSB,    1,      i,   1,    0,     1 };
+  			fti[n++] = (fti_t){NUT_FLAG_KEY|FLAG_CODED_PTS|FLAG_SIZE_MSB,    0,      i,   1,    0,     1 };
++ #ifdef __CW32__
++ 			if (s[i].fourcc_len == 4 && !strncmp((const char*)s[i].fourcc, "mp3 ", 4)) {
++ #else
+  			if (s[i].fourcc_len == 4 && !strncmp(s[i].fourcc, "mp3 ", 4)) {
++ #endif
+  				int j, a[] = {288,336,384,480,576,672,768,960};
+  				for (j = 0; j < sizeof a/sizeof*a; j++)
+  					fti[n++] = (fti_t){             NUT_FLAG_KEY,    1,   i, a[j]+1, a[j],     1 };
+  				fti[n++] = (fti_t){       NUT_FLAG_KEY|FLAG_SIZE_MSB,    1,      i,   4,    0,     1 };
+  				fti[n++] = (fti_t){       NUT_FLAG_KEY|FLAG_SIZE_MSB,    1,      i,   4,    2,     1 };
++ #ifdef __CW32__
++ 			} else if (s[i].fourcc_len == 4 && !strncmp((const char*)s[i].fourcc, "vrbs", 4)) {
++ #else
+  			} else if (s[i].fourcc_len == 4 && !strncmp(s[i].fourcc, "vrbs", 4)) {
++ #endif
+  				fti[n++] = (fti_t){       NUT_FLAG_KEY|FLAG_SIZE_MSB,    2,      i,   1,    0,     1 };
+  				fti[n++] = (fti_t){       NUT_FLAG_KEY|FLAG_SIZE_MSB,    9,      i,   1,    0,     1 };
+  				fti[n++] = (fti_t){       NUT_FLAG_KEY|FLAG_SIZE_MSB,   23,      i,   1,    0,     1 };
+***************
+*** 126,129 ****
+--- 151,157 ----
+  	fti[n++] = (fti_t){                            /*invalid 0xFF*/ FLAG_INVALID,    0,      0,   i,    0,     i };
+  	// the final framecode.                                                 flag,  pts, stream, mul, size, count
+  	fti[n++] = (fti_t){ -1 };
++ #ifdef __CW32__
++ 	free(consume);
++ #endif
+  }
+diff -crN libnut-503-orig/libnut/muxer.c libnut-503/libnut/muxer.c
+*** libnut-503-orig/libnut/muxer.c	Sat Dec 23 21:33:00 2006
+--- libnut-503/libnut/muxer.c	Fri Sep 05 09:43:18 2008
+***************
+*** 274,281 ****
+--- 274,288 ----
+  	uint64_t pts = 0;
+  	int timebase = 0;
+  	int back_ptr = 0;
++ #ifdef __CW32__
++ 	int *keys;
++ #else
+  	int keys[nut->stream_count];
++ #endif
+  	syncpoint_list_t * s = &nut->syncpoints;
++ #ifdef __CW32__
++ 	keys = malloc(sizeof(int)*nut->stream_count);
++ #endif
+  
+  	nut->last_syncpoint = bctello(nut->o);
+  
+***************
+*** 332,337 ****
+--- 339,347 ----
+  	put_header(nut->o, tmp, nut->tmp_buffer2, SYNCPOINT_STARTCODE, 0);
+  
+  	nut->sync_overhead += bctello(tmp) + bctello(nut->tmp_buffer2);
++ #ifdef __CW32__
++ 	free(keys);
++ #endif
+  }
+  
+  static void put_index(nut_context_t * nut) {
+diff -crN libnut-503-orig/libnut.mmp libnut-503/libnut.mmp
+*** libnut-503-orig/libnut.mmp	Thu Jan 01 09:00:00 1970
+--- libnut-503/libnut.mmp	Fri Sep 05 13:13:49 2008
+***************
+*** 0 ****
+--- 1,14 ----
++ 
++ TARGET		libnut.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE ./libnut
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH libnut
++ SOURCE muxer.c demuxer.c reorder.c framecode.c
++ 
++ MACRO _LARGEFILE_SOURCE
++ MACRO D_FILE_OFFSET_BITS=64
++ 

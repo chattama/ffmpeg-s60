@@ -1,0 +1,80 @@
+diff -crN faad2-2.6.1-orig/config.h faad2-2.6.1/config.h
+*** faad2-2.6.1-orig/config.h	Thu Jan 01 09:00:00 1970
+--- faad2-2.6.1/config.h	Mon Aug 18 13:50:36 2008
+***************
+*** 0 ****
+--- 1,16 ----
++ #define STDC_HEADERS 1
++ #define HAVE_SYS_TYPES_H 1
++ #define HAVE_SYS_STAT_H 1
++ #define HAVE_STDLIB_H 1
++ #define HAVE_STRINGS_H 1
++ #define HAVE_STRING_H 1
++ #define HAVE_INTTYPES_H 1
++ #define HAVE_STDINT_H 1
++ #define HAVE_LRINTF 1
++ #define HAVE_SINF 1
++ #define HAVE_COSF 1
++ #define HAVE_LOGF 1
++ #define HAVE_EXPF 1
++ #define HAVE_FLOORF 1
++ #define HAVE_CEILF 1
++ #define HAVE_SQRTF 1
+diff -crN faad2-2.6.1-orig/libfaad/common.h faad2-2.6.1/libfaad/common.h
+*** faad2-2.6.1-orig/libfaad/common.h	Thu Nov 01 21:33:30 2007
+--- faad2-2.6.1/libfaad/common.h	Fri Aug 15 15:14:46 2008
+***************
+*** 39,44 ****
+--- 39,51 ----
+  #  include "../config.h"
+  #endif
+  
++ #ifdef __SYMBIAN32__
++ #include <stdint.h>
++ #undef FIXED_POINT
++ #define USE_DOUBLE_PRECISION
++ #define HAS_LRINTF
++ #endif
++ 
+  #if 1
+  #define INLINE __inline
+  #else
+***************
+*** 168,173 ****
+--- 175,181 ----
+  
+  #include <stdlib.h>
+  
++ #ifndef __SYMBIAN32__
+  typedef unsigned __int64 uint64_t;
+  typedef unsigned __int32 uint32_t;
+  typedef unsigned __int16 uint16_t;
+***************
+*** 176,181 ****
+--- 184,190 ----
+  typedef __int32 int32_t;
+  typedef __int16 int16_t;
+  typedef __int8  int8_t;
++ #endif
+  typedef float float32_t;
+  
+  
+diff -crN faad2-2.6.1-orig/libfaad.mmp faad2-2.6.1/libfaad.mmp
+*** faad2-2.6.1-orig/libfaad.mmp	Thu Jan 01 09:00:00 1970
+--- faad2-2.6.1/libfaad.mmp	Tue Sep 02 17:11:14 2008
+***************
+*** 0 ****
+--- 1,13 ----
++ 
++ TARGET		libfaad.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE include libfaad .
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH libfaad
++ SOURCE bits.c cfft.c common.c decoder.c drc.c drm_dec.c error.c filtbank.c hcr.c huffman.c ic_predict.c is.c lt_predict.c mdct.c mp4.c ms.c output.c pns.c ps_dec.c ps_syntax.c pulse.c rvlc.c sbr_dct.c sbr_dec.c sbr_e_nf.c sbr_fbt.c sbr_hfadj.c sbr_hfgen.c sbr_huff.c sbr_qmf.c sbr_syntax.c sbr_tf_grid.c specrec.c ssr.c ssr_fb.c ssr_ipqf.c syntax.c tns.c
++ 
++ MACRO HAVE_CONFIG_H
++ 

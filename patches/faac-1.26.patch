@@ -1,0 +1,20 @@
+diff -crN faac-1.26-orig/libfaac.mmp faac-1.26/libfaac.mmp
+*** faac-1.26-orig/libfaac.mmp	Thu Jan 01 09:00:00 1970
+--- faac-1.26/libfaac.mmp	Tue Sep 02 17:11:08 2008
+***************
+*** 0 ****
+--- 1,14 ----
++ 
++ TARGET		libfaac.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE include libfaac .
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH libfaac
++ SOURCE aacquant.c backpred.c bitstream.c channels.c fft.c filtbank.c frame.c huffman.c ltp.c midside.c psychkni.c tns.c util.c
++ 
++ SOURCEPATH libfaac/kiss_fft
++ SOURCE kiss_fft.c kiss_fftr.c
++ 

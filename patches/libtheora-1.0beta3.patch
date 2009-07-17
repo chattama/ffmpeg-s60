@@ -1,0 +1,38 @@
+diff -crN libtheora-1.0beta3-orig/symbian/theora.mmp libtheora-1.0beta3/symbian/theora.mmp
+*** libtheora-1.0beta3-orig/symbian/theora.mmp	Thu Apr 17 05:25:48 2008
+--- libtheora-1.0beta3/symbian/theora.mmp	Thu Sep 11 14:44:16 2008
+***************
+*** 30,41 ****
+     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+  
+! TARGET        theora.lib
+  TARGETTYPE    lib
+  UID           0
+  MACRO         HAVE_CONFIG_H
+! SOURCEPATH    ..\lib
+! SOURCE        blockmap.c comment.c dct.c dct_decode.c decode.c frarray.c frinit.c huffman.c
+! SOURCE        idct.c mcomp.c misc_common.c pb.c pp.c quant.c reconstruct.c scan.c toplevel.c encoder_disabled.c
+! USERINCLUDE   .
+! SYSTEMINCLUDE \epoc32\include \epoc32\include\libc ..\include ..\..\ogg\include ..\..\ogg\symbian
+--- 30,49 ----
+     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+  
+! TARGET        libtheora.lib
+  TARGETTYPE    lib
+  UID           0
+  MACRO         HAVE_CONFIG_H
+! 
+! SOURCEPATH ../lib
+! SOURCE cpu.c
+! 
+! SOURCEPATH ../lib/dec
+! SOURCE apiwrapper.c bitwise.c decapiwrapper.c decinfo.c decode.c dequant.c fragment.c huffdec.c idct.c info.c internal.c quant.c state.c
+! 
+! SOURCEPATH ../lib/enc
+! SOURCE blockmap.c dct.c dct_decode.c dct_encode.c dsp.c encapiwrapper.c encode.c encoder_huffman.c encoder_idct.c encoder_quant.c encoder_toplevel.c frarray.c frinit.c mcomp.c misc_common.c pb.c pp.c reconstruct.c scan.c
+! 
+! USERINCLUDE . ../include/theora ../lib ../lib/enc ../lib/dec
+! SYSTEMINCLUDE /epoc32/include /epoc32/include/libc ../include ../../libogg-1.1.3/include
+! 

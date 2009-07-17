@@ -1,0 +1,487 @@
+diff -crN schroedinger-1.0.5-orig/config.h schroedinger-1.0.5/config.h
+*** schroedinger-1.0.5-orig/config.h	Thu Jan 01 09:00:00 1970
+--- schroedinger-1.0.5/config.h	Sun Sep 07 13:59:00 2008
+***************
+*** 0 ****
+--- 1,103 ----
++ /* config.h.in.  Generated from configure.ac by autoheader.  */
++ 
++ /* Enable Dirac compatibility */
++ /* #undef DIRAC_COMPAT */
++ 
++ /* Package origin in GStreamer plugin */
++ /* #undef GST_PACKAGE_ORIGIN */
++ 
++ /* Defined if host is amd64 */
++ /* #undef HAVE_AMD64 */
++ 
++ /* Defined if host is arm */
++ /* #undef HAVE_ARM */
++ 
++ /* Compile in CUDA rendering backend */
++ /* #undef HAVE_CUDA */
++ 
++ /* Define to 1 if you have the <dlfcn.h> header file. */
++ /* #undef HAVE_DLFCN_H */
++ 
++ /* Defined if host is i386 */
++ /* #undef HAVE_I386 */
++ 
++ /* Define to 1 if you have the <inttypes.h> header file. */
++ #define HAVE_INTTYPES_H
++ 
++ /* Define to 1 if you have the <memory.h> header file. */
++ /* #undef HAVE_MEMORY_H */
++ 
++ /* Whether or not orc is enabled */
++ /* #undef HAVE_ORC */
++ 
++ /* Defined if host is powerpc */
++ /* #undef HAVE_POWERPC */
++ 
++ /* Define to 1 if you have the <stdint.h> header file. */
++ #define HAVE_STDINT_H
++ 
++ /* Define to 1 if you have the <stdlib.h> header file. */
++ #define HAVE_STDLIB_H
++ 
++ /* Define to 1 if you have the <strings.h> header file. */
++ #define HAVE_STRINGS_H
++ 
++ /* Define to 1 if you have the <string.h> header file. */
++ #define HAVE_STRING_H
++ 
++ /* Define to 1 if you have the <sys/stat.h> header file. */
++ #define HAVE_SYS_STAT_H
++ 
++ /* Define to 1 if you have the <sys/types.h> header file. */
++ #define HAVE_SYS_TYPES_H
++ 
++ /* Define to 1 if you have the <unistd.h> header file. */
++ #define HAVE_UNISTD_H
++ 
++ /* Define to 1 if your C compiler doesn't accept -c and -o together. */
++ /* #undef NO_MINUS_C_MINUS_O */
++ 
++ /* define of package */
++ #define PACKAGE "schroedinger"
++ 
++ /* Define to the address where bug reports for this package should be sent. */
++ #define PACKAGE_BUGREPORT ""
++ 
++ /* Define to the full name of this package. */
++ #define PACKAGE_NAME "schroedinger"
++ 
++ /* Define to the full name and version of this package. */
++ #define PACKAGE_STRING "schroedinger 1.0.5"
++ 
++ /* Define to the one symbol short name of this package. */
++ #define PACKAGE_TARNAME "schroedinger"
++ 
++ /* Define to the version of this package. */
++ #define PACKAGE_VERSION "1.0.5"
++ 
++ /* The size of `char', as computed by sizeof. */
++ #define SIZEOF_CHAR 1
++ 
++ /* The size of `int', as computed by sizeof. */
++ #define SIZEOF_INT 4
++ 
++ /* The size of `long', as computed by sizeof. */
++ #define SIZEOF_LONG 4
++ 
++ /* The size of `short', as computed by sizeof. */
++ #define SIZEOF_SHORT 2
++ 
++ /* The size of `void*', as computed by sizeof. */
++ #define SIZEOF_VOIDP 4
++ 
++ /* Define to 1 if you have the ANSI C header files. */
++ #define STDC_HEADERS
++ 
++ /* Version number of package */
++ #define VERSION "1.0.5"
++ 
++ /* Number of bits in a file offset, on hosts where this is settable. */
++ #define _FILE_OFFSET_BITS 64 */
++ 
++ /* Define for large files, on AIX-style hosts. */
++ /* #undef _LARGE_FILES */
+diff -crN schroedinger-1.0.5-orig/libschroedinger.mmp schroedinger-1.0.5/libschroedinger.mmp
+*** schroedinger-1.0.5-orig/libschroedinger.mmp	Thu Jan 01 09:00:00 1970
+--- schroedinger-1.0.5/libschroedinger.mmp	Sun Sep 07 15:16:37 2008
+***************
+*** 0 ****
+--- 1,13 ----
++ 
++ TARGET		libschroedinger.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE . ./schroedinger ../liboil-0.3.15
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH schroedinger
++ SOURCE schro.c schroanalysis.c schroarith.c schrocog.c schrodecoder.c schrodebug.c schrodomain.c schroencoder.c schroengine.c schrofft.c schrofilter.c schroframe.c schrohistogram.c schrobuffer.c schrolist.c schrolowdelay.c schrometric.c schromotion.c schromotionest.c schrooil.c schropack.c schroparams.c schroparse.c schrophasecorrelation.c schroquantiser.c schroqueue.c schrossim.c schrotables.c schrounpack.c schrounpacktables.c schroutils.c schrovideoformat.c schrovirtframe.c schrowavelet.c schrowavelettables.c schroasync-pthread.c
++ 
++ MACRO SCHRO_ENABLE_UNSTABLE_API
++ 
+diff -crN schroedinger-1.0.5-orig/schroedinger/schrocog.c schroedinger-1.0.5/schroedinger/schrocog.c
+*** schroedinger-1.0.5-orig/schroedinger/schrocog.c	Mon Feb 18 10:43:24 2008
+--- schroedinger-1.0.5/schroedinger/schrocog.c	Sun Sep 07 17:30:04 2008
+***************
+*** 14,20 ****
+--- 14,26 ----
+  {
+    int i,j;
+    int x;
++ #ifdef __CW32__
++   int16_t offsetshift[2];
++   offsetshift[0] = offset;
++   offsetshift[1] = shift;
++ #else
+    int16_t offsetshift[] = { offset, shift };
++ #endif
+  
+    if (n <= 8) {
+      for(i=0;i<n;i++){
+***************
+*** 49,55 ****
+--- 55,67 ----
+  {
+    int i,j;
+    int x;
++ #ifdef __CW32__
++   int16_t offsetshift[2];
++   offsetshift[0] = offset;
++   offsetshift[1] = shift;
++ #else
+    int16_t offsetshift[] = { offset, shift };
++ #endif
+  
+    if (n < 10) {
+      for(i=0;i<n;i++){
+diff -crN schroedinger-1.0.5-orig/schroedinger/schroencoder.c schroedinger-1.0.5/schroedinger/schroencoder.c
+*** schroedinger-1.0.5-orig/schroedinger/schroencoder.c	Tue Jul 01 08:11:58 2008
+--- schroedinger-1.0.5/schroedinger/schroencoder.c	Thu Sep 11 16:57:34 2008
+***************
+*** 655,661 ****
+  static void
+  schro_encoder_encode_codec_comment (SchroEncoder *encoder)
+  {
+!   char *s = "Schroedinger " VERSION;
+    SchroBuffer *buffer;
+  
+    buffer = schro_encoder_encode_auxiliary_data (encoder,
+--- 655,661 ----
+  static void
+  schro_encoder_encode_codec_comment (SchroEncoder *encoder)
+  {
+!   char *s = "Schroedinger 1.0.5";
+    SchroBuffer *buffer;
+  
+    buffer = schro_encoder_encode_auxiliary_data (encoder,
+diff -crN schroedinger-1.0.5-orig/schroedinger/schroframe.c schroedinger-1.0.5/schroedinger/schroframe.c
+*** schroedinger-1.0.5-orig/schroedinger/schroframe.c	Mon Jun 23 15:44:16 2008
+--- schroedinger-1.0.5/schroedinger/schroframe.c	Sun Sep 07 17:59:15 2008
+***************
+*** 126,134 ****
+    }
+  
+    frame->components[0].data = frame->regions[0];
+    frame->components[1].data = frame->components[0].data +
+!     frame->components[0].length;
+    frame->components[2].data = frame->components[1].data +
+      frame->components[1].length;
+  
+    return frame;
+--- 126,142 ----
+    }
+  
+    frame->components[0].data = frame->regions[0];
++ #ifdef __CW32__
++   frame->components[1].data = (char*)frame->components[0].data +
++ #else
+    frame->components[1].data = frame->components[0].data +
+! #endif
+!   frame->components[0].length;
+! #ifdef __CW32__
+!   frame->components[2].data = (char*)frame->components[1].data +
+! #else
+    frame->components[2].data = frame->components[1].data +
++ #endif
+      frame->components[1].length;
+  
+    return frame;
+***************
+*** 243,249 ****
+--- 251,261 ----
+    frame->components[1].length =
+      frame->components[1].stride * frame->components[1].height;
+    frame->components[1].data =
++ #ifdef __CW32__
++     (char*)(frame->components[0].data) + frame->components[0].length; 
++ #else
+      frame->components[0].data + frame->components[0].length; 
++ #endif
+    frame->components[1].v_shift = 1;
+    frame->components[1].h_shift = 1;
+  
+***************
+*** 253,259 ****
+--- 265,275 ----
+    frame->components[2].length =
+      frame->components[2].stride * frame->components[2].height;
+    frame->components[2].data =
++ #ifdef __CW32__
++     (char*)(frame->components[1].data) + frame->components[1].length; 
++ #else
+      frame->components[1].data + frame->components[1].length; 
++ #endif
+    frame->components[2].v_shift = 1;
+    frame->components[2].h_shift = 1;
+  
+***************
+*** 285,291 ****
+--- 301,311 ----
+    frame->components[2].length =
+      frame->components[2].stride * frame->components[2].height;
+    frame->components[2].data =
++ #ifdef __CW32__
++     (char*)frame->components[0].data + frame->components[0].length; 
++ #else
+      frame->components[0].data + frame->components[0].length; 
++ #endif
+    frame->components[2].v_shift = 1;
+    frame->components[2].h_shift = 1;
+  
+***************
+*** 295,301 ****
+--- 315,325 ----
+    frame->components[1].length =
+      frame->components[1].stride * frame->components[1].height;
+    frame->components[1].data =
++ #ifdef __CW32__
++     (char*)frame->components[2].data + frame->components[2].length; 
++ #else
+      frame->components[2].data + frame->components[2].length; 
++ #endif
+    frame->components[1].v_shift = 1;
+    frame->components[1].h_shift = 1;
+  
+***************
+*** 1062,1068 ****
+--- 1086,1098 ----
+    int16_t *data;
+    int i;
+    int y;
++ #ifdef __CW32__
++   int16_t s[2];
++   s[0] = (1<<shift)>>1;
++   s[1] = shift;
++ #else
+    int16_t s[2] = { (1<<shift)>>1, shift };
++ #endif
+  
+    for(i=0;i<3;i++){
+      comp = &frame->components[i];
+***************
+*** 1280,1292 ****
+--- 1310,1330 ----
+  
+    for(i=0;i<7;i++){
+      downsample_horiz_u8 (tmplist[i+5], dest->width,
++ #ifdef __CW32__
++         (uint8_t*)src->data + src->stride * CLAMP(i, 0, src->height - 1), src->width,
++ #else
+          src->data + src->stride * CLAMP(i, 0, src->height - 1), src->width,
++ #endif
+          taps, offsetshift);
+    }
+    for(i=0;i<5;i++){
+      oil_memcpy (tmplist[i], tmplist[5], dest->width);
+    }
++ #ifdef __CW32__
++   oil_mas12across_addc_rshift_u8 ((uint8_t*)dest->data + dest->stride * 0, tmplist,
++ #else
+    oil_mas12across_addc_rshift_u8 (dest->data + dest->stride * 0, tmplist,
++ #endif
+        taps, offsetshift, dest->width);
+  
+    for (j=1;j<dest->height;j++){
+***************
+*** 1299,1311 ****
+--- 1337,1361 ----
+      tmplist[11] = tmp1;
+  
+      downsample_horiz_u8 (tmplist[10], dest->width,
++ #ifdef __CW32__
++         (uint8_t*)src->data + src->stride * CLAMP(j*2+5,0,src->height-1), src->width,
++ #else
+          src->data + src->stride * CLAMP(j*2+5,0,src->height-1), src->width,
++ #endif
+          taps, offsetshift);
+      downsample_horiz_u8 (tmplist[11], dest->width,
++ #ifdef __CW32__
++         (uint8_t*)src->data + src->stride * CLAMP(j*2+6,0,src->height-1), src->width,
++ #else
+          src->data + src->stride * CLAMP(j*2+6,0,src->height-1), src->width,
++ #endif
+          taps, offsetshift);
+      
++ #ifdef __CW32__
++     oil_mas12across_addc_rshift_u8 ((uint8_t*)dest->data + dest->stride * j, tmplist,
++ #else
+      oil_mas12across_addc_rshift_u8 (dest->data + dest->stride * j, tmplist,
++ #endif
+          taps, offsetshift, dest->width);
+    }
+  
+***************
+*** 1453,1460 ****
+--- 1503,1515 ----
+    int j;
+  
+    for(j=0;j<dest->height;j++) {
++ #ifdef __CW32__
++     oil_memcpy ((char*)dest->data + dest->stride * j, (char*)src->data + src->stride * j,
++         dest->width);
++ #else
+      oil_memcpy (dest->data + dest->stride * j, src->data + src->stride * j,
+          dest->width);
++ #endif
+    }
+  }
+  
+***************
+*** 1494,1508 ****
+--- 1549,1578 ----
+    for(j=0;j<dest->height;j++) {
+      if (j&1) {
+        oil_merge_linear_u8 (tmp,
++ #ifdef __CW32__
++           (uint8_t*)src->data + src->stride * ((j-1)>>1),
++           (uint8_t*)src->data + src->stride * ((j+1)>>1),
++ #else
+            src->data + src->stride * ((j-1)>>1),
+            src->data + src->stride * ((j+1)>>1),
++ #endif
+            &weight,
+            src->width);
++ #ifdef __CW32__
++       horiz_upsample ((uint8_t*)dest->data + dest->stride * j,
++           tmp, dest->width);
++ #else
+        horiz_upsample (dest->data + dest->stride * j,
+            tmp, dest->width);
++ #endif
+      } else {
++ #ifdef __CW32__
++       horiz_upsample ((uint8_t*)dest->data + dest->stride * j,
++           (uint8_t*)src->data + src->stride * (j>>1), dest->width);
++ #else
+        horiz_upsample (dest->data + dest->stride * j,
+            src->data + src->stride * (j>>1), dest->width);
++ #endif
+      }
+    }
+    schro_free(tmp);
+diff -crN schroedinger-1.0.5-orig/schroedinger/schromotionest.c schroedinger-1.0.5/schroedinger/schromotionest.c
+*** schroedinger-1.0.5-orig/schroedinger/schromotionest.c	Wed Apr 30 13:25:14 2008
+--- schroedinger-1.0.5/schroedinger/schromotionest.c	Sun Sep 07 18:03:19 2008
+***************
+*** 474,484 ****
+--- 474,492 ----
+    if (ymax - ymin + 1 <= 100) {
+      for(i=xmin;i<xmax;i++){
+        oil_sad8x8_8xn_u8 (metric_array,
++ #ifdef __CW32__
++           (uint8_t*)frame->components[0].data + x + y*frame->components[0].stride,
++           frame->components[0].stride,
++           (uint8_t*)ref->components[0].data + i + ymin*ref->components[0].stride,
++           ref->components[0].stride,
++           ymax - ymin + 1);
++ #else
+            frame->components[0].data + x + y*frame->components[0].stride,
+            frame->components[0].stride,
+            ref->components[0].data + i + ymin*ref->components[0].stride,
+            ref->components[0].stride,
+            ymax - ymin + 1);
++ #endif
+        for(j=ymin;j<=ymax;j++){
+          metric = metric_array[j-ymin] + abs(i - x) + abs(j - y);
+          if (metric < mv->metric) {
+***************
+*** 494,503 ****
+--- 502,518 ----
+        for(i=xmin;i<=xmax;i++){
+  
+          metric = schro_metric_absdiff_u8 (
++ #ifdef __CW32__
++             (uint8_t*)frame->components[0].data + x + y*frame->components[0].stride,
++             frame->components[0].stride,
++             (uint8_t*)ref->components[0].data + i + j*ref->components[0].stride,
++             ref->components[0].stride, 8, 8);
++ #else
+              frame->components[0].data + x + y*frame->components[0].stride,
+              frame->components[0].stride,
+              ref->components[0].data + i + j*ref->components[0].stride,
+              ref->components[0].stride, 8, 8);
++ #endif
+          metric += abs(i - x) + abs(j - y);
+          if (metric < mv->metric) {
+            mv->dx[0] = i - x;
+***************
+*** 739,748 ****
+--- 754,770 ----
+        y2+8 > frame2->height) return 64*255;
+  
+    metric = schro_metric_absdiff_u8 (
++ #ifdef __CW32__
++       (uint8_t*)frame1->components[0].data + x1 + y1*frame1->components[0].stride,
++       frame1->components[0].stride,
++       (uint8_t*)frame2->components[0].data + x2 + y2*frame2->components[0].stride,
++       frame2->components[0].stride, 8, 8);
++ #else
+        frame1->components[0].data + x1 + y1*frame1->components[0].stride,
+        frame1->components[0].stride,
+        frame2->components[0].data + x2 + y2*frame2->components[0].stride,
+        frame2->components[0].stride, 8, 8);
++ #endif
+    //metric += abs(x1 - x2) + abs(y1 - y2);
+    
+    return metric;
+diff -crN schroedinger-1.0.5-orig/schroedinger/schroutils.c schroedinger-1.0.5/schroedinger/schroutils.c
+*** schroedinger-1.0.5-orig/schroedinger/schroutils.c	Sat Jun 28 08:19:20 2008
+--- schroedinger-1.0.5/schroedinger/schroutils.c	Thu Sep 11 11:18:43 2008
+***************
+*** 16,24 ****
+--- 16,26 ----
+  #include <sys/mman.h>
+  #endif
+  
++ #ifndef __SYMBIAN32__
+  #ifdef _WIN32
+  #include <windows.h>
+  #endif
++ #endif
+  
+  #ifndef USE_MMAP
+  void *
+***************
+*** 251,257 ****
+  double
+  schro_utils_get_time (void)
+  {
+! #ifndef _WIN32
+    struct timeval tv;
+  
+    gettimeofday (&tv, NULL);
+--- 253,259 ----
+  double
+  schro_utils_get_time (void)
+  {
+! #if !defined(_WIN32) || defined(__SYMBIAN32__)
+    struct timeval tv;
+  
+    gettimeofday (&tv, NULL);

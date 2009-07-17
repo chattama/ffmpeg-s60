@@ -1,0 +1,21 @@
+diff -crN gsm-1.0-pl12-orig/libgsm.mmp gsm-1.0-pl12/libgsm.mmp
+*** gsm-1.0-pl12-orig/libgsm.mmp	Thu Jan 01 09:00:00 1970
+--- gsm-1.0-pl12/libgsm.mmp	Sun Sep 07 11:58:59 2008
+***************
+*** 0 ****
+--- 1,15 ----
++ 
++ TARGET		libgsm.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE inc
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH src
++ SOURCE add.c code.c debug.c decode.c long_term.c lpc.c preprocess.c rpe.c gsm_destroy.c gsm_decode.c gsm_encode.c gsm_explode.c gsm_implode.c gsm_create.c gsm_print.c gsm_option.c short_term.c table.c
++ 
++ MACRO SASR
++ MACRO WAV49
++ MACRO NDEBUG
++ 

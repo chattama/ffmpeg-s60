@@ -1,0 +1,1044 @@
+diff -crN dirac-0.10.0-orig/libdirac.mmp dirac-0.10.0/libdirac.mmp
+*** dirac-0.10.0-orig/libdirac.mmp	Thu Jan 01 09:00:00 1970
+--- dirac-0.10.0/libdirac.mmp	Sun Sep 07 10:27:59 2008
+***************
+*** 0 ****
+--- 1,27 ----
++ 
++ TARGET		libdirac.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE . ./libdirac_byteio ./libdirac_common ./libdirac_decoder ./libdirac_encoder ./libdirac_motionest
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis /epoc32/include/stdapis/stlport
++ 
++ SOURCEPATH libdirac_byteio
++ SOURCE accessunit_byteio.cpp displayparams_byteio.cpp parseunit_byteio.cpp byteio.cpp picture_byteio.cpp codingparams_byteio.cpp dirac_byte_stream.cpp parseparams_byteio.cpp mvdata_byteio.cpp mvdataelement_byteio.cpp transform_byteio.cpp endofsequence_byteio.cpp component_byteio.cpp subband_byteio.cpp dirac_byte_stats.cpp
++ 
++ SOURCEPATH libdirac_common
++ SOURCE arith_codec.cpp band_codec.cpp band_vlc.cpp common.cpp picture.cpp picture_buffer.cpp mot_comp.cpp motion.cpp mv_codec.cpp pic_io.cpp upconvert.cpp wavelet_utils.cpp cmd_line.cpp dirac_assertions.cpp upconvert_mmx.cpp wavelet_utils_mmx.cpp mot_comp_mmx.cpp video_format_defaults.cpp dirac_exception.cpp
++ 
++ SOURCEPATH libdirac_decoder
++ SOURCE comp_decompress.cpp picture_decompress.cpp seq_decompress.cpp dirac_cppparser.cpp dirac_parser.cpp
++ 
++ SOURCEPATH libdirac_encoder
++ SOURCE comp_compress.cpp picture_compress.cpp quality_monitor.cpp quant_chooser.cpp seq_compress.cpp dirac_encoder.cpp rate_control.cpp prefilter.cpp
++ 
++ SOURCEPATH libdirac_motionest
++ SOURCE block_match.cpp downconvert.cpp me_mode_decn.cpp me_subpel.cpp me_utils.cpp motion_estimate.cpp pixel_match.cpp me_utils_mmx.cpp downconvert_mmx.cpp
++ 
++ OPTION CW -wchar_t on
++ 
++ MACRO _WCHAR_T_DECLARED
++ 
+diff -crN dirac-0.10.0-orig/libdirac_common/arith_codec.h dirac-0.10.0/libdirac_common/arith_codec.h
+*** dirac-0.10.0-orig/libdirac_common/arith_codec.h	Fri Nov 16 13:48:44 2007
+--- dirac-0.10.0/libdirac_common/arith_codec.h	Thu Sep 11 16:29:52 2008
+***************
+*** 356,362 ****
+  
+      inline void ArithCodecBase::EncodeSInt(const int value,
+                                             const int bin1, const int max_bin) {
+!         EncodeUInt(std::abs(value), bin1, max_bin);
+          if (value != 0) {
+              EncodeSymbol( (value < 0), max_bin+2 );
+          }
+--- 356,362 ----
+  
+      inline void ArithCodecBase::EncodeSInt(const int value,
+                                             const int bin1, const int max_bin) {
+!         EncodeUInt(std::abs((long)value), bin1, max_bin);
+          if (value != 0) {
+              EncodeSymbol( (value < 0), max_bin+2 );
+          }
+diff -crN dirac-0.10.0-orig/libdirac_common/band_codec.cpp dirac-0.10.0/libdirac_common/band_codec.cpp
+*** dirac-0.10.0-orig/libdirac_common/band_codec.cpp	Tue Apr 29 17:51:52 2008
+--- dirac-0.10.0/libdirac_common/band_codec.cpp	Thu Sep 11 16:30:35 2008
+***************
+*** 172,178 ****
+                                  const int ypos , 
+                                  const CoeffType val )
+  {
+!     unsigned int abs_val( std::abs(val) );
+      abs_val <<= 2;
+      abs_val /= m_qf;
+  
+--- 172,178 ----
+                                  const int ypos , 
+                                  const CoeffType val )
+  {
+!     unsigned int abs_val( std::abs((long)val) );
+      abs_val <<= 2;
+      abs_val /= m_qf;
+  
+***************
+*** 214,220 ****
+  void BandCodec::CodeQuantIndexOffset( const int offset )
+  {
+  
+!     const int abs_val = std::abs( offset );
+  
+      int N = abs_val+1;
+      int num_follow_zeroes=0;
+--- 214,220 ----
+  void BandCodec::CodeQuantIndexOffset( const int offset )
+  {
+  
+!     const int abs_val = std::abs( (long)offset );
+  
+      int N = abs_val+1;
+      int num_follow_zeroes=0;
+diff -crN dirac-0.10.0-orig/libdirac_common/band_vlc.cpp dirac-0.10.0/libdirac_common/band_vlc.cpp
+*** dirac-0.10.0-orig/libdirac_common/band_vlc.cpp	Tue Apr 29 17:51:52 2008
+--- dirac-0.10.0/libdirac_common/band_vlc.cpp	Thu Sep 11 16:37:52 2008
+***************
+*** 134,140 ****
+                                  const int ypos , 
+                                  const CoeffType val )
+  {
+!     int qval( std::abs(val) );
+      qval <<= 2;
+      qval /= m_qf;
+      in_data[ypos][xpos] = static_cast<CoeffType>( qval );
+--- 134,140 ----
+                                  const int ypos , 
+                                  const CoeffType val )
+  {
+!     int qval( std::abs((long)val) );
+      qval <<= 2;
+      qval /= m_qf;
+      in_data[ypos][xpos] = static_cast<CoeffType>( qval );
+***************
+*** 250,256 ****
+      CoeffType& out_pixel = out_data[ypos][xpos];
+  
+      // Reconstruct
+!     out_pixel = std::abs(quant_coeff);
+      if ( out_pixel )
+      {
+          out_pixel *= m_qf;
+--- 250,256 ----
+      CoeffType& out_pixel = out_data[ypos][xpos];
+  
+      // Reconstruct
+!     out_pixel = std::abs((long)quant_coeff);
+      if ( out_pixel )
+      {
+          out_pixel *= m_qf;
+diff -crN dirac-0.10.0-orig/libdirac_common/motion.cpp dirac-0.10.0/libdirac_common/motion.cpp
+*** dirac-0.10.0-orig/libdirac_common/motion.cpp	Sat Feb 02 04:52:30 2008
+--- dirac-0.10.0/libdirac_common/motion.cpp	Thu Sep 11 16:38:13 2008
+***************
+*** 267,273 ****
+      sd_cost /= static_cast<long double>( mv_array.LengthX()*mv_array.LengthY() );
+  
+      // ... and then the SD
+!     sd_cost = std::sqrt( sd_cost );
+  
+      threshold = mean_cost + 3*sd_cost;
+  
+--- 267,273 ----
+      sd_cost /= static_cast<long double>( mv_array.LengthX()*mv_array.LengthY() );
+  
+      // ... and then the SD
+!     sd_cost = std::sqrt( (double)sd_cost );
+  
+      threshold = mean_cost + 3*sd_cost;
+  
+***************
+*** 327,333 ****
+      sd_cost /= static_cast<long double>( mv_array.LengthX()*mv_array.LengthY() );
+  
+      // ... and then the SD
+!     sd_cost = std::sqrt( sd_cost );
+  
+      threshold = mean_cost + 3*sd_cost;
+  
+--- 327,333 ----
+      sd_cost /= static_cast<long double>( mv_array.LengthX()*mv_array.LengthY() );
+  
+      // ... and then the SD
+!     sd_cost = std::sqrt( (double)sd_cost );
+  
+      threshold = mean_cost + 3*sd_cost;
+  
+diff -crN dirac-0.10.0-orig/libdirac_encoder/quality_monitor.cpp dirac-0.10.0/libdirac_encoder/quality_monitor.cpp
+*** dirac-0.10.0-orig/libdirac_encoder/quality_monitor.cpp	Tue Apr 29 17:51:52 2008
+--- dirac-0.10.0/libdirac_encoder/quality_monitor.cpp	Thu Sep 11 16:40:29 2008
+***************
+*** 76,88 ****
+      std::cout<<std::endl<<"------------------------";
+      std::cout<<std::endl<<"Y: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_totalquality_averageY/m_allpicture_total<<std::endl;
+      std::cout<<std::endl<<"U: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_totalquality_averageU/m_allpicture_total<<std::endl;
+      std::cout<<std::endl<<"V: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_totalquality_averageV/m_allpicture_total<<std::endl;
+  
+  
+      std::cout<<std::endl<<"Mean PSNR values by picture type and component";
+--- 76,88 ----
+      std::cout<<std::endl<<"------------------------";
+      std::cout<<std::endl<<"Y: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_totalquality_averageY/m_allpicture_total)<<std::endl;
+      std::cout<<std::endl<<"U: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_totalquality_averageU/m_allpicture_total)<<std::endl;
+      std::cout<<std::endl<<"V: ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_totalquality_averageV/m_allpicture_total)<<std::endl;
+  
+  
+      std::cout<<std::endl<<"Mean PSNR values by picture type and component";
+***************
+*** 93,119 ****
+      std::cout<<std::endl<<"=================||===================================================";
+      std::cout<<std::endl<<"           Intra ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageY[0]/m_picture_total[0]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageU[0]/m_picture_total[0]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageV[0]/m_picture_total[0]<<"     ||    ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+      std::cout<<std::endl<<"       Inter Ref ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageY[1]/m_picture_total[1]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageU[1]/m_picture_total[1]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageV[1]/m_picture_total[1]<<"     ||    ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+      std::cout<<std::endl<<"   Inter Non Ref ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageY[2]/m_picture_total[2]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageU[2]/m_picture_total[2]<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<m_quality_averageV[2]/m_picture_total[2]<<"     ||     ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+  }
+  
+--- 93,119 ----
+      std::cout<<std::endl<<"=================||===================================================";
+      std::cout<<std::endl<<"           Intra ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageY[0]/m_picture_total[0])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageU[0]/m_picture_total[0])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageV[0]/m_picture_total[0])<<"     ||    ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+      std::cout<<std::endl<<"       Inter Ref ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageY[1]/m_picture_total[1])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageU[1]/m_picture_total[1])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageV[1]/m_picture_total[1])<<"     ||    ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+      std::cout<<std::endl<<"   Inter Non Ref ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageY[2]/m_picture_total[2])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageU[2]/m_picture_total[2])<<"     ||     ";
+      std::cout.width(5);std::cout.precision(4);
+!     std::cout<<(double)(m_quality_averageV[2]/m_picture_total[2])<<"     ||     ";
+      std::cout<<std::endl<<"-----------------||---------------------------------------------------";
+  }
+  
+***************
+*** 182,186 ****
+  
+      sum_sq_diff /= xlen*ylen;
+  
+!     return static_cast<double> ( 10.0 * std::log10( max*max / sum_sq_diff ) );
+  }
+--- 182,186 ----
+  
+      sum_sq_diff /= xlen*ylen;
+  
+!     return static_cast<double> ( 10.0 * std::log10( (double)(max*max / sum_sq_diff) ) );
+  }
+diff -crN dirac-0.10.0-orig/libdirac_encoder/quant_chooser.cpp dirac-0.10.0/libdirac_encoder/quant_chooser.cpp
+*** dirac-0.10.0-orig/libdirac_encoder/quant_chooser.cpp	Tue May 27 10:29:54 2008
+--- dirac-0.10.0/libdirac_encoder/quant_chooser.cpp	Thu Sep 11 16:40:47 2008
+***************
+*** 340,346 ****
+      {
+          for (int i=cblock.Xstart(); i<cblock.Xend(); ++i )
+          {
+!             if ( (std::abs(m_coeff_data[j][i])<<2) >= u_threshold )
+                  can_skip = false;
+          }   
+      }
+--- 340,346 ----
+      {
+          for (int i=cblock.Xstart(); i<cblock.Xend(); ++i )
+          {
+!             if ( (std::abs((long)(m_coeff_data[j][i])<<2)) >= u_threshold )
+                  can_skip = false;
+          }   
+      }
+diff -crN dirac-0.10.0-orig/libdirac_motionest/block_match.cpp dirac-0.10.0/libdirac_motionest/block_match.cpp
+*** dirac-0.10.0-orig/libdirac_motionest/block_match.cpp	Thu Aug 02 23:22:50 2007
+--- dirac-0.10.0/libdirac_motionest/block_match.cpp	Thu Sep 11 16:41:30 2008
+***************
+*** 149,155 ****
+  
+      for ( int j=1 ; j<=yr ; ++j)
+      {
+!         xlim = xr * (yr-std::abs(j)) / yr;        
+          for ( int i=-xlim ; i<=xlim ; ++i)
+          {
+              tmp_mv.x = mv.x + i;
+--- 149,155 ----
+  
+      for ( int j=1 ; j<=yr ; ++j)
+      {
+!         xlim = xr * (yr-std::abs((long)j)) / yr;        
+          for ( int i=-xlim ; i<=xlim ; ++i)
+          {
+              tmp_mv.x = mv.x + i;
+diff -crN dirac-0.10.0-orig/libdirac_motionest/me_utils.cpp dirac-0.10.0/libdirac_motionest/me_utils.cpp
+*** dirac-0.10.0-orig/libdirac_motionest/me_utils.cpp	Fri Mar 14 17:17:36 2008
+--- dirac-0.10.0/libdirac_motionest/me_utils.cpp	Thu Sep 11 16:44:14 2008
+***************
+*** 165,171 ****
+              for(int i=dparams.Xp() ; i< dparams.Xp()+dparams.Xl() ; ++i )
+              {
+                  diff = m_pic_data[j][i]-m_ref_data[j+mv.y][i+mv.x];
+!                 sum += std::abs( diff );
+              }// i
+          }// j
+  #endif /* HAVE_MMX */
+--- 165,171 ----
+              for(int i=dparams.Xp() ; i< dparams.Xp()+dparams.Xl() ; ++i )
+              {
+                  diff = m_pic_data[j][i]-m_ref_data[j+mv.y][i+mv.x];
+!                 sum += std::abs( (long)diff );
+              }// i
+          }// j
+  #endif /* HAVE_MMX */
+***************
+*** 181,187 ****
+              for( int i=dparams.Xp() ; i < dparams.Xp()+dparams.Xl() ; ++i )
+              {
+                  diff = m_pic_data[j][i] - m_ref_data[BChk(j+mv.y , m_ref_data.LengthY())][BChk(i+mv.x , m_ref_data.LengthX())];
+!                 sum += std::abs( diff );
+  
+              }// i
+          }// j
+--- 181,187 ----
+              for( int i=dparams.Xp() ; i < dparams.Xp()+dparams.Xl() ; ++i )
+              {
+                  diff = m_pic_data[j][i] - m_ref_data[BChk(j+mv.y , m_ref_data.LengthY())][BChk(i+mv.x , m_ref_data.LengthX())];
+!                 sum += std::abs( (long)diff );
+  
+              }// i
+          }// j
+***************
+*** 238,244 ****
+              for( int x=dparams.Xl(); x>0; --x, ++pic_curr, ++ref_curr )
+              {
+                  diff = (*pic_curr)-(*ref_curr);
+!                 sum += std::abs( diff );
+              }// x
+  
+              if ( sum>=best_sum )
+--- 238,244 ----
+              for( int x=dparams.Xl(); x>0; --x, ++pic_curr, ++ref_curr )
+              {
+                  diff = (*pic_curr)-(*ref_curr);
+!                 sum += std::abs( (long)diff );
+              }// x
+  
+              if ( sum>=best_sum )
+***************
+*** 264,270 ****
+              for( int i=dparams.Xp() ; i<dparams.Xend() ; ++i )
+              {
+                  diff = m_pic_data[j][i] - m_ref_data[BChk(j+mv.y , m_ref_data.LengthY())][BChk(i+mv.x , m_ref_data.LengthX())];
+!                 sum += std::abs( diff );
+  
+              }// i
+  
+--- 264,270 ----
+              for( int i=dparams.Xp() ; i<dparams.Xend() ; ++i )
+              {
+                  diff = m_pic_data[j][i] - m_ref_data[BChk(j+mv.y , m_ref_data.LengthY())][BChk(i+mv.x , m_ref_data.LengthX())];
+!                 sum += std::abs( (long)diff );
+  
+              }// i
+  
+***************
+*** 340,346 ****
+  
+      for (int j=dparams.Yp(); j<dparams.Yend() ; ++j)
+          for( int i=dparams.Xp() ; i<dparams.Xend() ;++i )
+!             intra_cost += std::abs( m_pic_data[j][i] - dc );
+     
+      return static_cast<float>( intra_cost );
+  #endif //HAVE_MMX
+--- 340,346 ----
+  
+      for (int j=dparams.Yp(); j<dparams.Yend() ; ++j)
+          for( int i=dparams.Xp() ; i<dparams.Xend() ;++i )
+!             intra_cost += std::abs( (long)(m_pic_data[j][i] - dc) );
+     
+      return static_cast<float>( intra_cost );
+  #endif //HAVE_MMX
+***************
+*** 391,397 ****
+          {
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+              {
+!                 sum += std::abs( *ref_curr - *pic_curr );
+              }// x
+          }// y
+  #endif
+--- 391,397 ----
+          {
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+              {
+!                 sum += std::abs( (long)(*ref_curr - *pic_curr) );
+              }// x
+          }// y
+  #endif
+***************
+*** 410,416 ****
+                    x>0 ; 
+                    --x, ++pic_curr, rx+=2 , bx=BChk(rx,m_ref_data.LengthX()))
+               {
+!                  sum += std::abs( m_ref_data[by][bx] -*pic_curr);
+               }// x
+          }// y
+  
+--- 410,416 ----
+                    x>0 ; 
+                    --x, ++pic_curr, rx+=2 , bx=BChk(rx,m_ref_data.LengthX()))
+               {
+!                  sum += std::abs( (long)(m_ref_data[by][bx] -*pic_curr));
+               }// x
+          }// y
+  
+***************
+*** 473,479 ****
+          {
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+              {
+!                 sum += std::abs( *ref_curr - *pic_curr );
+              }// x
+  
+              if ( sum>=best_costs.total )
+--- 473,479 ----
+          {
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+              {
+!                 sum += std::abs( (long)(*ref_curr - *pic_curr) );
+              }// x
+  
+              if ( sum>=best_costs.total )
+***************
+*** 495,501 ****
+                    x>0 ; 
+                    --x, ++pic_curr, rx+=2 , bx=BChk(rx,m_ref_data.LengthX()))
+               {
+!                  sum += std::abs( m_ref_data[by][bx] -*pic_curr);
+               }// x
+  
+               if ( sum>=best_costs.total )
+--- 495,501 ----
+                    x>0 ; 
+                    --x, ++pic_curr, rx+=2 , bx=BChk(rx,m_ref_data.LengthX()))
+               {
+!                  sum += std::abs( (long)(m_ref_data[by][bx] -*pic_curr));
+               }// x
+  
+               if ( sum>=best_costs.total )
+***************
+*** 563,569 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += std::abs( *ref_curr - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 563,569 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += std::abs( (long)(*ref_curr - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 579,585 ****
+                                  CalcValueType( ref_curr[1] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 579,585 ----
+                                  CalcValueType( ref_curr[1] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 595,601 ****
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 595,601 ----
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 613,619 ****
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 613,619 ----
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 645,651 ****
+                               linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( temp - m_pic_data[y][x] );
+              }// x
+          }// y
+  
+--- 645,651 ----
+                               linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( (long)(temp - m_pic_data[y][x]) );
+              }// x
+          }// y
+  
+***************
+*** 718,724 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += std::abs( *ref_curr - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 718,724 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += std::abs( (long)(*ref_curr - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 735,741 ****
+                                  CalcValueType( ref_curr[1] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 735,741 ----
+                                  CalcValueType( ref_curr[1] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 752,758 ****
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 752,758 ----
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 772,778 ****
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 772,778 ----
+                                  CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 809,815 ****
+                               linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( temp - m_pic_data[y][x] );
+              }// x
+                  
+              if ( sum>=best_costs.total )
+--- 809,815 ----
+                               linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( (long)(temp - m_pic_data[y][x]) );
+              }// x
+                  
+              if ( sum>=best_costs.total )
+***************
+*** 876,882 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += CalcValueType( std::abs( ref_curr[0] - *pic_curr ) );
+                  }// x
+              }// y
+          }
+--- 876,882 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += CalcValueType( std::abs( (long)(ref_curr[0] - *pic_curr) ) );
+                  }// x
+              }// y
+          }
+***************
+*** 890,896 ****
+                                   linear_wts[1] * CalcValueType( ref_curr[1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 890,896 ----
+                                   linear_wts[1] * CalcValueType( ref_curr[1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 904,910 ****
+                                   linear_wts[2] * CalcValueType( ref_curr[m_ref_data.LengthX()+0] ) +
+                                         8
+                                     ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 904,910 ----
+                                   linear_wts[2] * CalcValueType( ref_curr[m_ref_data.LengthX()+0] ) +
+                                         8
+                                     ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 920,926 ****
+                                   linear_wts[3] * CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+              }// y
+          }
+--- 920,926 ----
+                                   linear_wts[3] * CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+              }// y
+          }
+***************
+*** 944,950 ****
+                           linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                           8
+                          ) >> 4;
+!                 sum += std::abs( temp - m_pic_data[y][x] );
+              }// x
+          }// y
+  
+--- 944,950 ----
+                           linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                           8
+                          ) >> 4;
+!                 sum += std::abs( (long)(temp - m_pic_data[y][x]) );
+              }// x
+          }// y
+  
+***************
+*** 1008,1014 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += CalcValueType( std::abs( ref_curr[0] - *pic_curr ) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 1008,1014 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2 )
+                  {
+!                     sum += CalcValueType( std::abs( (long)(ref_curr[0] - *pic_curr) ) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 1026,1032 ****
+                                   linear_wts[1] * CalcValueType( ref_curr[1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 1026,1032 ----
+                                   linear_wts[1] * CalcValueType( ref_curr[1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 1044,1050 ****
+                                   linear_wts[2] * CalcValueType( ref_curr[m_ref_data.LengthX()+0] ) +
+                                         8
+                                     ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 1044,1050 ----
+                                   linear_wts[2] * CalcValueType( ref_curr[m_ref_data.LengthX()+0] ) +
+                                         8
+                                     ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 1064,1070 ****
+                                   linear_wts[3] * CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( temp - *pic_curr );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+--- 1064,1070 ----
+                                   linear_wts[3] * CalcValueType( ref_curr[m_ref_data.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (long)(temp - *pic_curr) );
+                  }// x
+                  
+                  if ( sum>=best_costs.total )
+***************
+*** 1092,1098 ****
+                           linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                           8
+                          ) >> 4;
+!                 sum += std::abs( temp - m_pic_data[y][x] );
+              }// x
+                  
+              if ( sum>=best_costs.total )
+--- 1092,1098 ----
+                           linear_wts[3] * CalcValueType( m_ref_data[BuY1][BuX1] ) +
+                           8
+                          ) >> 4;
+!                 sum += std::abs( (long)(temp - m_pic_data[y][x]) );
+              }// x
+                  
+              if ( sum>=best_costs.total )
+***************
+*** 1197,1203 ****
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+              {
+                  temp = (*diff_curr - *ref_curr )>>1;
+!                 sum += std::abs( temp );
+  
+              }// x
+          }// y
+--- 1197,1203 ----
+              for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+              {
+                  temp = (*diff_curr - *ref_curr )>>1;
+!                 sum += std::abs( (long)temp );
+  
+              }// x
+          }// y
+***************
+*** 1215,1221 ****
+                    --x, ++pic_curr, rx+=2 , ++diff_curr, bx=BChk(rx,m_ref_data2.LengthX()))
+               {
+                  temp = (*diff_curr - m_ref_data2[by][bx] )>>1;
+!                 sum += std::abs( temp );
+               }// x
+          }// y
+  
+--- 1215,1221 ----
+                    --x, ++pic_curr, rx+=2 , ++diff_curr, bx=BChk(rx,m_ref_data2.LengthX()))
+               {
+                  temp = (*diff_curr - m_ref_data2[by][bx] )>>1;
+!                 sum += std::abs( (long)temp );
+               }// x
+          }// y
+  
+***************
+*** 1400,1406 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+                  {
+!                     sum += std::abs( (*diff_curr - *ref_curr)>>1 );
+                  }// x
+              }// y
+          }
+--- 1400,1406 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+                  {
+!                     sum += std::abs( (long)((*diff_curr - *ref_curr)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1415,1421 ****
+                                  1
+                              ) >> 1;
+  
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1415,1421 ----
+                                  1
+                              ) >> 1;
+  
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1429,1435 ****
+                                  CalcValueType( ref_curr[m_ref_data2.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1429,1435 ----
+                                  CalcValueType( ref_curr[m_ref_data2.LengthX()] ) +
+                                  1
+                              ) >> 1;
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1445,1451 ****
+                                  CalcValueType( ref_curr[m_ref_data2.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1445,1451 ----
+                                  CalcValueType( ref_curr[m_ref_data2.LengthX()+1] ) +
+                                  2
+                              ) >> 2;
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1473,1479 ****
+                               linear_wts[3] * CalcValueType( m_ref_data2[by1][bx1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( (*diff_curr - temp)>>1 );
+               }// x
+          }// y
+      }
+--- 1473,1479 ----
+                               linear_wts[3] * CalcValueType( m_ref_data2[by1][bx1] ) +
+                               2
+                          ) >> 2;
+!                 sum += std::abs( (long)((*diff_curr - temp)>>1) );
+               }// x
+          }// y
+      }
+***************
+*** 1646,1652 ****
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+                  {
+!                     sum += std::abs( (*diff_curr - *ref_curr)>>1 );
+                  }// x
+              }// y
+          }
+--- 1646,1652 ----
+              {
+                  for( int x=dparams.Xl(); x > 0; --x, ++pic_curr, ref_curr+=2, ++diff_curr )
+                  {
+!                     sum += std::abs( (long)((*diff_curr - *ref_curr)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1661,1667 ****
+                                   8
+                              ) >> 4);
+  
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1661,1667 ----
+                                   8
+                              ) >> 4);
+  
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1676,1682 ****
+                                         8
+                                     ) >> 4);
+  
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1676,1682 ----
+                                         8
+                                     ) >> 4);
+  
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1692,1698 ****
+                                   linear_wts2[3] * CalcValueType( ref_curr[m_ref_data2.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (*diff_curr - temp)>>1 );
+                  }// x
+              }// y
+          }
+--- 1692,1698 ----
+                                   linear_wts2[3] * CalcValueType( ref_curr[m_ref_data2.LengthX()+1] ) +
+                                   8
+                              ) >> 4);
+!                     sum += std::abs( (long)((*diff_curr - temp)>>1) );
+                  }// x
+              }// y
+          }
+***************
+*** 1715,1721 ****
+                               linear_wts2[3] * CalcValueType( m_ref_data2[by1][bx1] ) +
+                               8
+                          ) >> 4;
+!                 sum += std::abs( (*diff_curr - temp)>>1 );
+               }// x
+          }// y
+      }
+--- 1715,1721 ----
+                               linear_wts2[3] * CalcValueType( m_ref_data2[by1][bx1] ) +
+                               8
+                          ) >> 4;
+!                 sum += std::abs( (long)((*diff_curr - temp)>>1) );
+               }// x
+          }// y
+      }
+diff -crN dirac-0.10.0-orig/libdirac_motionest/pixel_match.cpp dirac-0.10.0/libdirac_motionest/pixel_match.cpp
+*** dirac-0.10.0-orig/libdirac_motionest/pixel_match.cpp	Tue May 27 10:29:54 2008
+--- dirac-0.10.0/libdirac_motionest/pixel_match.cpp	Thu Sep 11 16:44:33 2008
+***************
+*** 76,83 ****
+          ref2 = ref1;
+  
+      // Record temporal distances
+!     m_tdiff[0] = std::abs( ref1 - frame_num );
+!     m_tdiff[1] = std::abs( ref2 - frame_num );
+  
+      // Obtain C++ references to the reference picture luma components
+      const PicArray& ref1_data = my_buffer.GetComponent(ref1 , Y_COMP);
+--- 76,83 ----
+          ref2 = ref1;
+  
+      // Record temporal distances
+!     m_tdiff[0] = std::abs( (long)(ref1 - frame_num) );
+!     m_tdiff[1] = std::abs( (long)(ref2 - frame_num) );
+  
+      // Obtain C++ references to the reference picture luma components
+      const PicArray& ref1_data = my_buffer.GetComponent(ref1 , Y_COMP);
+***************
+*** 90,97 ****
+--- 90,102 ----
+      if ( m_encparams.FullSearch() == false )
+      {
+          // Set the number of downconversion levels - not too many or we run out of picture!
++ #ifdef __CW32__
++         m_depth = ( int) std::min( std::log(((double) pic_data.LengthX())/12.0)/std::log(2.0) , 
++                                  std::log(((double) pic_data.LengthY())/12.0)/std::log(2.0) );
++ #else
+          m_depth = ( int) std::min( log(((double) pic_data.LengthX())/12.0)/log(2.0) , 
+                                   log(((double) pic_data.LengthY())/12.0)/log(2.0) );
++ #endif
+  
+          // These arrays will contain the downconverted picture and MvData hierarchy
+          OneDArray<PicArray*> ref1_down( Range( 1 , m_depth ) );

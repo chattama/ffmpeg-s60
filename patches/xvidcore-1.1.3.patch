@@ -1,0 +1,271 @@
+diff -crN xvidcore-1.1.3-orig/libxvidcore.mmp xvidcore-1.1.3/libxvidcore.mmp
+*** xvidcore-1.1.3-orig/libxvidcore.mmp	Thu Jan 01 09:00:00 1970
+--- xvidcore-1.1.3/libxvidcore.mmp	Tue Sep 02 17:11:45 2008
+***************
+*** 0 ****
+--- 1,37 ----
++ 
++ TARGET		libxvidcore.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE ./src ./src/bitstream ./src/dct ./src/image ./src/motion ./src/plugins ./src/prediction ./src/quant ./src/utils
++ SYSTEMINCLUDE /epoc32/include/stdapis/glib-2.0 /epoc32/include/stdapis /epoc32/include
++ 
++ SOURCEPATH src
++ SOURCE decoder.c encoder.c xvid.c
++ 
++ SOURCEPATH src/bitstream
++ SOURCE bitstream.c cbp.c mbcoding.c
++ 
++ SOURCEPATH src/dct
++ SOURCE fdct.c idct.c simple_idct.c
++ 
++ SOURCEPATH src/image
++ SOURCE colorspace.c font.c image.c interpolate8x8.c postprocessing.c qpel.c reduced.c
++ 
++ SOURCEPATH src/motion
++ SOURCE estimation_bvop.c estimation_common.c estimation_gmc.c estimation_pvop.c estimation_rd_based.c estimation_rd_based_bvop.c gmc.c motion_comp.c sad.c vop_type_decision.c
++ 
++ SOURCEPATH src/prediction
++ SOURCE mbprediction.c
++ 
++ SOURCEPATH src/plugins
++ SOURCE plugin_single.c plugin_2pass1.c plugin_2pass2.c plugin_lumimasking.c plugin_dump.c plugin_psnr.c
++ 
++ SOURCEPATH src/quant
++ SOURCE quant_h263.c quant_matrix.c quant_mpeg.c
++ 
++ SOURCEPATH src/utils
++ SOURCE emms.c mbtransquant.c mem_align.c mem_transfer.c timer.c
++ 
++ MACRO ARCH_IS_32BIT
++ MACRO ARCH_IS_GENERIC
+diff -crN xvidcore-1.1.3-orig/src/dct/fdct.c xvidcore-1.1.3/src/dct/fdct.c
+*** xvidcore-1.1.3-orig/src/dct/fdct.c	Mon Mar 22 23:36:24 2004
+--- xvidcore-1.1.3/src/dct/fdct.c	Mon Sep 01 17:35:52 2008
+***************
+*** 135,141 ****
+--- 135,143 ----
+  #define FIX_3_072711026  ((int) 25172)	/* FIX(3.072711026) */
+  
+  /* function pointer */
++ #if 0
+  fdctFuncPtr fdct;
++ #endif
+  
+  /*
+   * Perform an integer forward DCT on one block of samples.
+diff -crN xvidcore-1.1.3-orig/src/dct/fdct.h xvidcore-1.1.3/src/dct/fdct.h
+*** xvidcore-1.1.3-orig/src/dct/fdct.h	Thu Jan 06 00:02:16 2005
+--- xvidcore-1.1.3/src/dct/fdct.h	Mon Sep 01 17:36:54 2008
+***************
+*** 29,35 ****
+--- 29,37 ----
+  typedef void (fdctFunc) (short *const block);
+  typedef fdctFunc *fdctFuncPtr;
+  
++ #if 0
+  extern fdctFuncPtr fdct;
++ #endif
+  
+  fdctFunc fdct_int32;
+  
+diff -crN xvidcore-1.1.3-orig/src/dct/idct.c xvidcore-1.1.3/src/dct/idct.c
+*** xvidcore-1.1.3-orig/src/dct/idct.c	Tue Nov 22 11:23:02 2005
+--- xvidcore-1.1.3/src/dct/idct.c	Mon Sep 01 17:36:06 2008
+***************
+*** 225,231 ****
+--- 225,233 ----
+  #endif
+  
+  /* function pointer */
++ #if 0
+  idctFuncPtr idct;
++ #endif
+  
+  /* two dimensional inverse discrete cosine transform */
+  void
+diff -crN xvidcore-1.1.3-orig/src/dct/idct.h xvidcore-1.1.3/src/dct/idct.h
+*** xvidcore-1.1.3-orig/src/dct/idct.h	Mon May 23 14:06:02 2005
+--- xvidcore-1.1.3/src/dct/idct.h	Mon Sep 01 17:37:05 2008
+***************
+*** 32,38 ****
+--- 32,40 ----
+  typedef void (idctFunc) (short *const block);
+  typedef idctFunc *idctFuncPtr;
+  
++ #if 0
+  extern idctFuncPtr idct;
++ #endif
+  
+  idctFunc idct_int32;
+  idctFunc simple_idct_c;		/* Michael Niedermayer */
+diff -crN xvidcore-1.1.3-orig/src/motion/estimation_bvop.c xvidcore-1.1.3/src/motion/estimation_bvop.c
+*** xvidcore-1.1.3-orig/src/motion/estimation_bvop.c	Mon Mar 14 01:47:08 2005
+--- xvidcore-1.1.3/src/motion/estimation_bvop.c	Mon Sep 01 14:52:44 2008
+***************
+*** 48,59 ****
+--- 48,68 ----
+  	uint8_t *f_refu, *f_refv, *b_refu, *b_refv;
+  	int offset, filter;
+  
++ #ifdef __CW32__
++ 	INTERPOLATE8X8_PTR interpolate8x8_halfpel[4];
++ 	interpolate8x8_halfpel[0] = NULL;
++ 	interpolate8x8_halfpel[1] = interpolate8x8_halfpel_v;
++ 	interpolate8x8_halfpel[2] = interpolate8x8_halfpel_h;
++ 	interpolate8x8_halfpel[3] = interpolate8x8_halfpel_hv;
++ #else
+  	const INTERPOLATE8X8_PTR interpolate8x8_halfpel[] = {
+  		NULL,
+  		interpolate8x8_halfpel_v,
+  		interpolate8x8_halfpel_h,
+  		interpolate8x8_halfpel_hv
+  	};
++ #endif
++ 	
+  	
+  	if (data->chromaX == fx && data->chromaY == fy && 
+  		data->b_chromaX == bx && data->b_chromaY == by) 
+***************
+*** 164,170 ****
+--- 173,187 ----
+  	const uint8_t *ReferenceF;
+  	const uint8_t *ReferenceB;
+  	VECTOR mvs, b_mvs;
++ #ifdef __CW32__
++ 	int blocks[4];
++ 	blocks[0] = 0;
++ 	blocks[1] = 8;
++ 	blocks[2] = 8*data->iEdgedWidth;
++ 	blocks[3] = 8*data->iEdgedWidth+8;
++ #else
+  	const int blocks[4] = {0, 8, 8*data->iEdgedWidth, 8*data->iEdgedWidth+8};
++ #endif
+  
+  	if (( x > 31) || ( x < -32) || ( y > 31) || (y < -32)) return;
+  
+diff -crN xvidcore-1.1.3-orig/src/utils/mbtransquant.c xvidcore-1.1.3/src/utils/mbtransquant.c
+*** xvidcore-1.1.3-orig/src/utils/mbtransquant.c	Tue Nov 22 11:23:02 2005
+--- xvidcore-1.1.3/src/utils/mbtransquant.c	Mon Sep 01 15:00:01 2008
+***************
+*** 125,135 ****
+--- 125,141 ----
+  	int mpeg;
+  	int scaler_lum, scaler_chr;
+  
++ #ifdef __CW32__
++ 	quant_intraFuncPtr quant[2];
++ 	quant[0] = quant_h263_intra;
++ 	quant[1] = quant_mpeg_intra;
++ #else
+  	quant_intraFuncPtr const quant[2] =
+  		{
+  			quant_h263_intra,
+  			quant_mpeg_intra
+  		};
++ #endif
+  
+  	mpeg = !!(pParam->vol_flags & XVID_VOL_MPEGQUANT);
+  	scaler_lum = get_dc_scaler(pMB->quant, 1);
+***************
+*** 156,166 ****
+--- 162,178 ----
+  	int mpeg;
+  	int scaler_lum, scaler_chr;
+  
++ #ifdef __CW32__
++ 	quant_intraFuncPtr dequant[2];
++ 	dequant[0] = dequant_h263_intra;
++ 	dequant[1] = dequant_mpeg_intra;
++ #else
+  	quant_intraFuncPtr const dequant[2] =
+  		{
+  			dequant_h263_intra,
+  			dequant_mpeg_intra
+  		};
++ #endif
+  
+  	mpeg = !!(pParam->vol_flags & XVID_VOL_MPEGQUANT);
+  	scaler_lum = get_dc_scaler(iQuant, 1);
+***************
+*** 201,211 ****
+--- 213,229 ----
+  	int sum;
+  	int code_block, mpeg;
+  
++ #ifdef __CW32__
++ 	quant_interFuncPtr quant[2];
++ 	quant[0] = quant_h263_inter;
++ 	quant[1] = quant_mpeg_inter;
++ #else
+  	quant_interFuncPtr const quant[2] =
+  		{
+  			quant_h263_inter,
+  			quant_mpeg_inter
+  		};
++ #endif
+  
+  	mpeg = !!(pParam->vol_flags & XVID_VOL_MPEGQUANT);
+  
+***************
+*** 276,286 ****
+--- 294,310 ----
+  {
+  	int mpeg;
+  
++ #ifdef __CW32__
++ 	quant_interFuncPtr dequant[2];
++ 	dequant[0] = dequant_h263_inter;
++ 	dequant[1] = dequant_mpeg_inter;
++ #else
+  	quant_interFuncPtr const dequant[2] =
+  		{
+  			dequant_h263_inter,
+  			dequant_mpeg_inter
+  		};
++ #endif
+  
+  	mpeg = !!(pParam->vol_flags & XVID_VOL_MPEGQUANT);
+  
+***************
+*** 345,358 ****
+--- 369,390 ----
+  	const IMAGE * const pCurrent = &frame->image;
+  
+  	/* Array of function pointers, indexed by [add] */
++ #ifdef __CW32__
++ 	transfer_operation_16to8_t * functions[2];
++ #else
+  	transfer_operation_16to8_t  * const functions[2] =
+  		{
+  			(transfer_operation_16to8_t*)transfer_16to8copy,
+  			(transfer_operation_16to8_t*)transfer_16to8add,
+  		};
++ #endif
+  
+  	transfer_operation_16to8_t *transfer_op = NULL;
+  
++ #ifdef __CW32__
++ 	functions[0] = (transfer_operation_16to8_t*)transfer_16to8copy;
++ 	functions[1] = (transfer_operation_16to8_t*)transfer_16to8add;
++ #endif
+  	/* Image pointers */
+  	pY_Cur = pCurrent->y + (y_pos << 4) * stride  + (x_pos << 4);
+  	pU_Cur = pCurrent->u + (y_pos << 3) * stride2 + (x_pos << 3);
+diff -crN xvidcore-1.1.3-orig/src/xvid.c xvidcore-1.1.3/src/xvid.c
+*** xvidcore-1.1.3-orig/src/xvid.c	Wed Jun 27 20:57:42 2007
+--- xvidcore-1.1.3/src/xvid.c	Mon Sep 01 17:38:31 2008
+***************
+*** 47,52 ****
+--- 47,55 ----
+  #include "image/qpel.h"
+  #include "image/postprocessing.h"
+  
++ static fdctFuncPtr fdct;
++ static idctFuncPtr idct;
++ 
+  #if defined(_DEBUG)
+  unsigned int xvid_debug = 0; /* xvid debug mask */
+  #endif

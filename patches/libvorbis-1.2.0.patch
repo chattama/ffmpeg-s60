@@ -1,0 +1,294 @@
+diff -crN libvorbis-1.2.0-orig/config.h libvorbis-1.2.0/config.h
+*** libvorbis-1.2.0-orig/config.h	Thu Jan 01 09:00:00 1970
+--- libvorbis-1.2.0/config.h	Mon Aug 18 14:42:56 2008
+***************
+*** 0 ****
+--- 1,80 ----
++ /* config.h.in.  Generated from configure.in by autoheader.  */
++ 
++ /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
++    systems. This function is required for `alloca.c' support on those systems.
++    */
++ /*#undef CRAY_STACKSEG_END*/
++ 
++ /* Define to 1 if using `alloca.c'. */
++ /*#undef C_ALLOCA*/
++ 
++ /* Define to 1 if you have `alloca', as a function or macro. */
++ /*#undef HAVE_ALLOCA*/
++ 
++ /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
++    */
++ /*#undef HAVE_ALLOCA_H*/
++ 
++ /* Define to 1 if you have the <dlfcn.h> header file. */
++ #define HAVE_DLFCN_H 1
++ 
++ /* Define to 1 if you have the <inttypes.h> header file. */
++ #define HAVE_INTTYPES_H 1
++ 
++ /* Define to 1 if you have the <memory.h> header file. */
++ /*#define HAVE_MEMORY_H 1*/
++ 
++ /* Define to 1 if you have the <stdint.h> header file. */
++ #define HAVE_STDINT_H 1
++ 
++ /* Define to 1 if you have the <stdlib.h> header file. */
++ #define HAVE_STDLIB_H 1
++ 
++ /* Define to 1 if you have the <strings.h> header file. */
++ #define HAVE_STRINGS_H 1
++ 
++ /* Define to 1 if you have the <string.h> header file. */
++ #define HAVE_STRING_H 1
++ 
++ /* Define to 1 if you have the <sys/stat.h> header file. */
++ #define HAVE_SYS_STAT_H 1
++ 
++ /* Define to 1 if you have the <sys/types.h> header file. */
++ #define HAVE_SYS_TYPES_H 1
++ 
++ /* Define to 1 if you have the <unistd.h> header file. */
++ #define HAVE_UNISTD_H 1
++ 
++ /* Name of package */
++ #define PACKAGE "libvorbis"
++ 
++ /* Define to the address where bug reports for this package should be sent. */
++ #define PACKAGE_BUGREPORT ""
++ 
++ /* Define to the full name of this package. */
++ #define PACKAGE_NAME ""
++ 
++ /* Define to the full name and version of this package. */
++ #define PACKAGE_STRING ""
++ 
++ /* Define to the one symbol short name of this package. */
++ #define PACKAGE_TARNAME ""
++ 
++ /* Define to the version of this package. */
++ #define PACKAGE_VERSION ""
++ 
++ /* If using the C implementation of alloca, define if you know the
++    direction of stack growth for your system; otherwise it will be
++    automatically deduced at runtime.
++ 	STACK_DIRECTION > 0 => grows toward higher addresses
++ 	STACK_DIRECTION < 0 => grows toward lower addresses
++ 	STACK_DIRECTION = 0 => direction of growth unknown */
++ /*#undef STACK_DIRECTION*/
++ 
++ /* Define to 1 if you have the ANSI C header files. */
++ #define STDC_HEADERS 1
++ 
++ /* Version number of package */
++ #define VERSION "1.2.0"
++ 
++ /*#define USE_MEMORY_H*/
+diff -crN libvorbis-1.2.0-orig/lib/block.c libvorbis-1.2.0/lib/block.c
+*** libvorbis-1.2.0-orig/lib/block.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/block.c	Mon Aug 18 11:11:15 2008
+***************
+*** 31,36 ****
+--- 31,40 ----
+  #include "registry.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  static int ilog2(unsigned int v){
+    int ret=0;
+    if(v)--v;
+diff -crN libvorbis-1.2.0-orig/lib/codebook.c libvorbis-1.2.0/lib/codebook.c
+*** libvorbis-1.2.0-orig/lib/codebook.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/codebook.c	Mon Aug 18 11:31:10 2008
+***************
+*** 25,30 ****
+--- 25,34 ----
+  #include "misc.h"
+  #include "os.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* packs the given codebook into the bitstream **************************/
+  
+  int vorbis_staticbook_pack(const static_codebook *c,oggpack_buffer *opb){
+diff -crN libvorbis-1.2.0-orig/lib/envelope.c libvorbis-1.2.0/lib/envelope.c
+*** libvorbis-1.2.0-orig/lib/envelope.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/envelope.c	Mon Aug 18 11:11:07 2008
+***************
+*** 29,34 ****
+--- 29,38 ----
+  #include "mdct.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  void _ve_envelope_init(envelope_lookup *e,vorbis_info *vi){
+    codec_setup_info *ci=vi->codec_setup;
+    vorbis_info_psy_global *gi=&ci->psy_g_param;
+diff -crN libvorbis-1.2.0-orig/lib/info.c libvorbis-1.2.0/lib/info.c
+*** libvorbis-1.2.0-orig/lib/info.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/info.c	Mon Aug 18 11:12:04 2008
+***************
+*** 31,36 ****
+--- 31,40 ----
+  #include "misc.h"
+  #include "os.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* helpers */
+  static int ilog2(unsigned int v){
+    int ret=0;
+diff -crN libvorbis-1.2.0-orig/lib/lpc.c libvorbis-1.2.0/lib/lpc.c
+*** libvorbis-1.2.0-orig/lib/lpc.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/lpc.c	Mon Aug 18 11:12:35 2008
+***************
+*** 52,57 ****
+--- 52,61 ----
+  #include "scales.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* Autocorrelation LPC coeff generation algorithm invented by
+     N. Levinson in 1947, modified by J. Durbin in 1959. */
+  
+diff -crN libvorbis-1.2.0-orig/lib/lsp.c libvorbis-1.2.0/lib/lsp.c
+*** libvorbis-1.2.0-orig/lib/lsp.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/lsp.c	Mon Aug 18 11:30:32 2008
+***************
+*** 41,46 ****
+--- 41,50 ----
+  #include "lookup.h"
+  #include "scales.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* three possible LSP to f curve functions; the exact computation
+     (float), a lookup based float implementation, and an integer
+     implementation.  The float lookup is likely the optimal choice on
+diff -crN libvorbis-1.2.0-orig/lib/mapping0.c libvorbis-1.2.0/lib/mapping0.c
+*** libvorbis-1.2.0-orig/lib/mapping0.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/mapping0.c	Mon Aug 18 11:31:17 2008
+***************
+*** 28,33 ****
+--- 28,37 ----
+  #include "psy.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* simplistic, wasteful way of doing this (unique lookup for each
+     mode/submapping); there should be a central repository for
+     identical lookups.  That will require minor work, so I'm putting it
+diff -crN libvorbis-1.2.0-orig/lib/mdct.c libvorbis-1.2.0/lib/mdct.c
+*** libvorbis-1.2.0-orig/lib/mdct.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/mdct.c	Mon Aug 18 11:12:37 2008
+***************
+*** 46,51 ****
+--- 46,55 ----
+  #include "os.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /* build lookups for trig functions; also pre-figure scaling and
+     some window function algebra. */
+  
+diff -crN libvorbis-1.2.0-orig/lib/os.h libvorbis-1.2.0/lib/os.h
+*** libvorbis-1.2.0-orig/lib/os.h	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/os.h	Mon Aug 18 11:11:25 2008
+***************
+*** 53,58 ****
+--- 53,59 ----
+  #endif
+  
+  #if defined(__SYMBIAN32__) && defined(__WINS__)
++ #  include <sys/types.h>
+  void *_alloca(size_t size);
+  #  define alloca _alloca
+  #endif
+diff -crN libvorbis-1.2.0-orig/lib/psy.c libvorbis-1.2.0/lib/psy.c
+*** libvorbis-1.2.0-orig/lib/psy.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/psy.c	Mon Aug 18 11:12:53 2008
+***************
+*** 29,34 ****
+--- 29,38 ----
+  #include "scales.h"
+  #include "misc.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  #define NEGINF -9999.f
+  static double stereo_threshholds[]={0.0, .5, 1.0, 1.5, 2.5, 4.5, 8.5, 16.5, 9e10};
+  static double stereo_threshholds_limited[]={0.0, .5, 1.0, 1.5, 2.0, 2.5, 4.5, 8.5, 9e10};
+diff -crN libvorbis-1.2.0-orig/lib/res0.c libvorbis-1.2.0/lib/res0.c
+*** libvorbis-1.2.0-orig/lib/res0.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/res0.c	Mon Aug 18 11:13:14 2008
+***************
+*** 31,36 ****
+--- 31,40 ----
+  #include "misc.h"
+  #include "os.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  #if defined(TRAIN_RES) || defined (TRAIN_RESAUX)
+  #include <stdio.h>
+  #endif 
+diff -crN libvorbis-1.2.0-orig/lib/sharedbook.c libvorbis-1.2.0/lib/sharedbook.c
+*** libvorbis-1.2.0-orig/lib/sharedbook.c	Tue Jul 24 09:09:46 2007
+--- libvorbis-1.2.0/lib/sharedbook.c	Mon Aug 18 11:30:52 2008
+***************
+*** 25,30 ****
+--- 25,34 ----
+  #include "codebook.h"
+  #include "scales.h"
+  
++ #ifdef __SYMBIAN32__
++ #include <glib.h>
++ #endif
++ 
+  /**** pack/unpack helpers ******************************************/
+  int _ilog(unsigned int v){
+    int ret=0;
+diff -crN libvorbis-1.2.0-orig/libvorbis.mmp libvorbis-1.2.0/libvorbis.mmp
+*** libvorbis-1.2.0-orig/libvorbis.mmp	Thu Jan 01 09:00:00 1970
+--- libvorbis-1.2.0/libvorbis.mmp	Tue Sep 02 17:11:39 2008
+***************
+*** 0 ****
+--- 1,13 ----
++ 
++ TARGET		libvorbis.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE . include include/vorbis lib/modes ../libogg-1.1.3/include
++ SYSTEMINCLUDE /epoc32/include/stdapis/glib-2.0 /epoc32/include/stdapis /epoc32/include
++ 
++ SOURCEPATH lib
++ SOURCE analysis.c bitrate.c block.c envelope.c floor0.c floor1.c info.c lookup.c lpc.c lsp.c mapping0.c mdct.c psy.c registry.c res0.c smallft.c vorbisenc.c vorbisfile.c window.c synthesis.c sharedbook.c codebook.c
++ 
++ MACRO HAVE_CONFIG_H
++ 

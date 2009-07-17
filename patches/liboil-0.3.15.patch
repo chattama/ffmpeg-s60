@@ -1,0 +1,6072 @@
+diff -crN liboil-0.3.15-orig/config.h liboil-0.3.15/config.h
+*** liboil-0.3.15-orig/config.h	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/config.h	Sun Sep 07 17:24:24 2008
+***************
+*** 0 ****
+--- 1,161 ----
++ /* config.h.in.  Generated from configure.ac by autoheader.  */
++ 
++ /* Define if compiling broken implementations */
++ /* #undef ENABLE_BROKEN_IMPLS */
++ 
++ /* Define if compiling new ABI */
++ /* #undef ENABLE_NEW_ABI */
++ 
++ /* Defined if host is amd64 */
++ /* #undef HAVE_AMD64 */
++ 
++ /* Defined if host is arm */
++ /* #undef HAVE_ARM */
++ 
++ /* Defined if we have clock_gettime() */
++ #define HAVE_CLOCK_GETTIME
++ 
++ /* Define to 1 if you have the <dlfcn.h> header file. */
++ /* #undef HAVE_DLFCN_H */
++ 
++ /* Define if compiler supports gcc inline assembly */
++ /* #undef HAVE_GCC_ASM */
++ 
++ /* Define if compiler supports PowerPC FPU instructions */
++ /* #undef HAVE_GCC_ASM_POWERPC_FPU */
++ 
++ /* Define to 1 if you have the `getpagesize' function. */
++ #define HAVE_GETPAGESIZE
++ 
++ /* Define to 1 if you have the `gettimeofday' function. */
++ #define HAVE_GETTIMEOFDAY
++ 
++ /* Defined if host is i386 */
++ /* #undef HAVE_I386 */
++ 
++ /* Define if ieee754.h exists */
++ /* #undef HAVE_IEEE754_H */
++ 
++ /* Define to 1 if you have the <inttypes.h> header file. */
++ #define HAVE_INTTYPES_H
++ 
++ /* Define if lrint() is available */
++ #define HAVE_LRINT
++ 
++ /* Define if lrintf() is available */
++ #define HAVE_LRINTF
++ 
++ /* Define to 1 if you have the <memory.h> header file. */
++ /* #undef HAVE_MEMORY_H */
++ 
++ /* Define to 1 if you have a working `mmap' system call. */
++ #define HAVE_MMAP
++ 
++ /* Defined if we have a monotonic clock */
++ #define HAVE_MONOTONIC_CLOCK
++ 
++ /* Defined if host OS is linux */
++ /* #undef HAVE_OS_LINUX */
++ 
++ /* Defined if host OS is MS Windows */
++ /* #undef HAVE_OS_WIN32 */
++ 
++ /* Defined if host is powerpc */
++ /* #undef HAVE_POWERPC */
++ 
++ /* Define if rint() is available */
++ #define HAVE_RINT
++ 
++ /* Define if rintf() is available */
++ #define HAVE_RINTF
++ 
++ /* Define to 1 if you have the `sigaction' function. */
++ /* #undef HAVE_SIGACTION */
++ 
++ /* Define to 1 if you have the `sigsetjmp' function. */
++ /* #undef HAVE_SIGSETJMP */
++ 
++ /* Define if sincos() is available */
++ /* #undef HAVE_SINCOS */
++ 
++ /* Defined if compiler/assembler can handle SSSE3 instructions */
++ /* #undef HAVE_SSSE3_ASM */
++ 
++ /* Define to 1 if you have the <stdint.h> header file. */
++ #define HAVE_STDINT_H
++ 
++ /* Define to 1 if you have the <stdlib.h> header file. */
++ #define HAVE_STDLIB_H
++ 
++ /* Define to 1 if you have the <strings.h> header file. */
++ #define HAVE_STRINGS_H
++ 
++ /* Define to 1 if you have the <string.h> header file. */
++ #define HAVE_STRING_H
++ 
++ /* Define if C symbols have leading underscore */
++ /* #undef HAVE_SYMBOL_UNDERSCORE */
++ 
++ /* Define to 1 if you have the <sys/stat.h> header file. */
++ #define HAVE_SYS_STAT_H
++ 
++ /* Define to 1 if you have the <sys/time.h> header file. */
++ #define HAVE_SYS_TIME_H
++ 
++ /* Define to 1 if you have the <sys/types.h> header file. */
++ #define HAVE_SYS_TYPES_H
++ 
++ /* defined if unaligned memory access works correctly */
++ /* #undef HAVE_UNALIGNED_ACCESS */
++ 
++ /* Define to 1 if you have the <unistd.h> header file. */
++ #define HAVE_UNISTD_H
++ 
++ /* Defined if prototype checking enabled */
++ /* #undef LIBOIL_STRICT_PROTOTYPES */
++ 
++ /* Defined for compiling internal code */
++ /* #undef OIL_EXPORTS */
++ 
++ /* Name of package */
++ #define PACKAGE "liboil"
++ 
++ /* Define to the address where bug reports for this package should be sent. */
++ #define PACKAGE_BUGREPORT ""
++ 
++ /* Define to the full name of this package. */
++ #define PACKAGE_NAME "liboil"
++ 
++ /* Define to the full name and version of this package. */
++ #define PACKAGE_STRING "liboil 0.3.15"
++ 
++ /* Define to the one symbol short name of this package. */
++ #define PACKAGE_TARNAME "liboil"
++ 
++ /* Define to the version of this package. */
++ #define PACKAGE_VERSION "0.3.15"
++ 
++ /* The size of `char', as computed by sizeof. */
++ #define SIZEOF_CHAR 1
++ 
++ /* The size of `int', as computed by sizeof. */
++ #define SIZEOF_INT 4
++ 
++ /* The size of `long', as computed by sizeof. */
++ #define SIZEOF_LONG 4
++ 
++ /* The size of `short', as computed by sizeof. */
++ #define SIZEOF_SHORT 2
++ 
++ /* The size of `void*', as computed by sizeof. */
++ #define SIZEOF_VOIDP 4
++ 
++ /* Define to 1 if you have the ANSI C header files. */
++ #define STDC_HEADERS
++ 
++ /* Version number of package */
++ #define VERSION "0.3.15"
++ 
++ /* Define to 1 if your processor stores words with the most significant byte
++    first (like Motorola and SPARC, unlike Intel and VAX). */
++ /* #undef WORDS_BIGENDIAN */
+diff -crN liboil-0.3.15-orig/liboil/build_class_decls.c liboil-0.3.15/liboil/build_class_decls.c
+*** liboil-0.3.15-orig/liboil/build_class_decls.c	Fri Nov 16 11:53:46 2007
+--- liboil-0.3.15/liboil/build_class_decls.c	Sun Sep 07 17:14:10 2008
+***************
+*** 49,57 ****
+--- 49,63 ----
+  
+    n = oil_class_get_n_classes ();
+    for (i=0;i<n; i++ ){
++ #ifdef __CW32__
++     klass = (OilFunctionClass*)oil_class_get_by_index (i);
++ 
++     printf ("OIL_DECLARE_CLASS(%s);\n", klass->name);
++ #else
+      klass = oil_class_get_by_index (i);
+  
+      printf ("OIL_DECLARE_CLASS(%s);\n", klass->name);
++ #endif
+    }
+  
+    print_footer ();
+diff -crN liboil-0.3.15-orig/liboil/c/c_composite.c liboil-0.3.15/liboil/c/c_composite.c
+*** liboil-0.3.15-orig/liboil/c/c_composite.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/c/c_composite.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,537 ----
++ /*
++  * Copyright (c) 2005
++  *	Eric Anholt.  All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  *
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND
++  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE
++  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++  * SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ #include <liboil/liboilclasses.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilcolorspace.h>
++ 
++ #define COMPOSITE_ADD(d,s) oil_clamp_255((d) + (s))
++ #define COMPOSITE_OVER(d,s,m) ((d) + (s) - oil_muldiv_255((d),(m)))
++ 
++ static void
++ composite_in_argb_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   for (; n > 0; n--) {
++     uint32_t src1, src2;
++     uint8_t m = *mask++;
++ 
++     /* Split the pixel into two sets of two channels, and multiply by the
++      * mask.
++      */
++     src1 = *src & 0x00ff00ff;
++     src1 *= m;
++     src1 += 0x00800080;
++     src1 += (src1 >> 8) & 0x00ff00ff;
++     src1 >>= 8;
++     src1 &= 0x00ff00ff;
++ 
++     src2 = (*src >> 8) & 0x00ff00ff;
++     src2 *= m;
++     src2 += 0x00800080;
++     src2 += (src2 >> 8) & 0x00ff00ff;
++     src2 &= 0xff00ff00;
++ 
++     *dest++ = src1 | src2;
++     src++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_argb_fast, composite_in_argb);
++ 
++ static void
++ composite_in_argb_const_src_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   uint32_t src1, src2;
++ 
++   src1 = *src & 0x00ff00ff;
++   src2 = (*src >> 8) & 0x00ff00ff;
++ 
++   for (; n > 0; n--) {
++     uint32_t temp1, temp2;
++     uint8_t m = *mask++;
++ 
++     /* Split the pixel into two sets of two channels, and multiply by the
++      * mask.
++      */
++     temp1 = src1 * m;
++     temp1 += 0x00800080;
++     temp1 += (temp1 >> 8) & 0x00ff00ff;
++     temp1 >>= 8;
++     temp1 &= 0x00ff00ff;
++ 
++     temp2 = src2 * m;
++     temp2 += 0x00800080;
++     temp2 += (temp2 >> 8) & 0x00ff00ff;
++     temp2 &= 0xff00ff00;
++ 
++     *dest++ = temp1 | temp2;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_argb_const_src_fast, composite_in_argb_const_src);
++ 
++ static void
++ composite_in_argb_const_mask_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   uint8_t m = *mask;
++ 
++   for (; n > 0; n--) {
++     uint32_t src1, src2;
++ 
++     /* Split the pixel into two sets of two channels, and multiply by the
++      * mask.
++      */
++     src1 = *src & 0x00ff00ff;
++     src1 *= m;
++     src1 += 0x00800080;
++     src1 += (src1 >> 8) & 0x00ff00ff;
++     src1 >>= 8;
++     src1 &= 0x00ff00ff;
++ 
++     src2 = (*src >> 8) & 0x00ff00ff;
++     src2 *= m;
++     src2 += 0x00800080;
++     src2 += (src2 >> 8) & 0x00ff00ff;
++     src2 &= 0xff00ff00;
++ 
++     *dest++ = src1 | src2;
++     src++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_argb_const_mask_fast,
++     composite_in_argb_const_mask);
++ 
++ static void
++ composite_over_argb_fast (uint32_t *dest, const uint32_t *src, int n)
++ {
++   for (; n > 0; n--) {
++     uint32_t d = *dest, s = *src, sa;
++     uint32_t s1, s2, d1, d2;
++ 
++     sa = ~s >> 24;
++ 
++     s1 = s & 0x00ff00ff;
++     d1 = d & 0x00ff00ff;
++     d1 *= sa;
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     s2 = (s >> 8) & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++     d2 *= sa;
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++     src++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_over_argb_fast, composite_over_argb);
++ 
++ static void
++ composite_over_argb_const_src_fast (uint32_t *dest, const uint32_t *src, int n)
++ {
++   uint32_t s = *src;
++   uint32_t sa, s1, s2;
++   sa = ~s >> 24;
++ 
++   s1 = s & 0x00ff00ff;
++   s2 = (s >> 8) & 0x00ff00ff;
++ 
++   for (; n > 0; n--) {
++     uint32_t d = *dest;
++     uint32_t d1, d2;
++ 
++     d1 = d & 0x00ff00ff;
++     d1 *= sa;
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 = (d >> 8) & 0x00ff00ff;
++     d2 *= sa;
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++     src++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_over_argb_const_src_fast,
++     composite_over_argb_const_src);
++ 
++ static void
++ composite_add_argb_fast (uint32_t *dest, const uint32_t *src, int n)
++ {
++   for (; n > 0; n--) {
++     uint32_t s = *src++, d = *dest;
++     uint32_t s1, s2, d1, d2;
++ 
++     s1 = s & 0x00ff00ff;
++     s2 = (s >> 8) & 0x00ff00ff;
++     d1 = d & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++ 
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++   }
++ }
++ OIL_DEFINE_IMPL (composite_add_argb_fast, composite_add_argb);
++ 
++ static void
++ composite_add_argb_const_src_fast (uint32_t *dest, const uint32_t *src, int n)
++ {
++   uint32_t s1, s2;
++ 
++   s1 = *src & 0x00ff00ff;
++   s2 = (*src >> 8) & 0x00ff00ff;
++   for (; n > 0; n--) {
++     uint32_t d = *dest;
++     uint32_t d1, d2;
++ 
++     d1 = d & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++ 
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++   }
++ }
++ OIL_DEFINE_IMPL (composite_add_argb_const_src_fast,
++     composite_add_argb_const_src);
++ 
++ static void
++ composite_in_over_argb_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   for (; n > 0; n--) {
++     uint32_t d = *dest, s = *src++;
++     uint32_t s1, s2, d1, d2, sa;
++     uint8_t m = *mask++;
++ 
++     s1 = s & 0x00ff00ff;
++     s2 = (s >> 8) & 0x00ff00ff;
++ 
++     /* in */
++     s1 *= m;
++     s1 += 0x00800080;
++     s1 += (s1 >> 8) & 0x00ff00ff;
++     s1 >>= 8;
++     s1 &= 0x00ff00ff;
++ 
++     s2 *= m;
++     s2 += 0x00800080;
++     s2 += (s2 >> 8) & 0x00ff00ff;
++     s2 >>= 8;
++     s2 &= 0x00ff00ff;
++ 
++     /* over */
++     sa = (~s2 >> 16) & 0xff;
++ 
++     d1 = d & 0x00ff00ff;
++     d1 *= sa;
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 = (d >> 8) & 0x00ff00ff;
++     d2 *= sa;
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_over_argb_fast, composite_in_over_argb);
++ 
++ static void
++ composite_in_over_argb_const_src_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   uint32_t s = *src;
++   uint32_t s1, s2;
++ 
++   s1 = s & 0x00ff00ff;
++   s2 = (s >> 8) & 0x00ff00ff;
++ 
++   for (; n > 0; n--) {
++     uint32_t d = *dest;
++     uint32_t temp1, temp2, d1, d2, sa;
++     uint8_t m = *mask++;
++ 
++     /* in */
++     temp1 = s1 * m;
++     temp1 += 0x00800080;
++     temp1 += (temp1 >> 8) & 0x00ff00ff;
++     temp1 >>= 8;
++     temp1 &= 0x00ff00ff;
++ 
++     temp2 = s2 * m;
++     temp2 += 0x00800080;
++     temp2 += (temp2 >> 8) & 0x00ff00ff;
++     temp2 >>= 8;
++     temp2 &= 0x00ff00ff;
++ 
++     /* over */
++     sa = (~temp2 >> 16) & 0xff;
++ 
++     d1 = d & 0x00ff00ff;
++     d1 *= sa;
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += temp1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 = (d >> 8) & 0x00ff00ff;
++     d2 *= sa;
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += temp2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_over_argb_const_src_fast,
++     composite_in_over_argb_const_src);
++ 
++ static void
++ composite_in_over_argb_const_mask_fast (uint32_t *dest, const uint32_t *src,
++     const uint8_t *mask, int n)
++ {
++   uint8_t m = *mask;
++   for (; n > 0; n--) {
++     uint32_t d = *dest, s = *src++;
++     uint32_t s1, s2, d1, d2, sa;
++ 
++     s1 = s & 0x00ff00ff;
++     s2 = (s >> 8) & 0x00ff00ff;
++ 
++     /* in */
++     s1 *= m;
++     s1 += 0x00800080;
++     s1 += (s1 >> 8) & 0x00ff00ff;
++     s1 >>= 8;
++     s1 &= 0x00ff00ff;
++ 
++     s2 *= m;
++     s2 += 0x00800080;
++     s2 += (s2 >> 8) & 0x00ff00ff;
++     s2 >>= 8;
++     s2 &= 0x00ff00ff;
++ 
++     /* over */
++     sa = (~s2 >> 16) & 0xff;
++ 
++     d1 = d & 0x00ff00ff;
++     d1 *= sa;
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 = (d >> 8) & 0x00ff00ff;
++     d2 *= sa;
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *dest++ = d1 | (d2 << 8);
++   }
++ }
++ OIL_DEFINE_IMPL (composite_in_over_argb_const_mask_fast,
++     composite_in_over_argb_const_mask);
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ composite_add_u8_fast (uint8_t *dest, const uint8_t *src, int n)
++ {
++   for (; n > 3; n-= 4) {
++     uint32_t s = *(uint32_t *)src, d = *(uint32_t *)dest;
++     uint32_t s1, s2, d1, d2;
++ 
++     s1 = s & 0x00ff00ff;
++     s2 = (s >> 8) & 0x00ff00ff;
++     d1 = d & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++ 
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *(uint32_t *)dest = d1 | (d2 << 8);
++     src += 4;
++     dest += 4;
++   }
++   for (; n > 0; n--) {
++     *dest = COMPOSITE_ADD(*dest, *src);
++     src++;
++     dest++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_add_u8_fast, composite_add_u8);
++ #endif
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ composite_add_u8_const_src_fast (uint8_t *dest, const uint8_t *src, int n)
++ {
++   uint32_t s;
++ 
++   s = *src | (*src << 16);
++   for (; n > 3; n-= 4) {
++     uint32_t d = *(uint32_t *)dest;
++     uint32_t d1, d2;
++ 
++     d1 = d & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++ 
++     d1 += s;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 += s;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *(uint32_t *)dest = d1 | (d2 << 8);
++     dest += 4;
++   }
++   for (; n > 0; n--) {
++     *dest = COMPOSITE_ADD(*dest, *src);
++     dest++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_add_u8_const_src_fast, composite_add_u8_const_src);
++ #endif
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ composite_over_u8_fast (uint8_t *dest, const uint8_t *src, int n)
++ {
++   for (; n > 3; n-= 4) {
++     uint32_t d = *(uint32_t *)dest, s = *(uint32_t *)src;
++     uint32_t d1, d2, s1, s2;
++ 
++     d1 = d & 0x00ff00ff;
++     d2 = (d >> 8) & 0x00ff00ff;
++     s1 = s & 0x00ff00ff;
++     s2 = (s >> 8) & 0x00ff00ff;
++ 
++     d1 = ((d1 & 0xff) * (~s1 & 0xff)) |
++ 	((d1 & 0x00ff0000) * (~s1 >> 16 & 0xff));
++     d1 += 0x00800080;
++     d1 += (d1 >> 8) & 0x00ff00ff;
++     d1 >>= 8;
++     d1 &= 0x00ff00ff;
++     d1 += s1;
++     d1 |= 0x01000100 - ((d1 >> 8) & 0x00ff00ff);
++     d1 &= 0x00ff00ff;
++ 
++     d2 = ((d2 & 0xff) * (~s2 & 0xff)) |
++ 	((d2 & 0x00ff0000) * (~s2 >> 16 & 0xff));
++     d2 += 0x00800080;
++     d2 += (d2 >> 8) & 0x00ff00ff;
++     d2 >>= 8;
++     d2 &= 0x00ff00ff;
++     d2 += s2;
++     d2 |= 0x01000100 - ((d2 >> 8) & 0x00ff00ff);
++     d2 &= 0x00ff00ff;
++ 
++     *(uint32_t *)dest = d1 | (d2 << 8);
++     dest += 4;
++     src += 4;
++   }
++   for (; n > 0; n--) {
++     *dest = COMPOSITE_OVER(*dest, *src, *src);
++     dest++;
++     src++;
++   }
++ }
++ OIL_DEFINE_IMPL (composite_over_u8_fast, composite_over_u8);
++ #endif
+diff -crN liboil-0.3.15-orig/liboil/c/c_copy.c liboil-0.3.15/liboil/c/c_copy.c
+*** liboil-0.3.15-orig/liboil/c/c_copy.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/c/c_copy.c	Tue Jun 10 11:06:44 2008
+***************
+*** 0 ****
+--- 1,113 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2005 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilclasses.h>
++ 
++ #ifdef HAVE_UNISTD_H
++ #include <unistd.h>
++ #endif
++ 
++ 
++ static void
++ testzero_u8_1 (uint32_t *dest, uint8_t *src1, int n)
++ {
++   uint8_t *s = src1;
++ 
++   while(n>0 && (((unsigned long)s)&0x3)) {
++     if (*s == 0) {
++       goto foundzero;
++     }
++     s++;
++     n--;
++   }
++   while (n>3) {
++     uint32_t x;
++     x = *(uint32_t *)s;
++     if ((x ^ (x - 0x01010101))& 0x80808080) {
++       int i;
++       /* there's either a 0x00 or 0x80 byte */
++       for(i=0;i<4;i++){
++         if (s[i] == 0) {
++           s += i;
++           goto foundzero;
++         }
++       }
++     }
++     s += 4;
++     n -= 4;
++   }
++   while(n>0) {
++     if (*s == 0) {
++       goto foundzero;
++     }
++     s++;
++     n--;
++   }
++ 
++   dest[0] = n;
++ foundzero:
++   dest[0] = s - src1;
++ }
++ OIL_DEFINE_IMPL (testzero_u8_1, testzero_u8);
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ testzero_u8_2 (uint32_t *dest, uint8_t *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n-3;i+=4) {
++     uint32_t x;
++     x = *(uint32_t *)(src1 + i);
++     if ((x ^ (x - 0x01010101))& 0x80808080) {
++       int j;
++       /* there's either a 0x00 or 0x80 byte */
++       for(j=0;j<4;j++){
++         if (src1[i + j] == 0) {
++           dest[0] = i + j;
++           return ;
++         }
++       }
++     }
++   }
++   for(;i<n;i++){
++     if (src1[i] == 0) {
++       dest[0] = i;
++       return;
++     }
++   }
++   dest[0] = n;
++ }
++ OIL_DEFINE_IMPL (testzero_u8_2, testzero_u8);
++ #endif
++ 
+diff -crN liboil-0.3.15-orig/liboil/c/c_swab.c liboil-0.3.15/liboil/c/c_swab.c
+*** liboil-0.3.15-orig/liboil/c/c_swab.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/c/c_swab.c	Tue Jun 10 11:06:44 2008
+***************
+*** 0 ****
+--- 1,196 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2005 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilclasses.h>
++ 
++ #ifdef HAVE_UNISTD_H
++ #include <unistd.h>
++ #endif
++ #include <string.h>
++ 
++ 
++ static void
++ swab_u16_libc (uint16_t *d, const uint16_t *s, int n)
++ {
++   swab ((void *)s, (void *)d, n*2);
++ }
++ OIL_DEFINE_IMPL (swab_u16_libc, swab_u16);
++ 
++ static void
++ swab_u16_ptr (uint16_t *d, const uint16_t *s, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u16_ptr, swab_u16);
++ 
++ static void
++ swab_u32_ptr (uint32_t *d, const uint32_t *s, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     *d++ = (*s<<24) | ((*s&0x0000ff00)<<8) |
++       ((*s&0x00ff0000)>>8) | (*s>>24);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u32_ptr, swab_u32);
++ 
++ static void
++ swab_u16_unroll2 (uint16_t *d, const uint16_t *s, int n)
++ {
++   int i;
++ 
++   if (n&1) {
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++   }
++   n>>=1;
++   for(i=0;i<n;i++){
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u16_unroll2, swab_u16);
++ 
++ static void
++ swab_u16_unroll4 (uint16_t *d, const uint16_t *s, int n)
++ {
++   int i;
++ 
++   while (n&3) {
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++     n--;
++   }
++   n>>=2;
++   for(i=0;i<n;i++){
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++     *d++ = (*s<<8) | (*s>>8);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u16_unroll4, swab_u16);
++ 
++ static void
++ swab_u32_unroll2 (uint32_t *d, const uint32_t *s, int n)
++ {
++   int i;
++ 
++   if (n&1) {
++     *d++ = (*s<<24) | ((*s&0x0000ff00)<<8) |
++       ((*s&0x00ff0000)>>8) | (*s>>24);
++     s++;
++   }
++   n>>=1;
++   for(i=0;i<n;i++){
++     *d++ = (*s<<24) | ((*s&0x0000ff00)<<8) |
++       ((*s&0x00ff0000)>>8) | (*s>>24);
++     s++;
++     *d++ = (*s<<24) | ((*s&0x0000ff00)<<8) |
++       ((*s&0x00ff0000)>>8) | (*s>>24);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u32_unroll2, swab_u32);
++ 
++ 
++ static void
++ swab_u16_char (uint16_t *d, const uint16_t *s, int n)
++ {
++   int i;
++   uint8_t *bd = (uint8_t *)d;
++   uint8_t *bs = (uint8_t *)s;
++   int x;
++ 
++   for(i=0;i<n;i++){
++     x = bs[0];
++     bd[0] = bs[1];
++     bd[1] = x;
++     bd += 2;
++     bs += 2;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u16_char, swab_u16);
++ 
++ static void
++ swab_u32_char (uint32_t *d, const uint32_t *s, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     *d++ = (*s<<24) | ((*s&0x0000ff00)<<8) |
++       ((*s&0x00ff0000)>>8) | (*s>>24);
++     s++;
++   }
++ }
++ OIL_DEFINE_IMPL (swab_u32_char, swab_u32);
++ 
++ 
++ 
++ 
++ 
++ 
++ 
++ #if 0
++ static void
++ swab_u32_asm (uint32_t *d, uint32_t *s, int n)
++ {
++   asm volatile ("\n"
++       "1:\n"
++       "  mov 0(%1), %%eax\n"
++       "  bswap %%eax\n"
++       "  mov %%eax, 0(%0)\n"
++       "  add $4, %0\n"
++       "  add $4, %1\n"
++       "  decl %2\n"
++       "  jne 1b\n"
++       : "+r" (d), "+r" (s), "+r" (n)
++       :
++       : "eax");
++ }
++ OIL_DEFINE_IMPL (swab_u32_asm, swab_u32);
++ #endif
++ 
+diff -crN liboil-0.3.15-orig/liboil/c/c_wavelet.c liboil-0.3.15/liboil/c/c_wavelet.c
+*** liboil-0.3.15-orig/liboil/c/c_wavelet.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/c/c_wavelet.c	Mon Dec 10 09:11:22 2007
+***************
+*** 0 ****
+--- 1,26 ----
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilclasses.h>
++ 
++ 
++ void
++ multiply_and_acc_6xn_s16_u8_c (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int j;
++   for(j=0;j<n;j++){
++     i1[0] += s1[0]*s2[0];
++     i1[1] += s1[1]*s2[1];
++     i1[2] += s1[2]*s2[2];
++     i1[3] += s1[3]*s2[3];
++     i1[4] += s1[4]*s2[4];
++     i1[5] += s1[5]*s2[5];
++ 
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL (multiply_and_acc_6xn_s16_u8_c,
++     multiply_and_acc_6xn_s16_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/colorspace/colorspace_composite.c liboil-0.3.15/liboil/colorspace/colorspace_composite.c
+*** liboil-0.3.15-orig/liboil/colorspace/colorspace_composite.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/colorspace/colorspace_composite.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,82 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilcolorspace.h>
++ #include <liboil/liboildebug.h>
++ 
++ #define COMPOSITE_OVER(d,s,m) ((d) + (s) - oil_muldiv_255((d),(m)))
++ #define COMPOSITE_ADD(d,s) oil_clamp_255((d) + (s))
++ #define COMPOSITE_IN(s,m) oil_muldiv_255((s),(m))
++ 
++ OIL_DECLARE_CLASS (composite_over_argb);
++ 
++ static void
++ composite_over_argb_noclamp (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++   uint8_t a;
++ 
++   for(i=0;i<n;i++){
++     a = oil_argb_A(src[i]);
++     dest[i] = oil_argb_noclamp(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(src[i]),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(src[i]),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(src[i]),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(src[i]),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL (composite_over_argb_noclamp, composite_over_argb);
++ 
++ #define oil_divide_255_2(x)  ((((x)+128)*257)>>24)
++ #define oil_muldiv_255_2(a,b) oil_divide_255_2((a)*(b))
++ #define COMPOSITE_OVER_2(d,s,m) ((d) + (s) - oil_muldiv_255((d),(m)))
++ 
++ static void
++ composite_over_argb_noclamp_2 (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++   uint8_t a;
++ 
++   for(i=0;i<n;i++){
++     a = oil_argb_A(src[i]);
++     dest[i] = oil_argb_noclamp(
++         COMPOSITE_OVER_2(oil_argb_A(dest[i]),oil_argb_A(src[i]),a),
++         COMPOSITE_OVER_2(oil_argb_R(dest[i]),oil_argb_R(src[i]),a),
++         COMPOSITE_OVER_2(oil_argb_G(dest[i]),oil_argb_G(src[i]),a),
++         COMPOSITE_OVER_2(oil_argb_B(dest[i]),oil_argb_B(src[i]),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL (composite_over_argb_noclamp_2, composite_over_argb);
++ 
+diff -crN liboil-0.3.15-orig/liboil/copy/copy_copy.c liboil-0.3.15/liboil/copy/copy_copy.c
+*** liboil-0.3.15-orig/liboil/copy/copy_copy.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/copy/copy_copy.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,132 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <string.h>
++ 
++ #include <liboil/liboilfunction.h>
++ 
++ OIL_DECLARE_CLASS (copy_u8);
++ 
++ static void
++ copy_u8_libc (uint8_t *dest, const uint8_t *src, int n)
++ {
++   memcpy (dest, src, n);
++ }
++ OIL_DEFINE_IMPL (copy_u8_libc, copy_u8);
++ 
++ static void
++ copy_u8_ptr (uint8_t *dest, const uint8_t *src, int n)
++ {
++   while(n--) {
++     *dest++ = *src++;
++   }
++ }
++ OIL_DEFINE_IMPL (copy_u8_ptr, copy_u8);
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ copy_u8_ints (uint8_t *dest, const uint8_t *src, int n)
++ {
++   int i;
++   for(i=0;i<(n&3);i++){
++     *dest++ = *src++;
++   }
++   n >>= 2;
++   for(i=0;i<n;i++){
++     *(uint32_t *)dest = *(uint32_t *)src;
++     dest += 4;
++     src += 4;
++   }
++ }
++ OIL_DEFINE_IMPL (copy_u8_ints, copy_u8);
++ #endif
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ /* Submitted by Adam Moss */
++ static void
++ copy_u8_llints (uint8_t *dest, const uint8_t *src, int n)
++ {
++   int i;
++   for(i=0;i<(n&7);i++){
++     *dest++ = *src++;
++   }
++   n >>= 3;
++   for(i=0;i<n;i++){
++     *(uint64_t *)dest = *(uint64_t *)src;
++     dest += 8;
++     src += 8;
++   }
++ }
++ OIL_DEFINE_IMPL (copy_u8_llints, copy_u8);
++ #endif
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ /* Submitted by Adam Moss */
++ static void
++ copy_u8_llints_duff (uint8_t *dest, const uint8_t *src, int n)
++ {
++   switch(n&7) {
++   case 7: *dest++ = *src++;
++   case 6: *dest++ = *src++;
++   case 5: *dest++ = *src++;
++   case 4: *dest++ = *src++;
++   case 3: *dest++ = *src++;
++   case 2: *dest++ = *src++;
++   case 1: *dest++ = *src++;
++   default: ;
++   }
++   n >>= 3;
++   while (n) {
++     switch (n & 15) {
++     default:
++     case 0: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 15: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 14: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 13: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 12: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 11: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 10: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 9: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 8: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 7: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 6: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 5: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 4: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 3: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 2: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     case 1: *(uint64_t *)dest = *(uint64_t *)src; dest += 8; src += 8;
++     }
++     n = (n - 1) & ~(int)15;
++   }
++ }
++ OIL_DEFINE_IMPL (copy_u8_llints_duff, copy_u8);
++ #endif
++ 
+diff -crN liboil-0.3.15-orig/liboil/copy/copy_copy8x8.c liboil-0.3.15/liboil/copy/copy_copy8x8.c
+*** liboil-0.3.15-orig/liboil/copy/copy_copy8x8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/copy/copy_copy8x8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,82 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ 
++ OIL_DECLARE_CLASS (copy8x8_u8);
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ copy8x8_u8_ints (uint8_t *d1, int ds, const uint8_t *s1, int ss)
++ {
++   int j;
++   for (j=0;j<8;j++){
++     ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++     ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++ 
++     d1+=ds;
++     s1+=ss;
++   }
++ }
++ OIL_DEFINE_IMPL (copy8x8_u8_ints, copy8x8_u8);
++ #endif
++ 
++ #ifdef HAVE_UNALIGNED_ACCESS
++ static void
++ copy8x8_u8_ints_unrolled (uint8_t *d1, int ds, const uint8_t *s1, int ss)
++ {
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++   d1+=ds; s1+=ss;
++   ((uint32_t*)d1)[0] = ((uint32_t*)s1)[0];
++   ((uint32_t*)d1)[1] = ((uint32_t*)s1)[1];
++ }
++ OIL_DEFINE_IMPL (copy8x8_u8_ints_unrolled, copy8x8_u8);
++ #endif
++ 
+diff -crN liboil-0.3.15-orig/liboil/deprecated/deprecated_average2_u8.c liboil-0.3.15/liboil/deprecated/deprecated_average2_u8.c
+*** liboil-0.3.15-orig/liboil/deprecated/deprecated_average2_u8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/deprecated/deprecated_average2_u8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,68 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #include <math.h>
++ 
++ /**
++  * oil_average2_u8:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr1:
++  * @s2:
++  * @sstr2:
++  * @n:
++  *
++  * Averages each element in @s1 and @s2 and places the result in @d.
++  *
++  * FIXME: This class is difficult to optimize and will likely be
++  * replaced.
++  */
++ OIL_DEFINE_CLASS (average2_u8, 
++     "uint8_t *d, int dstr, uint8_t *s1, int sstr1, "
++     "uint8_t *s2, int sstr2, int n");
++ 
++ static void
++ average2_u8_ref (uint8_t * dest, int dstr, uint8_t *src1, int sstr1,
++     uint8_t *src2, int sstr2, int n)
++ {
++   int i;
++ 
++   for (i = 0; i < n; i++) {
++     dest[dstr * i] = (src1[sstr1 * i] + src2[sstr2 * i]) >> 1;
++   }
++ }
++ 
++ OIL_DEFINE_IMPL_REF (average2_u8_ref, average2_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/deprecated/deprecated_scalaradd.c liboil-0.3.15/liboil/deprecated/deprecated_scalaradd.c
+*** liboil-0.3.15-orig/liboil/deprecated/deprecated_scalaradd.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/deprecated/deprecated_scalaradd.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,183 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #define SCALARADD_DEFINE_REF(type)		\
++ static void scalaradd_ ## type ## _ref(		\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   int i;					\
++   for(i=0;i<n;i++){				\
++     OIL_GET(dest,dstr*i, oil_type_ ## type) =       \
++       OIL_GET(src,sstr*i, oil_type_ ## type) + *val; \
++   }						\
++ }						\
++ OIL_DEFINE_CLASS (scalaradd_ ## type,         \
++     "oil_type_" #type " *d, int dstr, "		\
++     "oil_type_" #type " *s1, int sstr, "		\
++     "oil_type_" #type " *s2_1 int n");		\
++ OIL_DEFINE_IMPL_REF (scalaradd_ ## type ## _ref, scalaradd_ ## type);
++ 
++ 
++ /**
++  * oil_scalaradd_s8:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (s8);
++ /**
++  * oil_scalaradd_u8:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (u8);
++ /**
++  * oil_scalaradd_s16:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (s16);
++ /**
++  * oil_scalaradd_u16:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (u16);
++ /**
++  * oil_scalaradd_s32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (s32);
++ /**
++  * oil_scalaradd_u32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (u32);
++ /**
++  * oil_scalaradd_f32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (f32);
++ /**
++  * oil_scalaradd_f64:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Adds the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARADD_DEFINE_REF (f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/deprecated/deprecated_scalarmult.c liboil-0.3.15/liboil/deprecated/deprecated_scalarmult.c
+*** liboil-0.3.15-orig/liboil/deprecated/deprecated_scalarmult.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/deprecated/deprecated_scalarmult.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,181 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #define SCALARMULT_DEFINE_REF(type)		\
++ static void scalarmult_ ## type ## _ref(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   int i;					\
++   for(i=0;i<n;i++){				\
++     OIL_GET(dest,dstr*i,oil_type_ ## type) = OIL_GET(src,sstr*i,oil_type_ ## type) * *val; \
++   }						\
++ }						\
++ OIL_DEFINE_CLASS(scalarmult_ ## type,           \
++     "oil_type_" #type " *d, int dstr, "          \
++     "oil_type_" #type " *s1, int sstr, "           \
++     "oil_type_" #type " *s2_1, int n");            \
++ OIL_DEFINE_IMPL_REF (scalarmult_ ## type ## _ref, scalarmult_ ## type);
++ 
++ 
++ /**
++  * oil_scalarmult_s8:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (s8);
++ /**
++  * oil_scalarmult_u8:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (u8);
++ /**
++  * oil_scalarmult_s16:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (s16);
++ /**
++  * oil_scalarmult_u16:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (u16);
++ /**
++  * oil_scalarmult_s32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (s32);
++ /**
++  * oil_scalarmult_u32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (u32);
++ /**
++  * oil_scalarmult_f32:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (f32);
++ /**
++  * oil_scalarmult_f64:
++  * @d:
++  * @dstr:
++  * @s1:
++  * @sstr:
++  * @s2_1:
++  * @n:
++  *
++  * Multiplies the constant value @s2_1 to each value in @s1 and places the
++  * result in @d.
++  *
++  * FIXME: This function is difficult to optimize and will likely be
++  * replaced.
++  */
++ SCALARMULT_DEFINE_REF (f64);
++ 
+diff -crN liboil-0.3.15-orig/liboil/liboil-stdint.h liboil-0.3.15/liboil/liboil-stdint.h
+*** liboil-0.3.15-orig/liboil/liboil-stdint.h	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/liboil-stdint.h	Sun Sep 07 17:10:53 2008
+***************
+*** 0 ****
+--- 1,8 ----
++ #ifndef _LIBOIL_LIBOIL_LIBOIL_STDINT_H
++ #define _LIBOIL_LIBOIL_LIBOIL_STDINT_H 1
++ #ifndef _GENERATED_STDINT_H
++ #define _GENERATED_STDINT_H "liboil 0.3.15"
++ #define _STDINT_HAVE_STDINT_H 1
++ #include <stdint.h>
++ #endif
++ #endif
+diff -crN liboil-0.3.15-orig/liboil/liboilarray.c liboil-0.3.15/liboil/liboilarray.c
+*** liboil-0.3.15-orig/liboil/liboilarray.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/liboilarray.c	Thu Sep 11 13:26:13 2008
+***************
+*** 0 ****
+--- 1,12 ----
++ /* This file is autogenerated.  Do not edit */
++ 
++ #include <liboil/liboilfunction.h>
++ 
++ OilFunctionClass *_oil_function_class_array[] = {
++   NULL
++ };
++ 
++ OilFunctionImpl *_oil_function_impl_array[] = {
++   NULL
++ };
++ 
+diff -crN liboil-0.3.15-orig/liboil/liboilarray.sh liboil-0.3.15/liboil/liboilarray.sh
+*** liboil-0.3.15-orig/liboil/liboilarray.sh	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/liboilarray.sh	Tue Sep 09 18:04:53 2008
+***************
+*** 0 ****
+--- 1,32 ----
++ 	echo '/* This file is autogenerated.  Do not edit */' >liboilarray.c.tmp
++ 	echo >>liboilarray.c.tmp
++ 	echo '#include <liboil/liboilfunction.h>' >>liboilarray.c.tmp
++ 	echo >>liboilarray.c.tmp
++ 
++ 	grep '^_oil_function_class_' .libs/liboiltmp1.exp | \
++ 	  sed -e 's/ .*//' -e 's/.*/extern OilFunctionClass &;/' >>liboilarray.c.tmp
++ 
++ 	echo >>liboilarray.c.tmp
++ 	echo 'OilFunctionClass *_oil_function_class_array[] = {' >>liboilarray.c.tmp
++ 
++ 	grep '^_oil_function_class_' .libs/liboiltmp1.exp | \
++ 	  sed -e 's/ .*//' -e 's/.*/  \&&,/' >>liboilarray.c.tmp
++ 
++ 	echo '  NULL' >>liboilarray.c.tmp
++ 	echo '};' >>liboilarray.c.tmp
++ 	echo >>liboilarray.c.tmp
++ 
++ 	grep '^_oil_function_impl_' .libs/liboiltmp1.exp | \
++ 	  sed -e 's/ .*//' -e 's/.*/extern OilFunctionImpl &;/' >>liboilarray.c.tmp
++ 
++ 	echo >>liboilarray.c.tmp
++ 	echo 'OilFunctionImpl *_oil_function_impl_array[] = {' >>liboilarray.c.tmp
++ 
++ 	grep '^_oil_function_impl_' .libs/liboiltmp1.exp | \
++ 	  sed -e 's/ .*//' -e 's/.*/  \&&,/' >>liboilarray.c.tmp
++ 
++ 	echo '  NULL' >>liboilarray.c.tmp
++ 	echo '};' >>liboilarray.c.tmp
++ 	echo >>liboilarray.c.tmp
++ 	cmp liboilarray.c.tmp liboilarray.c || mv liboilarray.c.tmp liboilarray.c
++ 
+diff -crN liboil-0.3.15-orig/liboil/liboilfault.c liboil-0.3.15/liboil/liboilfault.c
+*** liboil-0.3.15-orig/liboil/liboilfault.c	Tue May 13 02:33:34 2008
+--- liboil-0.3.15/liboil/liboilfault.c	Thu Sep 11 11:32:52 2008
+***************
+*** 38,46 ****
+--- 38,48 ----
+  #include <setjmp.h>
+  #include <signal.h>
+  
++ #if 0
+  #ifdef _WIN32
+  #include <windows.h>
+  #endif
++ #endif
+  
+  static jmp_buf jump_env;
+  #ifdef HAVE_SIGACTION
+***************
+*** 52,57 ****
+--- 54,60 ----
+  static int in_try_block;
+  static int enable_level;
+  
++ #if 0
+  #ifdef _WIN32
+  static LONG __stdcall
+  illegal_instruction_handler (EXCEPTION_POINTERS *e)
+***************
+*** 81,86 ****
+--- 84,90 ----
+    }
+  }
+  #endif
++ #endif
+  
+  /**
+   * oil_fault_check_enable:
+***************
+*** 94,99 ****
+--- 98,104 ----
+  void
+  oil_fault_check_enable (void)
+  {
++ #if 0
+    if (enable_level == 0) {
+  #ifndef _WIN32
+  #ifdef HAVE_SIGACTION
+***************
+*** 111,116 ****
+--- 116,122 ----
+          "any SIGILL signals caught by gdb.");
+    }
+    enable_level++;
++ #endif
+  }
+  
+  /**
+***************
+*** 152,157 ****
+--- 158,164 ----
+  void
+  oil_fault_check_disable (void)
+  {
++ #if 0
+    enable_level--;
+    if (enable_level == 0) {
+  #ifndef _WIN32
+***************
+*** 165,169 ****
+--- 172,177 ----
+  #endif
+      OIL_INFO("disabling SIGILL handler");
+    }
++ #endif
+  }
+  
+diff -crN liboil-0.3.15-orig/liboil/math/math_math.c liboil-0.3.15/liboil/math/math_math.c
+*** liboil-0.3.15-orig/liboil/math/math_math.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/math/math_math.c	Fri Mar 14 05:17:58 2008
+***************
+*** 0 ****
+--- 1,147 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2005 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <math.h>
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilclasses.h>
++ 
++ 
++ #if 0
++ static void
++ add_f32_unroll4 (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     dest[i+0] = src1[i+0] + src2[i+0];
++     dest[i+1] = src1[i+1] + src2[i+1];
++     dest[i+2] = src1[i+2] + src2[i+2];
++     dest[i+3] = src1[i+3] + src2[i+3];
++   }
++   for(;i<n;i++){
++     dest[i] = src1[i] + src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL (add_f32_unroll4, add_f32);
++ #endif
++ 
++ #if 0
++ static void
++ add_f32_unroll4b (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     *dest++ = *src1++ + *src2++;
++     *dest++ = *src1++ + *src2++;
++     *dest++ = *src1++ + *src2++;
++     *dest++ = *src1++ + *src2++;
++   }
++   for(;i<n;i++){
++     *dest++ = *src1++ + *src2++;
++   }
++ }
++ OIL_DEFINE_IMPL (add_f32_unroll4b, add_f32);
++ #endif
++ 
++ 
++ #if 0
++ static void
++ multiply_f32_unroll4 (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     dest[i+0] = src1[i+0] * src2[i+0];
++     dest[i+1] = src1[i+1] * src2[i+1];
++     dest[i+2] = src1[i+2] * src2[i+2];
++     dest[i+3] = src1[i+3] * src2[i+3];
++   }
++   for(;i<n;i++){
++     dest[i] = src1[i] * src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL (multiply_f32_unroll4, multiply_f32);
++ #endif
++ 
++ static void
++ scalaradd_f32_ns_unroll4 (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     dest[i+0] = src1[i+0] + src2[0];
++     dest[i+1] = src1[i+1] + src2[0];
++     dest[i+2] = src1[i+2] + src2[0];
++     dest[i+3] = src1[i+3] + src2[0];
++   }
++   for(;i<n;i++){
++     dest[i] = src1[i] + src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL (scalaradd_f32_ns_unroll4, scalaradd_f32_ns);
++ 
++ static void
++ scalarmultiply_f32_ns_unroll4 (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     dest[i+0] = src1[i+0] * src2[0];
++     dest[i+1] = src1[i+1] * src2[0];
++     dest[i+2] = src1[i+2] * src2[0];
++     dest[i+3] = src1[i+3] * src2[0];
++   }
++   for(;i<n;i++){
++     dest[i] = src1[i] * src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL (scalarmultiply_f32_ns_unroll4, scalarmultiply_f32_ns);
++ 
++ static void
++ scalarmultiply_f64_ns_unroll4 (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<(n&(~0x3));i+=4){
++     dest[i+0] = src1[i+0] * src2[0];
++     dest[i+1] = src1[i+1] * src2[0];
++     dest[i+2] = src1[i+2] * src2[0];
++     dest[i+3] = src1[i+3] * src2[0];
++   }
++   for(;i<n;i++){
++     dest[i] = src1[i] * src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL (scalarmultiply_f64_ns_unroll4, scalarmultiply_f64_ns);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_composite.c liboil-0.3.15/liboil/ref/ref_composite.c
+*** liboil-0.3.15-orig/liboil/ref/ref_composite.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_composite.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,464 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilrandom.h>
++ #include <liboil/liboilcolorspace.h>
++ #include <liboil/liboiltest.h>
++ #include <liboil/liboildebug.h>
++ 
++ #define COMPOSITE_OVER(d,s,m) ((d) + (s) - oil_muldiv_255((d),(m)))
++ #define COMPOSITE_ADD(d,s) oil_clamp_255((d) + (s))
++ #define COMPOSITE_IN(s,m) oil_muldiv_255((s),(m))
++ 
++ /**
++  * SECTION:liboilfuncs-pixel
++  * @title: Pixel Operations
++  * @short_description: Operations on pixels
++  *
++  * Pixels are 4-element arrays of type uint8_t.  The elements, in
++  * memory order, represent the alpha, red, green, and blue
++  * components respectively.  The color components are premultiplied
++  * with the alpha component.  Liboil functions represent pixels
++  * as the type uint32_t.
++  *
++  * The compositing operators IN, OVER, and ADD are defined the same
++  * as cairo.
++  *
++  */
++ static void
++ handle_param (OilParameter *p)
++ {
++   int n;
++ 
++   if (p->src_data) {
++     if (p->type == OIL_TYPE_u32p) {
++       uint32_t *ptr;
++       ptr = (uint32_t *)oil_param_get_source_data (p);
++       n = p->post_n;
++       oil_random_argb (ptr, n);
++     }
++     if (p->type == OIL_TYPE_u8p) {
++       uint8_t *ptr;
++       ptr = (uint8_t *)oil_param_get_source_data (p);
++       n = p->post_n;
++       oil_random_alpha (ptr, n);
++     }
++   }
++ }
++ 
++ static void
++ composite_test (OilTest *test)
++ {
++   handle_param(&test->params[OIL_ARG_SRC1]);
++   handle_param(&test->params[OIL_ARG_SRC2]);
++   handle_param(&test->params[OIL_ARG_INPLACE1]);
++ }
++ 
++ /**
++  * oil_composite_in_argb:
++  * @d_n: DEST
++  * @s1_n: SRC
++  * @s2_n: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC IN MASK.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_argb,
++     "uint32_t *d_n, uint32_t *s1_n, uint8_t *s2_n, int n",
++     composite_test);
++ /**
++  * oil_composite_in_argb_const_src:
++  * @d_n: DEST
++  * @s1_1: SRC
++  * @s2_n: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC IN MASK, for a constant
++  * SRC.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_argb_const_src,
++     "uint32_t *d_n, uint32_t *s1_1, uint8_t *s2_n, int n",
++     composite_test);
++ /**
++  * oil_composite_in_argb_const_mask:
++  * @d_n: DEST
++  * @s1_n: SRC
++  * @s2_1: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC IN MASK, for a constant
++  * MASK.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_argb_const_mask,
++     "uint32_t *d_n, uint32_t *s1_n, uint8_t *s2_1, int n",
++     composite_test);
++ /**
++  * oil_composite_over_argb:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC OVER DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_over_argb,
++     "uint32_t *i_n, uint32_t *s1_n, int n",
++     composite_test);
++ /**
++  * oil_composite_over_argb_const_src:
++  * @i_n: DEST
++  * @s1_1: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC OVER DEST, for a
++  * constant SRC.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_over_argb_const_src,
++     "uint32_t *i_n, uint32_t *s1_1, int n",
++     composite_test);
++ /**
++  * oil_composite_add_argb:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC ADD DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_add_argb,
++     "uint32_t *i_n, uint32_t *s1_n, int n",
++     composite_test);
++ /**
++  * oil_composite_add_argb_const_src:
++  * @i_n: DEST
++  * @s1_1: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC ADD DEST, for a
++  * constant SRC.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_add_argb_const_src,
++     "uint32_t *i_n, uint32_t *s1_1, int n",
++     composite_test);
++ /**
++  * oil_composite_in_over_argb:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @s2_n: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = (SRC IN MASK) OVER DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_over_argb,
++     "uint32_t *i_n, uint32_t *s1_n, uint8_t *s2_n, int n",
++     composite_test);
++ /**
++  * oil_composite_in_over_argb_const_src:
++  * @i_n: DEST
++  * @s1_1: SRC
++  * @s2_n: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = (SRC IN MASK) OVER DEST,
++  * for a constant SRC.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_over_argb_const_src,
++     "uint32_t *i_n, uint32_t *s1_1, uint8_t *s2_n, int n",
++     composite_test);
++ /**
++  * oil_composite_in_over_argb_const_mask:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @s2_1: MASK
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = (SRC IN MASK) OVER DEST,
++  * for a constant MASK.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_in_over_argb_const_mask,
++     "uint32_t *i_n, uint32_t *s1_n, uint8_t *s2_1, int n",
++     composite_test);
++ /**
++  * oil_composite_over_u8:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC OVER DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_over_u8,
++     "uint8_t *i_n, uint8_t *s1_n, int n",
++     composite_test);
++ /**
++  * oil_composite_add_u8:
++  * @i_n: DEST
++  * @s1_n: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC ADD DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_add_u8,
++     "uint8_t *i_n, uint8_t *s1_n, int n",
++     composite_test);
++ /**
++  * oil_composite_add_u8_const_src:
++  * @i_n: DEST
++  * @s1_1: SRC
++  * @n: number of elements
++  *
++  * Performs the compositing operation DEST = SRC ADD DEST.
++  */
++ OIL_DEFINE_CLASS_FULL (composite_add_u8_const_src,
++     "uint8_t *i_n, uint8_t *s1_1, int n",
++     composite_test);
++ 
++ static void
++ composite_in_argb_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_R(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_G(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_B(src[i]), mask[i]));
++   }
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_argb_ref, composite_in_argb);
++ 
++ static void
++ composite_in_argb_const_src_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_R(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_G(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_B(src[0]), mask[i]));
++   }
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_argb_const_src_ref, composite_in_argb_const_src);
++ 
++ static void
++ composite_in_argb_const_mask_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_R(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_G(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_B(src[i]), mask[0]));
++   }
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_argb_const_mask_ref, composite_in_argb_const_mask);
++ 
++ static void
++ composite_over_argb_ref (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++   uint8_t a;
++ 
++   for(i=0;i<n;i++){
++     a = oil_argb_A(src[i]);
++     dest[i] = oil_argb(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(src[i]),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(src[i]),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(src[i]),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(src[i]),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_over_argb_ref, composite_over_argb);
++ 
++ static void
++ composite_over_argb_const_src_ref (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++   uint8_t a;
++ 
++   a = oil_argb_A(src[0]);
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(src[0]),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(src[0]),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(src[0]),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(src[0]),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_over_argb_const_src_ref, composite_over_argb_const_src);
++ 
++ static void
++ composite_add_argb_ref (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_ADD(oil_argb_A(dest[i]),oil_argb_A(src[i])),
++         COMPOSITE_ADD(oil_argb_R(dest[i]),oil_argb_R(src[i])),
++         COMPOSITE_ADD(oil_argb_G(dest[i]),oil_argb_G(src[i])),
++         COMPOSITE_ADD(oil_argb_B(dest[i]),oil_argb_B(src[i])));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_add_argb_ref, composite_add_argb);
++ 
++ static void
++ composite_add_argb_const_src_ref (uint32_t *dest, const uint32_t *src, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = oil_argb(
++         COMPOSITE_ADD(oil_argb_A(dest[i]),oil_argb_A(src[0])),
++         COMPOSITE_ADD(oil_argb_R(dest[i]),oil_argb_R(src[0])),
++         COMPOSITE_ADD(oil_argb_G(dest[i]),oil_argb_G(src[0])),
++         COMPOSITE_ADD(oil_argb_B(dest[i]),oil_argb_B(src[0])));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_add_argb_const_src_ref, composite_add_argb_const_src);
++ 
++ static void
++ composite_in_over_argb_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++   uint8_t a;
++   uint32_t color;
++ 
++   for(i=0;i<n;i++){
++     color = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_R(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_G(src[i]), mask[i]),
++         COMPOSITE_IN(oil_argb_B(src[i]), mask[i]));
++     a = oil_argb_A(color);
++     dest[i] = oil_argb(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(color),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(color),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(color),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(color),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_over_argb_ref, composite_in_over_argb);
++ 
++ static void
++ composite_in_over_argb_const_src_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++   uint8_t a;
++   uint32_t color;
++ 
++   for(i=0;i<n;i++){
++     color = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_R(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_G(src[0]), mask[i]),
++         COMPOSITE_IN(oil_argb_B(src[0]), mask[i]));
++     a = oil_argb_A(color);
++     dest[i] = oil_argb(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(color),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(color),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(color),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(color),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_over_argb_const_src_ref, composite_in_over_argb_const_src);
++ 
++ static void
++ composite_in_over_argb_const_mask_ref (uint32_t *dest, const uint32_t *src, const uint8_t *mask, int n)
++ {
++   int i;
++   uint8_t a;
++   uint32_t color;
++ 
++   for(i=0;i<n;i++){
++     color = oil_argb(
++         COMPOSITE_IN(oil_argb_A(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_R(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_G(src[i]), mask[0]),
++         COMPOSITE_IN(oil_argb_B(src[i]), mask[0]));
++     a = oil_argb_A(color);
++     dest[i] = oil_argb(
++         COMPOSITE_OVER(oil_argb_A(dest[i]),oil_argb_A(color),a),
++         COMPOSITE_OVER(oil_argb_R(dest[i]),oil_argb_R(color),a),
++         COMPOSITE_OVER(oil_argb_G(dest[i]),oil_argb_G(color),a),
++         COMPOSITE_OVER(oil_argb_B(dest[i]),oil_argb_B(color),a));
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_in_over_argb_const_mask_ref, composite_in_over_argb_const_mask);
++ 
++ static void
++ composite_add_u8_ref (uint8_t *dest, const uint8_t *src, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = COMPOSITE_ADD(dest[i],src[i]);
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_add_u8_ref, composite_add_u8);
++ 
++ static void
++ composite_add_u8_const_src_ref (uint8_t *dest, const uint8_t *src1_1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = COMPOSITE_ADD(dest[i],src1_1[0]);
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_add_u8_const_src_ref, composite_add_u8_const_src);
++ 
++ static void
++ composite_over_u8_ref (uint8_t *dest, const uint8_t *src, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = COMPOSITE_OVER(dest[i],src[i],src[i]);
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (composite_over_u8_ref, composite_over_u8);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_copy.c liboil-0.3.15/liboil/ref/ref_copy.c
+*** liboil-0.3.15-orig/liboil/ref/ref_copy.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_copy.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,121 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <string.h>
++ 
++ #include <liboil/liboilfunction.h>
++ 
++ /**
++  * SECTION:liboilfuncs-copy:
++  * @title: Copying
++  * @short_description: Functions for copying data
++  *
++  */
++ 
++ /**
++  * oil_copy_u8:
++  * @dest: destination array
++  * @src: source array
++  * @n: number of elements
++  *
++  * Copies from source to destination.
++  */
++ OIL_DEFINE_CLASS (copy_u8, "uint8_t *dest, uint8_t *src, int n");
++ 
++ static void
++ copy_u8_ref (uint8_t *dest, uint8_t *src, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     dest[i] = src[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (copy_u8_ref, copy_u8);
++ 
++ /**
++  * oil_compare_u8:
++  * @d_1: destination array
++  * @s1: source array
++  * @s2: source array
++  * @n: number of elements
++  *
++  * Compares two arrays.  The index of the first two elements that are
++  * unequal is written into dest.  If all elements are equal, @n is
++  * written into dest.
++  */
++ OIL_DEFINE_CLASS (compare_u8, "uint32_t *d_1, uint8_t *s1, uint8_t *s2, int n");
++ 
++ static void
++ compare_u8_ref (uint32_t *dest, uint8_t *src1, uint8_t *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     if (src1[i] != src2[i]) {
++       dest[0] = i;
++       return;
++     }
++   }
++   dest[0] = n;
++ }
++ OIL_DEFINE_IMPL_REF (compare_u8_ref, compare_u8);
++ 
++ /**
++  * oil_testzero_u8:
++  * @d_1: destination array
++  * @s: source array
++  * @n: number of elements
++  *
++  * Tests each element in the source array for equality with 0.  The
++  * index of the first zero element is written into dest.  If all
++  * elements are non-zero, @n is written into dest.
++  *
++  * This function is roughly equivalent to strnlen().  One notable
++  * difference is that implementations of this function may legally
++  * read past the zero byte.
++  */
++ OIL_DEFINE_CLASS (testzero_u8, "uint32_t *d_1, uint8_t *s, int n");
++ 
++ static void
++ testzero_u8_ref (uint32_t *dest, uint8_t *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     if (src1[i] == 0) {
++       dest[0] = i;
++       return;
++     }
++   }
++   dest[0] = n;
++ }
++ OIL_DEFINE_IMPL_REF (testzero_u8_ref, testzero_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_copy8x8.c liboil-0.3.15/liboil/ref/ref_copy8x8.c
+*** liboil-0.3.15-orig/liboil/ref/ref_copy8x8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_copy8x8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,58 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ 
++ /**
++  * oil_copy8x8_u8:
++  * @d_8x8:
++  * @ds:
++  * @s_8x8:
++  * @ss:
++  *
++  * Copies an 8x8 block.
++  */
++ OIL_DEFINE_CLASS (copy8x8_u8, "uint8_t *d_8x8, int ds, uint8_t *s_8x8, int ss");
++ 
++ static void
++ copy8x8_u8_ref (uint8_t *d1, int ds, uint8_t *s1, int ss)
++ {
++   int i,j;
++   for (i=0;i<8;i++){
++     for (j=0;j<8;j++){
++       d1[j] = s1[j];
++     }
++     d1 += ds;
++     s1 += ss;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (copy8x8_u8_ref, copy8x8_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_diffsquaresum_f64.c liboil-0.3.15/liboil/ref/ref_diffsquaresum_f64.c
+*** liboil-0.3.15-orig/liboil/ref/ref_diffsquaresum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_diffsquaresum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,75 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ /**
++  * oil_diffsquaresum_f64:
++  * @d_1:
++  * @src1:
++  * @sstr1:
++  * @src2:
++  * @sstr2:
++  * @n:
++  *
++  * Calculates the sum of squared differences between @src1 and @src2
++  * and places the result in @d_1.
++  */
++ OIL_DEFINE_CLASS (diffsquaresum_f64,
++     "double *d_1, double *src1, int sstr1, double *src2, int sstr2, int n");
++ 
++ static void
++ diffsquaresum_f64_ref(double *dest, double *src1, int sstr1, double *src2,
++     int sstr2, int n)
++ {
++ 	double sum = 0;
++ 	double errsum = 0;
++ 	double tmp;
++ 	double x;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		x = OIL_GET(src1, i*sstr1, double) -
++                   OIL_GET(src2, i*sstr2, double);
++ 		x = x*x;
++ 		tmp = sum;
++ 		sum += x;
++ 		errsum += (tmp - sum) + x;
++ 	}
++ 
++ 	*dest = sum + errsum;
++ }
++ 
++ OIL_DEFINE_IMPL_REF (diffsquaresum_f64_ref, diffsquaresum_f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_math.c liboil-0.3.15/liboil/ref/ref_math.c
+*** liboil-0.3.15-orig/liboil/ref/ref_math.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_math.c	Fri Mar 14 05:17:58 2008
+***************
+*** 0 ****
+--- 1,539 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2005 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <math.h>
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboiltest.h>
++ 
++ /**
++  * SECTION:liboilfuncs-math
++  * @title: Simple Arithmetic
++  * @short_description: Aritmetic operations
++  *
++  */
++ 
++ /**
++  * SECTION:liboilfuncs-math8x8
++  * @title: Simple Arithmetic on Blocks
++  * @short_description: Aritmetic operations on 8x8 blocks
++  *
++  */
++ 
++ /**
++  * oil_add_s16:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Adds elements in @s2 and @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (add_s16, "int16_t *d, int16_t *src1, int16_t *src2, int n");
++ /**
++  * oil_subtract_s16:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Subtracts elements in @s2 from @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (subtract_s16, "int16_t *d, int16_t *src1, int16_t *src2, int n");
++ /**
++  * oil_add_s16_u8:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Adds elements in @s2 and @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (add_s16_u8, "int16_t *d, int16_t *src1, uint8_t *src2, int n");
++ /**
++  * oil_subtract_s16_u8:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Subtracts elements in @s2 from @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (subtract_s16_u8, "int16_t *d, int16_t *src1, uint8_t *src2, int n");
++ 
++ /**
++  * oil_add_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Adds elements in @s2 and @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (add_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_add_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Adds elements in @s2 and @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (add_f64, "double *d, double *s1, double *s2, int n");
++ /**
++  * oil_subtract_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Subtracts elements in @s2 from @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (subtract_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_subtract_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Subtracts elements in @s2 from @s1 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (subtract_f64, "double *d, double *s1, double *s2, int n");
++ /**
++  * oil_multiply_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Multiplies elements in @s1 and @s2 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (multiply_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_multiply_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Multiplies elements in @s1 and @s2 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (multiply_f64, "double *d, double *s1, double *s2, int n");
++ /**
++  * oil_divide_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Divides elements in @s1 by @s2 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (divide_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_divide_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Divides elements in @s1 by @s2 and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (divide_f64, "double *d, double *s1, double *s2, int n");
++ /**
++  * oil_minimum_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Places the lesser of @s1 and @s2 in @d.
++  */
++ OIL_DEFINE_CLASS (minimum_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_minimum_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Places the lesser of @s1 and @s2 in @d.
++  */
++ OIL_DEFINE_CLASS (minimum_f64, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_maximum_f32:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Places the greater of @s1 and @s2 in @d.
++  */
++ OIL_DEFINE_CLASS (maximum_f32, "float *d, float *s1, float *s2, int n");
++ /**
++  * oil_maximum_f64:
++  * @d: destination
++  * @s1: source 1
++  * @s2: source 2
++  * @n: number of elements
++  *
++  * Places the greater of @s1 and @s2 in @d.
++  */
++ OIL_DEFINE_CLASS (maximum_f64, "float *d, float *s1, float *s2, int n");
++ 
++ /**
++  * oil_negative_f32:
++  * @d: destination
++  * @s: source
++  * @n: number of elements
++  *
++  * Negates each element in @s and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (negative_f32, "float *d, float *s, int n");
++ /**
++  * oil_inverse_f32:
++  * @d: destination
++  * @s: source
++  * @n: number of elements
++  *
++  * Calculates the multiplicative inverse of each element in @s and
++  * places the result in @d.
++  */
++ OIL_DEFINE_CLASS (inverse_f32, "float *d, float *s, int n");
++ /**
++  * oil_sign_f32:
++  * @d: destination
++  * @s: source
++  * @n: number of elements
++  *
++  * Calculates the sign of each element in @s and
++  * places the result in @d.
++  */
++ OIL_DEFINE_CLASS (sign_f32, "float *d, float *s, int n");
++ /**
++  * oil_floor_f32:
++  * @d: destination
++  * @s: source
++  * @n: number of elements
++  *
++  * Calculates the greatest integer less than or equal to each element
++  * in @s and places the result in @d.
++  */
++ OIL_DEFINE_CLASS (floor_f32, "float *d, float *s, int n");
++ 
++ /**
++  * oil_scalaradd_f32_ns:
++  * @d: destination
++  * @s1: source
++  * @s2_1: source
++  * @n: number of elements
++  *
++  * Adds the constant value @s2_1 to each source element and places
++  * the result in @d.
++  */
++ OIL_DEFINE_CLASS (scalaradd_f32_ns, "float *d, float *s1, float *s2_1, int n");
++ /**
++  * oil_scalarmultiply_f32_ns:
++  * @d: destination
++  * @s1: source
++  * @s2_1: source
++  * @n: number of elements
++  *
++  * Multiplies the constant value @s2_1 and each source element and places
++  * the result in @d.
++  */
++ OIL_DEFINE_CLASS (scalarmultiply_f32_ns, "float *d, float *s1, float *s2_1, int n");
++ 
++ /**
++  * oil_scalarmultiply_f64_ns:
++  * @d: destination
++  * @s1: source
++  * @s2_1: source
++  * @n: number of elements
++  *
++  * Multiplies the constant value @s2_1 and each source element and places
++  * the result in @d.
++  */
++ OIL_DEFINE_CLASS (scalarmultiply_f64_ns, "double *d, double *s1, double *s2_1, int n");
++ 
++ static void
++ add_s16_ref (int16_t *d, int16_t *src1, int16_t *src2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] + src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add_s16_ref, add_s16);
++ 
++ static void
++ subtract_s16_ref (int16_t *d, int16_t *src1, int16_t *src2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] - src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (subtract_s16_ref, subtract_s16);
++ 
++ static void
++ add_s16_u8_ref (int16_t *d, int16_t *src1, uint8_t *src2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] + src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add_s16_u8_ref, add_s16_u8);
++ 
++ static void
++ subtract_s16_u8_ref (int16_t *d, int16_t *src1, uint8_t *src2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] - src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (subtract_s16_u8_ref, subtract_s16_u8);
++ 
++ static void
++ add_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] + src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add_f32_ref, add_f32);
++ 
++ static void
++ add_f64_ref (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] + src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add_f64_ref, add_f64);
++ 
++ static void
++ subtract_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] - src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (subtract_f32_ref, subtract_f32);
++ 
++ static void
++ subtract_f64_ref (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] - src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (subtract_f64_ref, subtract_f64);
++ 
++ static void
++ multiply_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] * src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_f32_ref, multiply_f32);
++ 
++ static void
++ multiply_f64_ref (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] * src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_f64_ref, multiply_f64);
++ 
++ static void
++ divide_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] / src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (divide_f32_ref, divide_f32);
++ 
++ static void
++ divide_f64_ref (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] / src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (divide_f64_ref, divide_f64);
++ 
++ static void
++ minimum_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = (src1[i] < src2[i]) ? src1[i] : src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (minimum_f32_ref, minimum_f32);
++ 
++ static void
++ maximum_f32_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = (src1[i] > src2[i]) ? src1[i] : src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (maximum_f32_ref, maximum_f32);
++ 
++ static void
++ minimum_f64_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = (src1[i] < src2[i]) ? src1[i] : src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (minimum_f64_ref, minimum_f64);
++ 
++ static void
++ maximum_f64_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = (src1[i] > src2[i]) ? src1[i] : src2[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (maximum_f64_ref, maximum_f64);
++ 
++ static void
++ negative_f32_ref (float *dest, float *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = -src1[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (negative_f32_ref, negative_f32);
++ 
++ static void
++ inverse_f32_ref (float *dest, float *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = 1.0/src1[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (inverse_f32_ref, inverse_f32);
++ 
++ static void
++ sign_f32_ref (float *dest, float *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = (src1[i] < 0) ? -src1[i] : src1[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (sign_f32_ref, sign_f32);
++ 
++ static void
++ floor_f32_ref (float *dest, float *src1, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = floor(src1[i]);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (floor_f32_ref, floor_f32);
++ 
++ 
++ 
++ static void
++ scalaradd_f32_ns_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] + src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (scalaradd_f32_ns_ref, scalaradd_f32_ns);
++ 
++ static void
++ scalarmultiply_f32_ns_ref (float *dest, float *src1, float *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] * src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (scalarmultiply_f32_ns_ref, scalarmultiply_f32_ns);
++ 
++ static void
++ scalarmultiply_f64_ns_ref (double *dest, double *src1, double *src2, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     dest[i] = src1[i] * src2[0];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (scalarmultiply_f64_ns_ref, scalarmultiply_f64_ns);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_mix_u8.c liboil-0.3.15/liboil/ref/ref_mix_u8.c
+*** liboil-0.3.15-orig/liboil/ref/ref_mix_u8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_mix_u8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,62 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ /**
++  * oil_mix_u8:
++  * @dest: DEST
++  * @src1: SRC1
++  * @src2: SRC2
++  * @src3: MASK
++  * @n:
++  *
++  * Performs the compisiting operation DEST = (SRC2 IN MASK) OVER SRC1,
++  * except it is done incorrectly, so this function should not be used.
++  *
++  * FIXME: This function is broken.
++  */
++ OIL_DEFINE_CLASS (mix_u8,
++     "uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *src3, int n");
++ 
++ static void mix_u8_ref(uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *scale, int n)
++ {
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		dest[i] = (src1[i]*scale[i] + src2[i]*(255-scale[i]))>>8;
++ 	}
++ }
++ 
++ OIL_DEFINE_IMPL_REF (mix_u8_ref, mix_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_multsum.c liboil-0.3.15/liboil/ref/ref_multsum.c
+*** liboil-0.3.15-orig/liboil/ref/ref_multsum.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_multsum.c	Tue Feb 19 11:27:10 2008
+***************
+*** 0 ****
+--- 1,90 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ 
++ #define MULTSUM_DEFINE_REF(type)	\
++ static void multsum_ ## type ## _ref(	\
++     oil_type_ ## type *dest,		\
++     oil_type_ ## type *src1, int sstr1,	\
++     oil_type_ ## type *src2, int sstr2,	\
++     int n)				\
++ {					\
++   int i;				\
++   double sum = 0;			\
++   double errsum = 0;			\
++   for(i=0;i<n;i++){			\
++     oil_type_ ## type x;                    \
++     oil_type_ ## type tmp;                  \
++     x = OIL_GET(src1,sstr1*i,oil_type_ ## type) * OIL_GET(src2,sstr2*i,oil_type_ ## type);		\
++     tmp = sum;				\
++     sum += x;				\
++     errsum += (tmp - sum) + x;		\
++   }					\
++   *dest = sum + errsum;			\
++ }					\
++ OIL_DEFINE_IMPL_REF (multsum_ ## type ## _ref, multsum_ ## type); \
++ OIL_DEFINE_CLASS (multsum_ ## type, \
++     "oil_type_" #type " *dest, "		\
++     "oil_type_" #type " *src1, int sstr1, "	\
++     "oil_type_" #type " *src2, int sstr2, "	\
++     "int n")
++ 
++ /**
++  * oil_multsum_f32:
++  * @dest:
++  * @src1:
++  * @sstr1:
++  * @src2:
++  * @sstr2:
++  * @n:
++  *
++  * Multiplies each element in @src1 and @src2 and sums the results
++  * over the entire array, and places the sum into @dest.
++  */
++ MULTSUM_DEFINE_REF(f32);
++ /**
++  * oil_multsum_f64:
++  * @dest:
++  * @src1:
++  * @sstr1:
++  * @src2:
++  * @sstr2:
++  * @n:
++  *
++  * Multiplies each element in @src1 and @src2 and sums the results
++  * over the entire array, and places the sum into @dest.
++  */
++ MULTSUM_DEFINE_REF(f64);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_sincos_f64.c liboil-0.3.15/liboil/ref/ref_sincos_f64.c
+*** liboil-0.3.15-orig/liboil/ref/ref_sincos_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_sincos_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,64 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <math.h>
++ 
++ /**
++  * oil_sincos_f64:
++  * @dest1:
++  * @dest2:
++  * @n:
++  * @s1_1:
++  * @s2_1:
++  *
++  * Calculates sin(x) and cos(x) and places the results in @dest1 and
++  * @dest2 respectively.  Values for x start at @s1_1 and are incremented
++  * by @s2_1 for each destination element.
++  */
++ OIL_DEFINE_CLASS (sincos_f64,
++     "double *dest1, double *dest2, int n, double *s1_1, double *s2_1");
++ 
++ static void
++ sincos_f64_ref (double *dest_sin, double *dest_cos, int n, double *offset,
++     double *interval)
++ {
++ 	int i;
++         double x;
++ 
++ 	for(i=0;i<n;i++){
++           x = *offset + *interval * i;
++ 		dest_sin[i] = sin(x);
++ 		dest_cos[i] = cos(x);
++ 	}
++ }
++ OIL_DEFINE_IMPL_REF (sincos_f64_ref, sincos_f64);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_squaresum_f64.c liboil-0.3.15/liboil/ref/ref_squaresum_f64.c
+*** liboil-0.3.15-orig/liboil/ref/ref_squaresum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_squaresum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,94 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ 
++ /**
++  * oil_squaresum_f64:
++  * @d:
++  * @s:
++  * @n:
++  *
++  * Sums the square of each element in @s and places the result in
++  * @dest.
++  */
++ OIL_DEFINE_CLASS (squaresum_f64, "double *d, double *s, int n");
++ 
++ static void
++ squaresum_f64_ref(double *dest, double *src, int n)
++ {
++ 	double sum2 = 0;
++ 	double errsum = 0;
++ 	double tmp;
++ 	double x;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		tmp = sum2;
++ 		x = src[i]*src[i];
++ 		sum2 += x;
++ 		errsum += (tmp - sum2) + x;
++ 	}
++ 
++ 	*dest = sum2 + errsum;
++ }
++ OIL_DEFINE_IMPL_REF (squaresum_f64_ref, squaresum_f64);
++ 
++ /**
++  * oil_squaresum_shifted_s16:
++  * @d:
++  * @s:
++  * @n:
++  *
++  * Square each element in @s and divide by (1<<15), and sum the
++  * results, placing the final result in @d.
++  */
++ OIL_DEFINE_CLASS (squaresum_shifted_s16, "uint32_t *d, int16_t *s, int n");
++ 
++ static void
++ squaresum_shifted_s16_ref(uint32_t *dest, int16_t *src, int n)
++ {
++ 	uint32_t sum2 = 0;
++         uint32_t x;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		x = (src[i]*src[i] + (1<<14)) >> 15;
++ 		sum2 += x;
++ 	}
++ 
++ 	*dest = sum2;
++ }
++ OIL_DEFINE_IMPL_REF (squaresum_shifted_s16_ref, squaresum_shifted_s16);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_sum_f64.c liboil-0.3.15/liboil/ref/ref_sum_f64.c
+*** liboil-0.3.15-orig/liboil/ref/ref_sum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_sum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,67 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ /**
++  * oil_sum_f64:
++  * @d_1: destination
++  * @s: source array
++  * @sstr: stride of source elements
++  * @n: number of elements
++  *
++  * Sums the elements in the source array and places the result in
++  * @d.
++  */
++ OIL_DEFINE_CLASS (sum_f64, "double *d_1, double *s, int sstr, int n");
++ //OIL_DEFINE_CLASS (sum_f64_i10, "double *dest, double *src, int sstr, int n");
++ 
++ static void
++ sum_f64_ref (double *dest, double *src, int sstr, int n)
++ {
++ 	double sum = 0;
++ 	double errsum = 0;
++ 	double tmp;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		tmp = sum;
++ 		sum += OIL_GET(src, sstr*i, double);
++ 		errsum += (tmp - sum) + OIL_GET(src, sstr*i, double);
++ 	}
++ 
++ 	*dest = sum + errsum;
++ }
++ OIL_DEFINE_IMPL_REF (sum_f64_ref, sum_f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_swab.c liboil-0.3.15/liboil/ref/ref_swab.c
+*** liboil-0.3.15-orig/liboil/ref/ref_swab.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_swab.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,83 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2005 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboil.h>
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboiltest.h>
++ 
++ 
++ /**
++  * oil_swab_u16:
++  * @d_n:
++  * @s_n:
++  * n:
++  *
++  * Swaps the endianness of values in the source array and places the
++  * results in the destination array.  The arguments @s_n and @d_n may
++  * be equal.
++  */
++ OIL_DEFINE_CLASS (swab_u16, "uint16_t *d_n, uint16_t *s_n, int n");
++ 
++ /**
++  * oil_swab_u32:
++  * @d_n:
++  * @s_n:
++  * n:
++  *
++  * Swaps the endianness of values in the source array and places the
++  * results in the destination array.  The arguments @s_n and @d_n may
++  * be equal.
++  */
++ OIL_DEFINE_CLASS (swab_u32, "uint32_t *d_n, uint32_t *s_n, int n");
++ 
++ static void
++ swab_u16_ref (uint16_t *d, uint16_t *s, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     d[i] = (s[i]<<8) | (s[i]>>8);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (swab_u16_ref, swab_u16);
++ 
++ static void
++ swab_u32_ref (uint32_t *d, uint32_t *s, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++){
++     d[i] = (s[i]<<24) | ((s[i]&0x0000ff00)<<8) |
++       ((s[i]&0x00ff0000)>>8) | (s[i]>>24);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (swab_u32_ref, swab_u32);
++ 
+diff -crN liboil-0.3.15-orig/liboil/ref/ref_wavelet.c liboil-0.3.15/liboil/ref/ref_wavelet.c
+*** liboil-0.3.15-orig/liboil/ref/ref_wavelet.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/ref/ref_wavelet.c	Mon Feb 18 11:26:04 2008
+***************
+*** 0 ****
+--- 1,931 ----
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboiltest.h>
++ #include <liboil/liboilrandom.h>
++ 
++ 
++ static void
++ wavelet_test (OilTest *test)
++ {
++   int16_t *data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC1);
++   int i;
++ 
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_u8();
++   }
++ }
++ 
++ static void
++ rshift_test (OilTest *test)
++ {
++   int16_t *data;
++   int i;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC1);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_s16()>>1;
++   }
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC2);
++   data[0] = (1<<3);
++   data[1] = 4;
++ }
++ 
++ static void
++ lshift_test (OilTest *test)
++ {
++   int16_t *data;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC2);
++   data[0] = 12;
++ }
++  
++ static void
++ combine2_test (OilTest *test)
++ {
++   int16_t *data;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC3);
++   data[0] = 1;
++   data[1] = 1;
++   data[2] = 1;
++   data[3] = 1;
++ }
++ 
++ static void
++ combine4_test (OilTest *test)
++ {
++   int16_t *data;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC5);
++   data[0] = 4;
++   data[1] = 4;
++   data[2] = 4;
++   data[3] = 4;
++   data[4] = 8;
++   data[5] = 4;
++ }
++ 
++ static void
++ add2_test (OilTest *test)
++ {
++   int16_t *data;
++   int i;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC1);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_s16()>>4;
++   }
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC2);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_s16()>>4;
++   }
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC3);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_s16()>>4;
++   }
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC4);
++   data[0] = 1;
++   data[1] = 1;
++ }
++  
++ OIL_DEFINE_CLASS_FULL (deinterleave,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS (deinterleave2_s16,
++     "int16_t *d1_n, int16_t *d2_n, int16_t *s_2xn, int n");
++ OIL_DEFINE_CLASS_FULL (interleave,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS (interleave2_s16,
++     "int16_t *d_2xn, int16_t *s1_n, int16_t *s2_n, int n");
++ OIL_DEFINE_CLASS_FULL (synth_daub97,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (split_daub97,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (split_approx97,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (synth_approx97,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (split_53,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (synth_53,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (split_135,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (synth_135,
++     "int16_t *d_2xn, int16_t *s_2xn, int n", wavelet_test);
++ OIL_DEFINE_CLASS_FULL (add_const_rshift_s16,
++     "int16_t *d1, int16_t *s1, int16_t *s2_2, int n", rshift_test);
++ OIL_DEFINE_CLASS_FULL (lshift_s16,
++     "int16_t *d1, int16_t *s1, int16_t *s2_1, int n", lshift_test);
++ OIL_DEFINE_CLASS (multiply_and_add_s16,
++     "int16_t *d, int16_t *src1, int16_t *src2, int16_t *src3, int n");
++ OIL_DEFINE_CLASS (multiply_and_add_s16_u8,
++     "int16_t *d, int16_t *src1, int16_t *src2, uint8_t *src3, int n");
++ OIL_DEFINE_CLASS (multiply_and_acc_6xn_s16_u8, "int16_t *i1_6xn, int is1, "
++     "int16_t *s1_6xn, int ss1, uint8_t *s2_6xn, int ss2, int n");
++ OIL_DEFINE_CLASS (multiply_and_acc_8xn_s16_u8, "int16_t *i1_8xn, int is1, "
++     "int16_t *s1_8xn, int ss1, uint8_t *s2_8xn, int ss2, int n");
++ OIL_DEFINE_CLASS (multiply_and_acc_12xn_s16_u8, "int16_t *i1_12xn, int is1, "
++     "int16_t *s1_12xn, int ss1, uint8_t *s2_12xn, int ss2, int n");
++ OIL_DEFINE_CLASS (multiply_and_acc_16xn_s16_u8, "int16_t *i1_16xn, int is1, "
++     "int16_t *s1_16xn, int ss1, uint8_t *s2_16xn, int ss2, int n");
++ OIL_DEFINE_CLASS (multiply_and_acc_24xn_s16_u8, "int16_t *i1_24xn, int is1, "
++     "int16_t *s1_24xn, int ss1, uint8_t *s2_24xn, int ss2, int n");
++ OIL_DEFINE_CLASS_FULL (combine2_8xn_u8, "uint8_t *d_8xn, int ds1, "
++     "uint8_t *s1_8xn, int ss1, uint8_t *s2_8xn, int ss2, int16_t *s3_4, int n", combine2_test);
++ OIL_DEFINE_CLASS_FULL (combine2_12xn_u8, "uint8_t *d_12xn, int ds1, "
++     "uint8_t *s1_12xn, int ss1, uint8_t *s2_12xn, int ss2, int16_t *s3_4, int n", combine2_test);
++ OIL_DEFINE_CLASS_FULL (combine2_16xn_u8, "uint8_t *d_16xn, int ds1, "
++     "uint8_t *s1_16xn, int ss1, uint8_t *s2_16xn, int ss2, int16_t *s3_4, int n", combine2_test);
++ OIL_DEFINE_CLASS_FULL (combine4_8xn_u8, "uint8_t *d_8xn, int ds1, "
++     "uint8_t *s1_8xn, int ss1, uint8_t *s2_8xn, int ss2, uint8_t *s3_8xn, "
++     "int ss3, uint8_t *s4_8xn, int ss4, int16_t *s5_6, int n", combine4_test);
++ OIL_DEFINE_CLASS_FULL (combine4_12xn_u8, "uint8_t *d_12xn, int ds1, "
++     "uint8_t *s1_12xn, int ss1, uint8_t *s2_12xn, int ss2, uint8_t *s3_12xn, "
++     "int ss3, uint8_t *s4_12xn, int ss4, int16_t *s5_6, int n", combine4_test);
++ OIL_DEFINE_CLASS_FULL (combine4_16xn_u8, "uint8_t *d_16xn, int ds1, "
++     "uint8_t *s1_16xn, int ss1, uint8_t *s2_16xn, int ss2, uint8_t *s3_16xn, "
++     "int ss3, uint8_t *s4_16xn, int ss4, int16_t *s5_6, int n", combine4_test);
++ OIL_DEFINE_CLASS_FULL (add2_rshift_add_s16, "int16_t *d, int16_t *s1, "
++     "int16_t *s2, int16_t *s3, int16_t *s4_2, int n", add2_test);
++ OIL_DEFINE_CLASS_FULL (add2_rshift_sub_s16, "int16_t *d, int16_t *s1, "
++     "int16_t *s2, int16_t *s3, int16_t *s4_2, int n", add2_test);
++ OIL_DEFINE_CLASS (avg2_8xn_u8, "uint8_t *d_8xn, int ds1, "
++     "uint8_t *s1_8xn, int ss1, uint8_t *s2_8xn, int ss2, int n");
++ OIL_DEFINE_CLASS (avg2_12xn_u8, "uint8_t *d_12xn, int ds1, "
++     "uint8_t *s1_12xn, int ss1, uint8_t *s2_12xn, int ss2, int n");
++ OIL_DEFINE_CLASS (avg2_16xn_u8, "uint8_t *d_16xn, int ds1, "
++     "uint8_t *s1_16xn, int ss1, uint8_t *s2_16xn, int ss2, int n");
++ 
++ void
++ deinterleave_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++) {
++     d_2xn[i] = s_2xn[2*i];
++     d_2xn[n + i] = s_2xn[2*i + 1];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (deinterleave_ref, deinterleave);
++ 
++ void
++ deinterleave2_s16_ref (int16_t *d1_n, int16_t *d2_n, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++) {
++     d1_n[i] = s_2xn[2*i];
++     d2_n[i] = s_2xn[2*i + 1];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (deinterleave2_s16_ref, deinterleave2_s16);
++ 
++ void
++ interleave_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++) {
++     d_2xn[2*i] = s_2xn[i];
++     d_2xn[2*i + 1] = s_2xn[n + i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (interleave_ref, interleave);
++ 
++ void
++ interleave2_s16_ref (int16_t *d_2xn, int16_t *s1_n, int16_t *s2_n, int n)
++ {
++   int i;
++ 
++   for(i=0;i<n;i++) {
++     d_2xn[2*i] = s1_n[i];
++     d_2xn[2*i + 1] = s2_n[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (interleave2_s16_ref, interleave2_s16);
++ 
++ void
++ synth_daub97_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   /* predict */
++   d_2xn[0] = s_2xn[0] - ((1817 * s_2xn[1]) >> 11);
++   for(i=2;i<n*2;i+=2){
++     d_2xn[i] = s_2xn[i] - ((1817 * (s_2xn[i-1] + s_2xn[i+1])) >> 12);
++   }
++   for(i=1;i<n*2-2;i+=2){
++     d_2xn[i] = s_2xn[i] - ((3616 * (d_2xn[i-1] + d_2xn[i+1])) >> 12);
++   }
++   d_2xn[n*2-1] = s_2xn[n*2-1] - ((3616 * d_2xn[n*2-2]) >> 11);
++ 
++   /* update */
++   d_2xn[0] += (217 * d_2xn[1]) >> 11;
++   for(i=2;i<n*2;i+=2){
++     d_2xn[i] += (217 * (d_2xn[i-1] + d_2xn[i+1])) >> 12;
++   }
++   for(i=1;i<n*2-2;i+=2){
++     d_2xn[i] += (6497 * (d_2xn[i-1] + d_2xn[i+1])) >> 12;
++   }
++   d_2xn[n*2-1] += (6497 * d_2xn[n*2-2]) >> 11;
++ }
++ OIL_DEFINE_IMPL_REF (synth_daub97_ref, synth_daub97);
++ 
++ void
++ split_daub97_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   /* predict */
++   for(i=1;i<n*2-2;i+=2){
++     d_2xn[i] = s_2xn[i] - ((6497 * (s_2xn[i-1] + s_2xn[i+1])) >> 12);
++   }
++   d_2xn[n*2-1] = s_2xn[n*2-1] - ((6497 * s_2xn[n*2-2]) >> 11);
++   d_2xn[0] = s_2xn[0] - ((217 * d_2xn[1]) >> 11);
++   for(i=2;i<n*2;i+=2){
++     d_2xn[i] = s_2xn[i] - ((217 * (d_2xn[i-1] + d_2xn[i+1])) >> 12);
++   }
++ 
++   /* update */
++   for(i=1;i<n*2-2;i+=2){
++     d_2xn[i] += (3616 * (d_2xn[i-1] + d_2xn[i+1])) >> 12;
++   }
++   d_2xn[n*2-1] += (3616 * d_2xn[n*2-2]) >> 11;
++   d_2xn[0] += (1817 * d_2xn[1]) >> 11;
++   for(i=2;i<n*2;i+=2){
++     d_2xn[i] += (1817 * (d_2xn[i-1] + d_2xn[i+1])) >> 12;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (split_daub97_ref, split_daub97);
++ 
++ 
++ void
++ split_approx97_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n==1) {
++     d_2xn[1] = s_2xn[1] - s_2xn[0];
++     d_2xn[0] = s_2xn[0] + (d_2xn[1] >> 1);
++   } else if (n==2) {
++     /* predict */
++     d_2xn[1] = s_2xn[1] - ((9*(s_2xn[0] + s_2xn[2]) - (s_2xn[2] + s_2xn[2])) >> 4);
++     d_2xn[3] = s_2xn[3] - ((9*s_2xn[2] - s_2xn[0]) >> 3);
++ 
++     /* update */
++     d_2xn[0] = s_2xn[0] + (d_2xn[1] >> 1);
++     d_2xn[2] = s_2xn[2] + ((d_2xn[1] + d_2xn[3]) >> 2);
++   } else {
++     /* predict */
++     d_2xn[1] = s_2xn[1] - ((9*(s_2xn[0] + s_2xn[2]) - (s_2xn[2] + s_2xn[4])) >> 4);
++     for(i=3;i<n*2-4;i+=2){
++       d_2xn[i] = s_2xn[i] - ((9*(s_2xn[i-1] + s_2xn[i+1]) - (s_2xn[i-3] + s_2xn[i+3])) >> 4);
++     }
++     d_2xn[n*2-3] = s_2xn[n*2-3] - ((9*(s_2xn[n*2-4] + s_2xn[n*2-2]) - (s_2xn[n*2-6] + s_2xn[n*2-2])) >> 4);
++     d_2xn[n*2-1] = s_2xn[n*2-1] - ((9*s_2xn[n*2-2] - s_2xn[n*2-4]) >> 3);
++ 
++     /* update */
++     d_2xn[0] = s_2xn[0] + (d_2xn[1] >> 1);
++     for(i=2;i<n*2;i+=2){
++       d_2xn[i] = s_2xn[i] + ((d_2xn[i-1] + d_2xn[i+1]) >> 2);
++     }
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (split_approx97_ref, split_approx97);
++ 
++ void
++ synth_approx97_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n==1) {
++     d_2xn[0] = s_2xn[0] - (s_2xn[1] >> 1);
++     d_2xn[1] = s_2xn[1] + d_2xn[0];
++   } else if (n==2) {
++     /* predict */
++     d_2xn[0] = s_2xn[0] - (s_2xn[1] >> 1);
++     d_2xn[2] = s_2xn[2] - ((s_2xn[1] + s_2xn[3]) >> 2);
++ 
++     /* update */
++     d_2xn[1] = s_2xn[1] + ((9*(d_2xn[0] + d_2xn[2]) - (d_2xn[2] + d_2xn[2])) >> 4);
++     d_2xn[3] = s_2xn[3] + ((9*d_2xn[2] - d_2xn[0]) >> 3);
++   } else {
++     /* predict */
++     d_2xn[0] = s_2xn[0] - (s_2xn[1] >> 1);
++     for(i=2;i<n*2;i+=2){
++       d_2xn[i] = s_2xn[i] - ((s_2xn[i-1] + s_2xn[i+1]) >> 2);
++     }
++ 
++     /* update */
++     d_2xn[1] = s_2xn[1] + ((9*(d_2xn[0] + d_2xn[2]) - (d_2xn[2] + d_2xn[4])) >> 4);
++     for(i=3;i<n*2-4;i+=2){
++       d_2xn[i] = s_2xn[i] + ((9*(d_2xn[i-1] + d_2xn[i+1]) - (d_2xn[i-3] + d_2xn[i+3])) >> 4);
++     }
++     d_2xn[n*2-3] = s_2xn[n*2-3] + ((9*(d_2xn[n*2-4] + d_2xn[n*2-2]) - (d_2xn[n*2-6] + d_2xn[n*2-2])) >> 4);
++     d_2xn[n*2-1] = s_2xn[n*2-1] + ((9*d_2xn[n*2-2] - d_2xn[n*2-4]) >> 3);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (synth_approx97_ref, synth_approx97);
++ 
++ void
++ split_53_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n == 1) {
++     d_2xn[1] = s_2xn[1] - s_2xn[0];
++     d_2xn[0] = s_2xn[0] + (d_2xn[1] >> 1);
++   } else {
++     d_2xn[1] = s_2xn[1] - ((s_2xn[0] + s_2xn[2]) >> 1);
++     d_2xn[0] = s_2xn[0] + (d_2xn[1] >> 1);
++     for(i=2;i<n*2-2;i+=2){
++       d_2xn[i+1] = s_2xn[i+1] - ((s_2xn[i] + s_2xn[i+2]) >> 1);
++       d_2xn[i] = s_2xn[i] + ((d_2xn[i-1] + d_2xn[i+1]) >> 2);
++     }
++     d_2xn[n*2-1] = s_2xn[n*2-1] - s_2xn[n*2-2];
++     d_2xn[n*2-2] = s_2xn[n*2-2] + ((d_2xn[n*2-3] + d_2xn[n*2-1]) >> 2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (split_53_ref, split_53);
++ 
++ void
++ synth_53_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n == 1) {
++     d_2xn[0] = s_2xn[0] - (s_2xn[1] >> 1);
++     d_2xn[1] = s_2xn[1] + d_2xn[0];
++   } else {
++     d_2xn[0] = s_2xn[0] - (s_2xn[1] >> 1);
++     for(i=2;i<n*2-2;i+=2){
++       d_2xn[i] = s_2xn[i] - ((s_2xn[i-1] + s_2xn[i+1]) >> 2);
++       d_2xn[i-1] = s_2xn[i-1] + ((d_2xn[i] + d_2xn[i-2]) >> 1);
++     }
++     d_2xn[n*2-2] = s_2xn[n*2-2] - ((s_2xn[n*2-3] + s_2xn[n*2-1]) >> 2);
++     d_2xn[n*2-3] = s_2xn[n*2-3] + ((d_2xn[n*2-2] + d_2xn[n*2-4]) >> 1);
++     d_2xn[n*2-1] = s_2xn[n*2-1] + d_2xn[n*2-2];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (synth_53_ref, synth_53);
++ 
++ 
++ void
++ split_135_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n==1) {
++     d_2xn[1] = s_2xn[1] - (s_2xn[0]);
++     d_2xn[0] = s_2xn[0] + (d_2xn[1]>>1);
++   } else if (n==2) {
++     /* predict */
++     d_2xn[1] = s_2xn[1] - ((9*(s_2xn[0] + s_2xn[2]) - (s_2xn[2] + s_2xn[2])) >> 4);
++     d_2xn[3] = s_2xn[3] - ((9*s_2xn[2] - s_2xn[0]) >> 3);
++ 
++     /* update */
++     d_2xn[0] = s_2xn[0] + ((9*d_2xn[1] - d_2xn[3]) >> 4);
++     d_2xn[2] = s_2xn[2] + ((9*(d_2xn[1] + d_2xn[3]) - (d_2xn[1] + d_2xn[1])) >> 5);
++   } else {
++     /* predict */
++     d_2xn[1] = s_2xn[1] - ((9*(s_2xn[0] + s_2xn[2]) - (s_2xn[2] + s_2xn[4])) >> 4);
++     for(i=3;i<n*2-4;i+=2){
++       d_2xn[i] = s_2xn[i] - ((9*(s_2xn[i-1] + s_2xn[i+1]) - (s_2xn[i-3] + s_2xn[i+3])) >> 4);
++     }
++     d_2xn[n*2-3] = s_2xn[n*2-3] - ((9*(s_2xn[n*2-4] + s_2xn[n*2-2]) - (s_2xn[n*2-6] + s_2xn[n*2-2])) >> 4);
++     d_2xn[n*2-1] = s_2xn[n*2-1] - ((9*s_2xn[n*2-2] - s_2xn[n*2-4]) >> 3);
++ 
++     /* update */
++     d_2xn[0] = s_2xn[0] + ((9*d_2xn[1] - d_2xn[3]) >> 4);
++     d_2xn[2] = s_2xn[2] + ((9*(d_2xn[1] + d_2xn[3]) - (d_2xn[1] + d_2xn[5])) >> 5);
++     for(i=4;i<n*2-2;i+=2){
++       d_2xn[i] = s_2xn[i] + ((9*(d_2xn[i-1] + d_2xn[i+1]) - (d_2xn[i-3] + d_2xn[i+3])) >> 5);
++     }
++     d_2xn[n*2-2] = s_2xn[n*2-2] + ((9*(d_2xn[n*2-3] + d_2xn[n*2-1]) - (d_2xn[n*2-5] + d_2xn[n*2-1])) >> 5);
++   }
++ 
++ }
++ OIL_DEFINE_IMPL_REF (split_135_ref, split_135);
++ 
++ void
++ synth_135_ref (int16_t *d_2xn, int16_t *s_2xn, int n)
++ {
++   int i;
++ 
++   if (n==0) return;
++   if (n==1) {
++     d_2xn[0] = s_2xn[0] - (s_2xn[1]>>1);
++     d_2xn[1] = s_2xn[1] + (d_2xn[0]);
++   } else if (n==2) {
++     /* predict */
++     d_2xn[0] = s_2xn[0] - ((9*s_2xn[1] - s_2xn[3]) >> 4);
++     d_2xn[2] = s_2xn[2] - ((9*(s_2xn[1] + s_2xn[3]) - (s_2xn[1] + s_2xn[1])) >> 5);
++ 
++     /* update */
++     d_2xn[1] = s_2xn[1] + ((9*(d_2xn[0] + d_2xn[2]) - (d_2xn[2] + d_2xn[2])) >> 4);
++     d_2xn[3] = s_2xn[3] + ((9*d_2xn[2] - d_2xn[0]) >> 3);
++   } else {
++     /* predict */
++     d_2xn[0] = s_2xn[0] - ((9*s_2xn[1] - s_2xn[3]) >> 4);
++     d_2xn[2] = s_2xn[2] - ((9*(s_2xn[1] + s_2xn[3]) - (s_2xn[1] + s_2xn[5])) >> 5);
++     for(i=4;i<n*2-2;i+=2){
++       d_2xn[i] = s_2xn[i] - ((9*(s_2xn[i-1] + s_2xn[i+1]) - (s_2xn[i-3] + s_2xn[i+3])) >> 5);
++     }
++     d_2xn[n*2-2] = s_2xn[n*2-2] - ((9*(s_2xn[n*2-3] + s_2xn[n*2-1]) - (s_2xn[n*2-5] + s_2xn[n*2-1])) >> 5);
++ 
++     /* update */
++     d_2xn[1] = s_2xn[1] + ((9*(d_2xn[0] + d_2xn[2]) - (d_2xn[2] + d_2xn[4])) >> 4);
++     for(i=3;i<n*2-4;i+=2){
++       d_2xn[i] = s_2xn[i] + ((9*(d_2xn[i-1] + d_2xn[i+1]) - (d_2xn[i-3] + d_2xn[i+3])) >> 4);
++     }
++     d_2xn[n*2-3] = s_2xn[n*2-3] + ((9*(d_2xn[n*2-4] + d_2xn[n*2-2]) - (d_2xn[n*2-6] + d_2xn[n*2-2])) >> 4);
++     d_2xn[n*2-1] = s_2xn[n*2-1] + ((9*d_2xn[n*2-2] - d_2xn[n*2-4]) >> 3);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (synth_135_ref, synth_135);
++ 
++ 
++ 
++ 
++ static void
++ lift_test (OilTest *test)
++ {
++   int16_t *data;
++   int i;
++ 
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC1);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_u8();
++   }
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC2);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_u8();
++   }
++   data = (int16_t *)oil_test_get_source_data (test, OIL_ARG_SRC3);
++   for(i=0;i<test->n;i++){
++     data[i] = oil_rand_u8();
++   }
++ }
++ 
++ OIL_DEFINE_CLASS_FULL (lift_add_shift1,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_sub_shift1,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_add_shift2,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_sub_shift2,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_add_mult_shift12,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4_1, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_sub_mult_shift12,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4_1, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_add_135,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4, int16_t *s5, int n", lift_test);
++ OIL_DEFINE_CLASS_FULL (lift_sub_135,
++     "int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4, int16_t *s5, int n", lift_test);
++ 
++ 
++ void
++ lift_add_shift1_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] + ((s2[i] + s3[i])>>1);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_add_shift1_ref, lift_add_shift1);
++ 
++ void
++ lift_sub_shift1_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] - ((s2[i] + s3[i])>>1);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_sub_shift1_ref, lift_sub_shift1);
++ 
++ void
++ lift_add_shift2_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] + ((s2[i] + s3[i])>>2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_add_shift2_ref, lift_add_shift2);
++ 
++ void
++ lift_sub_shift2_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] - ((s2[i] + s3[i])>>2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_sub_shift2_ref, lift_sub_shift2);
++ 
++ void
++ lift_add_mult_shift12_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] + ((s4[0]*(s2[i] + s3[i]))>>12);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_add_mult_shift12_ref, lift_add_mult_shift12);
++ 
++ void
++ lift_sub_mult_shift12_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3, int16_t *s4, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] - ((s4[0]*(s2[i] + s3[i]))>>12);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_sub_mult_shift12_ref, lift_sub_mult_shift12);
++ 
++ void
++ lift_add_135_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3,
++     int16_t *s4, int16_t *s5, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] + ((9*(s3[i-1] + s4[i+1]) - (s2[i-3] + s5[i+3])) >> 4);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_add_135_ref, lift_add_135);
++ 
++ void
++ lift_sub_135_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3,
++     int16_t *s4, int16_t *s5, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] - ((9*(s3[i-1] + s4[i+1]) - (s2[i-3] + s5[i+3])) >> 4);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lift_sub_135_ref, lift_sub_135);
++ 
++ 
++ void
++ add_const_rshift_s16_ref(int16_t *d1, int16_t *s1, int16_t *s3_2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d1[i] = (s1[i] + s3_2[0])>>s3_2[1];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add_const_rshift_s16_ref, add_const_rshift_s16);
++ 
++ void
++ lshift_s16_ref(int16_t *d1, int16_t *s1, int16_t *s3_1, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d1[i] = s1[i]<<s3_1[0];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (lshift_s16_ref, lshift_s16);
++ 
++ void
++ multiply_and_add_s16_ref (int16_t *d, int16_t *src1, int16_t *src2, int16_t *src3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] + src2[i]*src3[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_add_s16_ref, multiply_and_add_s16);
++ 
++ void
++ multiply_and_add_s16_u8_ref (int16_t *d, int16_t *src1, int16_t *src2,
++     uint8_t *src3, int n)
++ {
++   int i;
++   for(i=0;i<n;i++){
++     d[i] = src1[i] + src2[i]*src3[i];
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_add_s16_u8_ref, multiply_and_add_s16_u8);
++ 
++ void
++ multiply_and_acc_6xn_s16_u8_ref (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int i, j;
++   for(j=0;j<n;j++){
++     for(i=0;i<6;i++){
++       i1[i] += s1[i]*s2[i];
++     }
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_acc_6xn_s16_u8_ref,
++     multiply_and_acc_6xn_s16_u8);
++ 
++ void
++ multiply_and_acc_8xn_s16_u8_ref (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int i, j;
++   for(j=0;j<n;j++){
++     for(i=0;i<8;i++){
++       i1[i] += s1[i]*s2[i];
++     }
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_acc_8xn_s16_u8_ref,
++     multiply_and_acc_8xn_s16_u8);
++ 
++ void
++ multiply_and_acc_12xn_s16_u8_ref (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int i, j;
++   for(j=0;j<n;j++){
++     for(i=0;i<12;i++){
++       i1[i] += s1[i]*s2[i];
++     }
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_acc_12xn_s16_u8_ref,
++     multiply_and_acc_12xn_s16_u8);
++ 
++ void
++ multiply_and_acc_16xn_s16_u8_ref (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int i, j;
++   for(j=0;j<n;j++){
++     for(i=0;i<16;i++){
++       i1[i] += s1[i]*s2[i];
++     }
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_acc_16xn_s16_u8_ref,
++     multiply_and_acc_16xn_s16_u8);
++ 
++ void
++ multiply_and_acc_24xn_s16_u8_ref (int16_t *i1, int is1, int16_t *s1,
++     int ss1, uint8_t *s2, int ss2, int n)
++ {
++   int i, j;
++   for(j=0;j<n;j++){
++     for(i=0;i<24;i++){
++       i1[i] += s1[i]*s2[i];
++     }
++     i1 = OIL_OFFSET(i1,is1);
++     s1 = OIL_OFFSET(s1,ss1);
++     s2 = OIL_OFFSET(s2,ss2);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (multiply_and_acc_24xn_s16_u8_ref,
++     multiply_and_acc_24xn_s16_u8);
++ 
++ void
++ combine4_8xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     uint8_t *s3, int ss3,
++     uint8_t *s4, int ss4,
++     int16_t *s5_6, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<8;i++){
++       int x = 0;
++       x += s5_6[0] * s1[i];
++       x += s5_6[1] * s2[i];
++       x += s5_6[2] * s3[i];
++       x += s5_6[3] * s4[i];
++       d[i] = (x + s5_6[4]) >> s5_6[5];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     s3 += ss3;
++     s4 += ss4;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine4_8xn_u8_ref, combine4_8xn_u8);
++ 
++ void
++ combine4_12xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     uint8_t *s3, int ss3,
++     uint8_t *s4, int ss4,
++     int16_t *s5_6, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<12;i++){
++       int x = 0;
++       x += s5_6[0] * s1[i];
++       x += s5_6[1] * s2[i];
++       x += s5_6[2] * s3[i];
++       x += s5_6[3] * s4[i];
++       d[i] = (x + s5_6[4]) >> s5_6[5];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     s3 += ss3;
++     s4 += ss4;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine4_12xn_u8_ref, combine4_12xn_u8);
++ 
++ void
++ combine4_16xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     uint8_t *s3, int ss3,
++     uint8_t *s4, int ss4,
++     int16_t *s5_6, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<16;i++){
++       int x = 0;
++       x += s5_6[0] * s1[i];
++       x += s5_6[1] * s2[i];
++       x += s5_6[2] * s3[i];
++       x += s5_6[3] * s4[i];
++       d[i] = (x + s5_6[4]) >> s5_6[5];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     s3 += ss3;
++     s4 += ss4;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine4_16xn_u8_ref, combine4_16xn_u8);
++ 
++ void
++ combine2_8xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     int16_t *s3_4, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<8;i++){
++       int x = 0;
++       x += s3_4[0] * s1[i];
++       x += s3_4[1] * s2[i];
++       d[i] = (x + s3_4[2]) >> s3_4[3];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine2_8xn_u8_ref, combine2_8xn_u8);
++ 
++ void
++ combine2_12xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     int16_t *s3_4, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<12;i++){
++       int x = 0;
++       x += s3_4[0] * s1[i];
++       x += s3_4[1] * s2[i];
++       d[i] = (x + s3_4[2]) >> s3_4[3];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine2_12xn_u8_ref, combine2_12xn_u8);
++ 
++ void
++ combine2_16xn_u8_ref (uint8_t *d, int ds1,
++     uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2,
++     int16_t *s3_4, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<16;i++){
++       int x = 0;
++       x += s3_4[0] * s1[i];
++       x += s3_4[1] * s2[i];
++       d[i] = (x + s3_4[2]) >> s3_4[3];
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (combine2_16xn_u8_ref, combine2_16xn_u8);
++ 
++ void
++ add2_rshift_add_s16_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3,
++     int16_t *s4_2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] + ((s2[i] + s3[i] + s4_2[0])>>s4_2[1]);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add2_rshift_add_s16_ref, add2_rshift_add_s16);
++ 
++ void
++ add2_rshift_sub_s16_ref (int16_t *d, int16_t *s1, int16_t *s2, int16_t *s3,
++     int16_t *s4_2, int n)
++ {
++   int i;
++   for(i=0;i<n;i++) {
++     d[i] = s1[i] - ((s2[i] + s3[i] + s4_2[0])>>s4_2[1]);
++   }
++ }
++ OIL_DEFINE_IMPL_REF (add2_rshift_sub_s16_ref, add2_rshift_sub_s16);
++ 
++ void
++ avg2_8xn_u8_ref (uint8_t *d, int ds1, uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<8;i++){
++       d[i] = (s1[i] + s2[i] + 1)>>1;
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (avg2_8xn_u8_ref, avg2_8xn_u8);
++ 
++ void
++ avg2_12xn_u8_ref (uint8_t *d, int ds1, uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<12;i++){
++       d[i] = (s1[i] + s2[i] + 1)>>1;
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (avg2_12xn_u8_ref, avg2_12xn_u8);
++ 
++ void
++ avg2_16xn_u8_ref (uint8_t *d, int ds1, uint8_t *s1, int ss1,
++     uint8_t *s2, int ss2, int n)
++ {
++   int i;
++   int j;
++   for(j=0;j<n;j++){
++     for(i=0;i<16;i++){
++       d[i] = (s1[i] + s2[i] + 1)>>1;
++     }
++     s1 += ss1;
++     s2 += ss2;
++     d += ds1;
++   }
++ }
++ OIL_DEFINE_IMPL_REF (avg2_16xn_u8_ref, avg2_16xn_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_average2_u8.c liboil-0.3.15/liboil/simdpack/simdpack_average2_u8.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_average2_u8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_average2_u8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,117 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #include <math.h>
++ 
++ static void
++ average2_u8_trick (uint8_t * dest, int dstr, uint8_t *src1, int sstr1,
++     uint8_t *src2, int sstr2, int n)
++ {
++   unsigned int x, y, d;
++ 
++   while (n&3) {
++     *dest = (*src1 + *src2) >> 1;
++     src1 += sstr1;
++     src2 += sstr2;
++     dest += dstr;
++     n--;
++   }
++   while (n > 0) {
++     x = (src1[0] << 24) | (src1[sstr1] << 16) | (src1[2 *
++             sstr1] << 8) | (src1[3 * sstr1]);
++     y = (src2[0] << 24) | (src2[sstr2] << 16) | (src2[2 *
++             sstr2] << 8) | (src2[3 * sstr2]);
++     d = (((x ^ y) & 0xfefefefe) >> 1) + (x & y);
++     dest[0] = (d >> 24);
++     dest[1*dstr] = (d >> 16);
++     dest[2*dstr] = (d >> 8);
++     dest[3*dstr] = (d >> 0);
++     src1 += 4 * sstr1;
++     src2 += 4 * sstr2;
++     dest += 4 * dstr;
++     n -= 4;
++   }
++ }
++ 
++ OIL_DEFINE_IMPL (average2_u8_trick, average2_u8);
++ 
++ static void
++ average2_u8_fast (uint8_t * dest, int dstr, uint8_t *src1, int sstr1,
++     uint8_t *src2, int sstr2, int n)
++ {
++   while (n > 0) {
++     *dest = (*src1 + *src2) >> 1;
++     src1 += sstr1;
++     src2 += sstr2;
++     dest += dstr;
++     n--;
++   }
++ }
++ 
++ OIL_DEFINE_IMPL (average2_u8_fast, average2_u8);
++ 
++ static void
++ average2_u8_unroll4 (uint8_t * dest, int dstr, uint8_t *src1, int sstr1,
++     uint8_t *src2, int sstr2, int n)
++ {
++   while (n & 0x3) {
++     *dest = (*src1 + *src2) >> 1;
++     dest += dstr;
++     src1 += sstr1;
++     src2 += sstr2;
++     n--;
++   }
++   while (n > 0) {
++     *dest = (*src1 + *src2) >> 1;
++     dest += dstr;
++     src1 += sstr1;
++     src2 += sstr2;
++     *dest = (*src1 + *src2) >> 1;
++     dest += dstr;
++     src1 += sstr1;
++     src2 += sstr2;
++     *dest = (*src1 + *src2) >> 1;
++     dest += dstr;
++     src1 += sstr1;
++     src2 += sstr2;
++     *dest = (*src1 + *src2) >> 1;
++     dest += dstr;
++     src1 += sstr1;
++     src2 += sstr2;
++     n -= 4;
++   }
++ }
++ 
++ OIL_DEFINE_IMPL (average2_u8_unroll4, average2_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_diffsquaresum_f64.c liboil-0.3.15/liboil/simdpack/simdpack_diffsquaresum_f64.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_diffsquaresum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_diffsquaresum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,146 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ static void
++ diffsquaresum_f64_i10_simple(double *dest, double *src1, int sstr1, double *src2,
++     int sstr2, int n)
++ {
++ 	double sum = 0;
++ 	double x;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		x = OIL_GET(src1, i*sstr1, double) -
++                   OIL_GET(src2, i*sstr2, double);
++ 		x = x*x;
++ 		sum += x;
++ 	}
++ 
++ 	*dest = sum;
++ }
++ OIL_DEFINE_IMPL (diffsquaresum_f64_i10_simple, diffsquaresum_f64);
++ 
++ static void
++ diffsquaresum_f64_i10_fast(double *dest, double *src1, int sstr1, double *src2,
++     int sstr2, int n)
++ {
++ 	double sum0 = 0;
++ 	double x;
++ 
++ 	while(n>0){
++ 		x = *src1 - *src2;
++ 		sum0 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		n--;
++ 	}
++ 
++ 	*dest = sum0;
++ }
++ OIL_DEFINE_IMPL (diffsquaresum_f64_i10_fast, diffsquaresum_f64);
++ 
++ static void
++ diffsquaresum_f64_i10_unroll2(double *dest, double *src1, int sstr1, double *src2,
++     int sstr2, int n)
++ {
++ 	double sum0 = 0;
++ 	double sum1 = 0;
++ 	double x;
++ 
++ 	if(n&1){
++ 		x = *src1 - *src2;
++ 		sum0 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		n--;
++ 	}
++ 	while(n>0){
++ 		x = *src1 - *src2;
++ 		sum0 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		x = *src1 - *src2;
++ 		sum1 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		n-=2;
++ 	}
++ 
++ 	*dest = sum0 + sum1;
++ }
++ OIL_DEFINE_IMPL (diffsquaresum_f64_i10_unroll2, diffsquaresum_f64);
++ 
++ static void
++ diffsquaresum_f64_i10_unroll4(double *dest, double *src1, int sstr1,
++ 	double *src2, int sstr2, int n)
++ {
++ 	double sum0 = 0;
++ 	double sum1 = 0;
++ 	double sum2 = 0;
++ 	double sum3 = 0;
++ 	double x;
++ 
++ 	while(n&3){
++ 		x = *src1 - *src2;
++ 		sum0 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		n--;
++ 	}
++ 	while(n>0){
++ 		x = *src1 - *src2;
++ 		sum0 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		x = *src1 - *src2;
++ 		sum1 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		x = *src1 - *src2;
++ 		sum2 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		x = *src1 - *src2;
++ 		sum3 += x * x;
++ 		OIL_INCREMENT (src1, sstr1);
++ 		OIL_INCREMENT (src2, sstr2);
++ 		n-=4;
++ 	}
++ 
++ 	*dest = sum0 + sum1 + sum2 + sum3;
++ }
++ OIL_DEFINE_IMPL (diffsquaresum_f64_i10_unroll4, diffsquaresum_f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_mix_u8.c liboil-0.3.15/liboil/simdpack/simdpack_mix_u8.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_mix_u8.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_mix_u8.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,104 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ static void mix_u8_fast(uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *scale, int n)
++ {
++ 	while(n>0){
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		n--;
++ 	}
++ }
++ OIL_DEFINE_IMPL (mix_u8_fast, mix_u8);
++ 
++ static void
++ mix_u8_fast2 (uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *scale, int n)
++ {
++ 	while(n>0){
++ 		*dest++ = ((*src1 - *src2) * *scale + *src2 * 255)>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		n--;
++ 	}
++ }
++ OIL_DEFINE_IMPL (mix_u8_fast2, mix_u8);
++ 
++ /* PowerPC likes this one */
++ static void
++ mix_u8_fast3(uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *scale, int n)
++ {
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		dest[i] = ((src1[i] - src2[i]) * scale[i] + src2[i] * 255)>>8;
++ 	}
++ }
++ OIL_DEFINE_IMPL (mix_u8_fast3, mix_u8);
++ 
++ static void
++ mix_u8_unroll4(uint8_t *dest, uint8_t *src1, uint8_t *src2, uint8_t *scale, int n)
++ {
++ 	while(n&0x3){
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		n--;
++ 	}
++ 	while(n>0){
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		*dest++ = (*src1 * *scale + *src2 * (255 - *scale))>>8;
++ 		src1++;
++ 		src2++;
++ 		scale++;
++ 		n-=4;
++ 	}
++ }
++ OIL_DEFINE_IMPL (mix_u8_unroll4, mix_u8);
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_multsum.c liboil-0.3.15/liboil/simdpack/simdpack_multsum.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_multsum.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_multsum.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,101 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ 
++ static void multsum_f32_unroll2 (float *dest, float *src1, int sstr1,
++     float *src2, int sstr2, int n)
++ {
++   int i;
++   double sum1 = 0;
++   double sum2 = 0;
++ 
++   for(i=0;i<n-1;i+=2){
++     sum1 += OIL_GET(src1,0, float) * OIL_GET(src2,0, float);
++     sum2 += OIL_GET(src1,sstr1, float) * OIL_GET(src2,sstr2, float);
++     OIL_INCREMENT (src1, sstr1*2);
++     OIL_INCREMENT (src2, sstr2*2);
++   }
++   if (i<n) {
++     sum1 += OIL_GET(src1,0, float) * OIL_GET(src2,0, float);
++   }
++ 
++   *dest = sum1 + sum2;
++ }
++ OIL_DEFINE_IMPL (multsum_f32_unroll2, multsum_f32);
++ 
++ 
++ static void multsum_f64_unroll8 (double *dest, double *src1, int sstr1,
++     double *src2, int sstr2, int n)
++ {
++   int i = 0;
++   double sum = 0;
++ 
++   while(i<n-7) {
++     sum += (OIL_GET(src1,0, double) * OIL_GET(src2,0, double)) +
++            (OIL_GET(src1,sstr1, double) * OIL_GET(src2,sstr2, double)) +
++            (OIL_GET(src1,2*sstr1, double) * OIL_GET(src2,2*sstr2, double)) +
++            (OIL_GET(src1,3*sstr1, double) * OIL_GET(src2,3*sstr2, double)) +
++            (OIL_GET(src1,4*sstr1, double) * OIL_GET(src2,4*sstr2, double)) +
++            (OIL_GET(src1,5*sstr1, double) * OIL_GET(src2,5*sstr2, double)) +
++            (OIL_GET(src1,6*sstr1, double) * OIL_GET(src2,6*sstr2, double)) +
++            (OIL_GET(src1,7*sstr1, double) * OIL_GET(src2,7*sstr2, double));
++     OIL_INCREMENT (src1, sstr1*8);
++     OIL_INCREMENT (src2, sstr2*8);
++     i+=8;
++   }
++   while(i<n-3) {
++     sum += (OIL_GET(src1,0, double) * OIL_GET(src2,0, double)) +
++            (OIL_GET(src1,sstr1, double) * OIL_GET(src2,sstr2, double)) +
++            (OIL_GET(src1,2*sstr1, double) * OIL_GET(src2,2*sstr2, double)) +
++            (OIL_GET(src1,3*sstr1, double) * OIL_GET(src2,3*sstr2, double));
++     OIL_INCREMENT (src1, sstr1*4);
++     OIL_INCREMENT (src2, sstr2*4);
++     i+=4;
++   }
++   while(i<n-1) {
++     sum += (OIL_GET(src1,0, double) * OIL_GET(src2,0, double)) +
++            (OIL_GET(src1,sstr1, double) * OIL_GET(src2,sstr2, double));
++     OIL_INCREMENT (src1, sstr1*2);
++     OIL_INCREMENT (src2, sstr2*2);
++     i+=2;
++   }
++   if (i<n) {
++     sum += OIL_GET(src1,0, double) * OIL_GET(src2,0, double);
++   }
++ 
++   *dest = sum;
++ }
++ OIL_DEFINE_IMPL (multsum_f64_unroll8, multsum_f64);
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_scalaradd.c liboil-0.3.15/liboil/simdpack/simdpack_scalaradd.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_scalaradd.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_scalaradd.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,151 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #define SCALARADD_DEFINE_UNROLL2(type)		\
++ static void scalaradd_ ## type ## _unroll2(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   if(n&1) {					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   n /= 2;					\
++   while(n>0){					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     n--;					\
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalaradd_ ## type ## _unroll2, scalaradd_ ## type);
++ 
++ SCALARADD_DEFINE_UNROLL2 (s8);
++ SCALARADD_DEFINE_UNROLL2 (u8);
++ SCALARADD_DEFINE_UNROLL2 (s16);
++ SCALARADD_DEFINE_UNROLL2 (u16);
++ SCALARADD_DEFINE_UNROLL2 (s32);
++ SCALARADD_DEFINE_UNROLL2 (u32);
++ SCALARADD_DEFINE_UNROLL2 (f32);
++ SCALARADD_DEFINE_UNROLL2 (f64);
++ 
++ #define SCALARADD_DEFINE_UNROLL2x(type)		\
++ static void scalaradd_ ## type ## _unroll2x(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   oil_type_ ## type *dest2;				\
++   oil_type_ ## type *src2;				\
++   int i;					\
++   if(n&1) {					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   src2 = OIL_OFFSET(src, sstr);			\
++   dest2 = OIL_OFFSET(dest, dstr);		\
++   n /= 2;					\
++   sstr *= 2;					\
++   dstr *= 2;					\
++   for(i=0;i<n;i++){				\
++     OIL_GET(dest,dstr*i, oil_type_ ## type) = OIL_GET(src,sstr*i, oil_type_ ## type) + *val; \
++     OIL_GET(dest2,dstr*i, oil_type_ ## type) = OIL_GET(src2,sstr*i, oil_type_ ## type) + *val; \
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalaradd_ ## type ## _unroll2x, scalaradd_ ## type);
++ 
++ SCALARADD_DEFINE_UNROLL2x (s8);
++ SCALARADD_DEFINE_UNROLL2x (u8);
++ SCALARADD_DEFINE_UNROLL2x (s16);
++ SCALARADD_DEFINE_UNROLL2x (u16);
++ SCALARADD_DEFINE_UNROLL2x (s32);
++ SCALARADD_DEFINE_UNROLL2x (u32);
++ SCALARADD_DEFINE_UNROLL2x (f32);
++ SCALARADD_DEFINE_UNROLL2x (f64);
++ 
++ #define SCALARADD_DEFINE_UNROLL4(type)		\
++ static void scalaradd_ ## type ## _unroll4(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   if(n&1) {					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   if(n&2) {					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   n /= 4;					\
++   while(n>0){					\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src + *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     n--;					\
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalaradd_ ## type ## _unroll4, scalaradd_ ## type);
++ 
++ SCALARADD_DEFINE_UNROLL4 (s8);
++ SCALARADD_DEFINE_UNROLL4 (u8);
++ SCALARADD_DEFINE_UNROLL4 (s16);
++ SCALARADD_DEFINE_UNROLL4 (u16);
++ SCALARADD_DEFINE_UNROLL4 (s32);
++ SCALARADD_DEFINE_UNROLL4 (u32);
++ SCALARADD_DEFINE_UNROLL4 (f32);
++ SCALARADD_DEFINE_UNROLL4 (f64);
++ 
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_scalarmult.c liboil-0.3.15/liboil/simdpack/simdpack_scalarmult.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_scalarmult.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_scalarmult.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,184 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ 
++ #define SCALARMULT_DEFINE_UNROLL2(type)		\
++ static void scalarmult_ ## type ## _unroll2(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   if(n&1) {					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   n /= 2;					\
++   while(n>0){					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     n--;					\
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalarmult_ ## type ## _unroll2, scalarmult_ ## type);
++ 
++ SCALARMULT_DEFINE_UNROLL2 (s8);
++ SCALARMULT_DEFINE_UNROLL2 (u8);
++ SCALARMULT_DEFINE_UNROLL2 (s16);
++ SCALARMULT_DEFINE_UNROLL2 (u16);
++ SCALARMULT_DEFINE_UNROLL2 (s32);
++ SCALARMULT_DEFINE_UNROLL2 (u32);
++ SCALARMULT_DEFINE_UNROLL2 (f32);
++ SCALARMULT_DEFINE_UNROLL2 (f64);
++ 
++ #define SCALARMULT_DEFINE_UNROLL2x(type)	\
++ static void scalarmult_ ## type ## _unroll2x(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   oil_type_ ## type *dest2;				\
++   oil_type_ ## type *src2;				\
++   int i;					\
++   if(n&1) {					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   src2 = OIL_OFFSET(src, sstr);			\
++   dest2 = OIL_OFFSET(dest, dstr);		\
++   n /= 2;					\
++   sstr *= 2;					\
++   dstr *= 2;					\
++   for(i=0;i<n;i++){				\
++     OIL_GET(dest,dstr*i,oil_type_ ## type) = OIL_GET(src,sstr*i,oil_type_ ## type) * *val; \
++     OIL_GET(dest2,dstr*i,oil_type_ ## type) = OIL_GET(src2,sstr*i,oil_type_ ## type) * *val; \
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalarmult_ ## type ## _unroll2x, scalarmult_ ## type);
++ 
++ SCALARMULT_DEFINE_UNROLL2x (s8);
++ SCALARMULT_DEFINE_UNROLL2x (u8);
++ SCALARMULT_DEFINE_UNROLL2x (s16);
++ SCALARMULT_DEFINE_UNROLL2x (u16);
++ SCALARMULT_DEFINE_UNROLL2x (s32);
++ SCALARMULT_DEFINE_UNROLL2x (u32);
++ SCALARMULT_DEFINE_UNROLL2x (f32);
++ SCALARMULT_DEFINE_UNROLL2x (f64);
++ 
++ #define SCALARMULT_DEFINE_UNROLL4(type)		\
++ static void scalarmult_ ## type ## _unroll4(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   if(n&1) {					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   if(n&2) {					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest, dstr);			\
++     OIL_INCREMENT(src, sstr);			\
++   }						\
++   n /= 4;					\
++   while(n>0){					\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     *dest = *src * *val;			\
++     OIL_INCREMENT(dest,dstr);			\
++     OIL_INCREMENT(src,sstr);			\
++     n--;					\
++   }						\
++ }						\
++ OIL_DEFINE_IMPL (scalarmult_ ## type ## _unroll4, scalarmult_ ## type);
++ 
++ SCALARMULT_DEFINE_UNROLL4 (s8);
++ SCALARMULT_DEFINE_UNROLL4 (u8);
++ SCALARMULT_DEFINE_UNROLL4 (s16);
++ SCALARMULT_DEFINE_UNROLL4 (u16);
++ SCALARMULT_DEFINE_UNROLL4 (s32);
++ SCALARMULT_DEFINE_UNROLL4 (u32);
++ SCALARMULT_DEFINE_UNROLL4 (f32);
++ SCALARMULT_DEFINE_UNROLL4 (f64);
++ 
++ 
++ 
++ 
++ 
++ #define SCALARMULT_DEFINE_X(type)		\
++ static void scalarmult_ ## type ## _x(	\
++     oil_type_ ## type *dest, int dstr,		\
++     oil_type_ ## type *src, int sstr,		\
++     oil_type_ ## type *val, int n)			\
++ {						\
++   int i;					\
++   for(i=0;i+1<n;i+=2){				\
++     OIL_GET(dest, i*dstr,oil_type_ ## type) =        \
++       OIL_GET(src, i*sstr,oil_type_ ## type) * *val; \
++     OIL_GET(dest,(i+1)*dstr,oil_type_ ## type) =        \
++       OIL_GET(src,(i+1)*sstr,oil_type_ ## type) * *val; \
++   }						\
++   if (n&1) {                                    \
++     OIL_GET(dest,i*dstr,oil_type_ ## type) =        \
++       OIL_GET(src,i*sstr,oil_type_ ## type) * *val; \
++   }                                             \
++ }						\
++ OIL_DEFINE_IMPL (scalarmult_ ## type ## _x, scalarmult_ ## type);
++ 
++ 
++ SCALARMULT_DEFINE_X (s8);
++ SCALARMULT_DEFINE_X (u8);
++ SCALARMULT_DEFINE_X (s16);
++ SCALARMULT_DEFINE_X (u16);
++ SCALARMULT_DEFINE_X (s32);
++ SCALARMULT_DEFINE_X (u32);
++ SCALARMULT_DEFINE_X (f32);
++ SCALARMULT_DEFINE_X (f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_sincos_f64.c liboil-0.3.15/liboil/simdpack/simdpack_sincos_f64.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_sincos_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_sincos_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,70 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/liboilclasses.h>
++ #include <math.h>
++ 
++ /* XXX This gets more inaccurate as N increases */
++ static void
++ sincos_f64_i20_fast(double *dest_sin, double *dest_cos, int n, double *offset,
++     double *interval)
++ {
++ 	int i;
++ 	double c,s,dc,ds,temp_s,temp_c;
++ 
++ 	dest_sin[0] = s = sin(*offset);
++ 	dest_cos[0] = c = cos(*offset);
++ 	ds = sin(*interval);
++ 	dc = cos(*interval);
++ 	for(i=1;i<n;i++){
++ 		temp_s = s*dc + c*ds;
++ 		temp_c = c*dc - s*ds;
++ 		dest_sin[i] = s = temp_s;
++ 		dest_cos[i] = c = temp_c;
++ 	}
++ }
++ OIL_DEFINE_IMPL (sincos_f64_i20_fast, sincos_f64);
++ 
++ #ifdef HAVE_SINCOS
++ static void
++ sincos_f64_sincos (double *dest_sin, double *dest_cos, int n, double *offset,
++     double *interval)
++ {
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++           sincos (*offset + *interval * i, dest_sin + i, dest_cos + i);
++ 	}
++ }
++ OIL_DEFINE_IMPL (sincos_f64_sincos, sincos_f64);
++ #endif
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_squaresum_f64.c liboil-0.3.15/liboil/simdpack/simdpack_squaresum_f64.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_squaresum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_squaresum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,145 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ static void
++ squaresum_f64_i10_simple(double *dest, double *src, int n)
++ {
++ 	double sum2 = 0;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		sum2 += src[i]*src[i];
++ 	}
++ 
++ 	*dest = sum2;
++ }
++ OIL_DEFINE_IMPL (squaresum_f64_i10_simple, squaresum_f64);
++ 
++ #if 0
++ #include <multsum_f64.h>
++ static void
++ squaresum_f64_i10_multsum(double *dest, double *src, int n)
++ {
++ 	multsum_f64(dest,src,src,n);
++ }
++ #endif
++ 
++ static void
++ squaresum_f64_i10_unroll4a(double *dest, double *src, int n)
++ {
++ 	double sum1 = 0;
++ 	double sum2 = 0;
++ 	double sum3 = 0;
++ 	double sum4 = 0;
++ 
++ 	while(n&0x3){
++ 		sum1 += *src * *src;
++ 		src++;
++ 		n--;
++ 	}
++ 	while(n>0){
++ 		sum1 += *src * *src;
++ 		src++;
++ 		sum2 += *src * *src;
++ 		src++;
++ 		sum3 += *src * *src;
++ 		src++;
++ 		sum4 += *src * *src;
++ 		src++;
++ 		n-=4;
++ 	}
++ 
++ 	*dest = sum1 + sum2 + sum3 + sum4;
++ }
++ OIL_DEFINE_IMPL (squaresum_f64_i10_unroll4a, squaresum_f64);
++ 
++ static void
++ squaresum_f64_i10_unroll4(double *dest, double *src, int n)
++ {
++ 	double sum1 = 0;
++ 	double sum2 = 0;
++ 	double sum3 = 0;
++ 	double sum4 = 0;
++ 	int i;
++ 
++ 	while(n&0x3){
++ 		sum1 += src[0]*src[0];
++ 		src++;
++ 		n--;
++ 	}
++ 	for(i=0;i<n;i+=4){
++ 		sum1 += src[i]*src[i];
++ 		sum2 += src[i+1]*src[i+1];
++ 		sum3 += src[i+2]*src[i+2];
++ 		sum4 += src[i+3]*src[i+3];
++ 	}
++ 
++ 	*dest = sum1 + sum2 + sum3 + sum4;
++ }
++ OIL_DEFINE_IMPL (squaresum_f64_i10_unroll4, squaresum_f64);
++ 
++ static void
++ squaresum_f64_i10_unroll8(double *dest, double *src, int n)
++ {
++ 	double sum1 = 0;
++ 	double sum2 = 0;
++ 	double sum3 = 0;
++ 	double sum4 = 0;
++ 	double sum5 = 0;
++ 	double sum6 = 0;
++ 	double sum7 = 0;
++ 	double sum8 = 0;
++ 	int i;
++ 
++ 	while(n&0x7){
++ 		sum1 += src[0]*src[0];
++ 		src++;
++ 		n--;
++ 	}
++ 	for(i=0;i<n;i+=8){
++ 		sum1 += src[i]*src[i];
++ 		sum2 += src[i+1]*src[i+1];
++ 		sum3 += src[i+2]*src[i+2];
++ 		sum4 += src[i+3]*src[i+3];
++ 		sum5 += src[i+4]*src[i+4];
++ 		sum6 += src[i+5]*src[i+5];
++ 		sum7 += src[i+6]*src[i+6];
++ 		sum8 += src[i+7]*src[i+7];
++ 	}
++ 
++ 	*dest = sum1 + sum2 + sum3 + sum4 + sum5 + sum6 + sum7 + sum8;
++ }
++ OIL_DEFINE_IMPL (squaresum_f64_i10_unroll8, squaresum_f64);
++ 
+diff -crN liboil-0.3.15-orig/liboil/simdpack/simdpack_sum_f64.c liboil-0.3.15/liboil/simdpack/simdpack_sum_f64.c
+*** liboil-0.3.15-orig/liboil/simdpack/simdpack_sum_f64.c	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil/simdpack/simdpack_sum_f64.c	Fri Nov 16 11:53:46 2007
+***************
+*** 0 ****
+--- 1,75 ----
++ /*
++  * LIBOIL - Library of Optimized Inner Loops
++  * Copyright (c) 2003,2004 David A. Schleef <ds@schleef.org>
++  * All rights reserved.
++  *
++  * Redistribution and use in source and binary forms, with or without
++  * modification, are permitted provided that the following conditions
++  * are met:
++  * 1. Redistributions of source code must retain the above copyright
++  *    notice, this list of conditions and the following disclaimer.
++  * 2. Redistributions in binary form must reproduce the above copyright
++  *    notice, this list of conditions and the following disclaimer in the
++  *    documentation and/or other materials provided with the distribution.
++  * 
++  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
++  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++  * POSSIBILITY OF SUCH DAMAGE.
++  */
++ 
++ #ifdef HAVE_CONFIG_H
++ #include "config.h"
++ #endif
++ 
++ #include <liboil/liboilfunction.h>
++ #include <liboil/simdpack/simdpack.h>
++ #include <math.h>
++ 
++ static void
++ sum_f64_i10_simple (double *dest, double *src, int sstr, int n)
++ {
++ 	double sum = 0;
++ 	int i;
++ 
++ 	for(i=0;i<n;i++){
++ 		sum += OIL_GET(src, sstr*i, double);
++ 	}
++ 
++ 	*dest = sum;
++ }
++ OIL_DEFINE_IMPL (sum_f64_i10_simple, sum_f64);
++ 
++ static void
++ sum_f64_i10_unroll4 (double *dest, double *src, int sstr, int n)
++ {
++ 	double sum1 = 0;
++ 	double sum2 = 0;
++ 	double sum3 = 0;
++ 	double sum4 = 0;
++ 	int i;
++ 
++ 	while (n&3) {
++ 		sum1 += *src;
++ 		OIL_INCREMENT (src, sstr);
++ 		n--;
++ 	}
++ 	for(i=0;i<n;i+=4){
++ 		sum1 += OIL_GET(src, sstr*i, double);
++ 		sum2 += OIL_GET(src, sstr*(i+1), double);
++ 		sum3 += OIL_GET(src, sstr*(i+2), double);
++ 		sum4 += OIL_GET(src, sstr*(i+3), double);
++ 	}
++ 
++ 	*dest = sum1 + sum2 + sum3 + sum4;
++ }
++ OIL_DEFINE_IMPL (sum_f64_i10_unroll4, sum_f64);
++ 
++ 
+diff -crN liboil-0.3.15-orig/liboil.mmp liboil-0.3.15/liboil.mmp
+*** liboil-0.3.15-orig/liboil.mmp	Thu Jan 01 09:00:00 1970
+--- liboil-0.3.15/liboil.mmp	Thu Sep 11 13:30:35 2008
+***************
+*** 0 ****
+--- 1,52 ----
++ 
++ TARGET		liboil.lib
++ TARGETTYPE	lib
++ UID			0
++ 
++ USERINCLUDE . ./liboil
++ SYSTEMINCLUDE /epoc32/include /epoc32/include/stdapis
++ 
++ SOURCEPATH liboil
++ SOURCE build_class_decls.c build_marshal.c build_prototypes.c build_prototypes_04.c build_prototypes_doc.c build_trampolines.c liboilcpu.c liboilcpu-misc.c liboildebug.c  liboilfunction.c liboilprofile.c liboilmarshal.c liboilprototype.c liboilrandom.c liboiltest.c liboiltmp.c liboiltrampolines.c liboilutils.c liboilfault.c liboilarray.c
++ 
++ SOURCEPATH liboil/c
++ SOURCE ag_clamp.c c_composite.c c_copy.c c_swab.c c_wavelet.c
++ 
++ SOURCEPATH liboil/colorspace
++ SOURCE colorspace_composite.c
++ 
++ SOURCEPATH liboil/conv
++ SOURCE conv_bitstuff.c conv_c.c conv_misc.c
++ 
++ SOURCEPATH liboil/copy
++ SOURCE copy_copy.c copy_copy8x8.c splat_ref.c trans8x8_c.c
++ 
++ SOURCEPATH liboil/dct
++ SOURCE dct12_f32.c dct36_f32.c fdct8_f64.c fdct8x8_f64.c fdct8x8s_s16.c fdct8x8theora.c idct8_f64.c idct8x8_c.c idct8x8theora_ref.c imdct32_f32.c
++ 
++ SOURCEPATH liboil/deprecated
++ SOURCE abs.c deprecated_average2_u8.c clip_ref.c conv.c permute.c deprecated_scalaradd.c deprecated_scalarmult.c tablelookup.c vectoradd_f64.c vectoradd_s.c
++ 
++ SOURCEPATH liboil/jpeg
++ SOURCE convert8x8_c.c jpeg_rgb_decoder.c quantize8x8_c.c yuv2rgb_c.c zigzag8x8_c.c
++ 
++ SOURCEPATH liboil/math
++ SOURCE ag_math.c math_math.c
++ 
++ SOURCEPATH liboil/md5
++ SOURCE md5.c
++ 
++ SOURCEPATH liboil/ref
++ SOURCE addc.c argb_paint.c ayuv2argb.c clamp.c ref_composite.c convert.c ref_copy.c ref_copy8x8.c diff8x8.c diffsquaresum_f32.c diffsquaresum_f64.c error8x8.c mas.c ref_math.c ref_mix_u8.c mt19937ar.c mult8x8_s16.c ref_multsum.c recon8x8.c resample.c rgb.c rowcolsad8x8.c sad8x8.c sad8x8_broken.c sad8x8avg.c ref_sincos_f64.c splat.c squaresum_f32.c ref_squaresum_f64.c sum.c ref_sum_f64.c ref_swab.c trans8x8.c ref_wavelet.c yuv.c
++ 
++ SOURCEPATH liboil/simdpack
++ SOURCE abs_misc.c simdpack_average2_u8.c clip_fast.c simdpack_diffsquaresum_f64.c simdpack_mix_u8.c simdpack_multsum.c simdpack_scalaradd.c simdpack_scalarmult.c simdpack_sincos_f64.c simdpack_squaresum_f64.c simdpack_sum_f64.c
++ 
++ SOURCEPATH liboil/utf8
++ SOURCE utf8.c utf8_fast.c
++ 
++ MACRO _BSD_SOURCE
++ MACRO _GNU_SOURCE
++ MACRO OIL_ENABLE_UNSTABLE_API
++ MACRO HAVE_CONFIG_H
++ 
